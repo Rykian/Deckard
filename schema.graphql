@@ -1,0 +1,22 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ItemReport {
+  scene: String!
+  items: [String!]!
+}
+
+type CheckScenesReport {
+  missingScenes: [String!]
+  missingItems: [ItemReport!]
+}
+
+type Query {
+  obsConnected: Boolean!
+}
+
+type Mutation {
+  obsConnect(url: String!, password: String): Boolean!
+  obsCheckScenes: CheckScenesReport!
+}
