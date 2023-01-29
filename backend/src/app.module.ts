@@ -13,6 +13,7 @@ import { WoWModule } from './wow/module';
       installSubscriptionHandlers: true,
     }),
     OBSModule,
+    WoWModule,
   ],
 })
 export class AppModule {}
