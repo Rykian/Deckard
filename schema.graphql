@@ -14,9 +14,14 @@ type CheckScenesReport {
 
 type Query {
   obsConnected: Boolean!
+  obsStreamIsStreaming: Boolean!
 }
 
 type Mutation {
   obsConnect(url: String!, password: String): Boolean!
-  obsCheckScenes: CheckScenesReport!
+  obsScenesCheck: CheckScenesReport!
+}
+
+type Subscription {
+  obsStreamStreamingUpdated: Boolean!
 }

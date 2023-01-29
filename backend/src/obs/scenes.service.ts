@@ -1,28 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import OBSWebSocket, { OBSWebSocketError } from 'obs-websocket-js';
-import { CheckScenesReport, ItemReport } from './report.object';
+import { OBSWebSocketError } from 'obs-websocket-js';
+import { CheckScenesReport, ItemReport } from './scenes.object';
+import { OBSAPI } from './_.service';
 
 const REQUIRED_OBJECTS = {
   main: ['webcam', 'capture'],
   chatting: ['webcam'],
 };
 
-@Injectable()
-export class OBSService extends OBSWebSocket {
-  currentURL: string;
-  currentPassword: string;
-  async connect(url?: string, password?: string, identificationParams?: any) {
-    this.once('ConnectionOpened', () => {
-      this.currentURL = url;
-      this.currentPassword = password;
-    });
-
-    this.once('ConnectionClosed', (error) => {
-      console.error(error);
-    });
-
-    return super.connect(url, password, identificationParams);
-  }
+export class OBSScenesService {
+  constructor(private api: OBSAPI) {}
 
   async checkScenes() {
     const report = new CheckScenesReport();
@@ -30,7 +16,7 @@ export class OBSService extends OBSWebSocket {
     await Promise.all(
       Object.entries(REQUIRED_OBJECTS).map(async ([scene, sources]) => {
         try {
-          const items = await this.call('GetSceneItemList', {
+          const items = await this.api.call('GetSceneItemList', {
             sceneName: scene,
           });
           const sourcesNames = items.sceneItems.map(
