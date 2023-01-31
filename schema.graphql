@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Instance {
+  ip: String!
+  port: String!
+  hostname: String
+  password: String
+  secure: Boolean
+}
+
 type ItemReport {
   scene: String!
   items: [String!]!
@@ -14,14 +22,17 @@ type CheckScenesReport {
 
 type Query {
   obsConnected: Boolean!
+  obsCurrentInstance: String
+  obsInstanceList: [Instance!]!
   obsStreamIsStreaming: Boolean!
 }
 
 type Mutation {
-  obsConnect(url: String!, password: String): Boolean!
+  obsConnect(host: String!, port: String!, password: String): Boolean!
   obsScenesCheck: CheckScenesReport!
 }
 
 type Subscription {
+  obsCurrentInstanceUpdated: String
   obsStreamStreamingUpdated: Boolean!
 }

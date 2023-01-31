@@ -69,7 +69,7 @@ export class WoWLogEventService extends (EventEmitter as new () => TypedEmitter<
     this.logger.log(`Start tailing "${file}"`);
     this.tail = new Tail(file, {
       follow: true,
-      fromBeginning: true,
+      // fromBeginning: true,
     });
 
     this.tail.on('line', (data) => {

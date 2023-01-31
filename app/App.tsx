@@ -1,20 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar'
+import {
+  ApplicationProvider,
+  IconRegistry,
+  Layout,
+  Text,
+} from '@ui-kitten/components'
+import * as eva from '@eva-design/eva'
+import ServerSelectionScreen from './screens/ServerSelection'
+import { SafeAreaView, useColorScheme } from 'react-native'
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native'
+import ServerDashboardScreen from './screens/ServerDashboard'
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+
+export type RootStackParamList = {
+  'Server selection': undefined
+  Dashboard: { address: string }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export const Stack = createNativeStackNavigator<RootStackParamList>()
+
+
+export default function App() {
+  const [navigationTheme, evaTheme] =
+    useColorScheme() === 'dark'
+      ? [DarkTheme, eva.dark]
+      : [DefaultTheme, eva.light]
+
+  return (
+    <>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ApplicationProvider {...eva} theme={evaTheme}>
+          <NavigationContainer theme={navigationTheme}>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Server selection"
+                component={ServerSelectionScreen}
+              />
+              <Stack.Screen
+                name="Dashboard"
+                component={ServerDashboardScreen}
+              />
+            </Stack.Navigator>
+            <StatusBar style="auto" />
+          </NavigationContainer>
+        </ApplicationProvider>
+      </SafeAreaView>
+    </>
+  )
+}
