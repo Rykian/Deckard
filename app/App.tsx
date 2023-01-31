@@ -31,9 +31,9 @@ export default function App() {
       : [DefaultTheme, eva.light]
 
   return (
-    <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <ApplicationProvider {...eva} theme={evaTheme}>
+    <ApplicationProvider {...eva} theme={evaTheme}>
+      <Layout style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <NavigationContainer theme={navigationTheme}>
             <Stack.Navigator>
               <Stack.Screen
@@ -47,8 +47,8 @@ export default function App() {
             </Stack.Navigator>
             <StatusBar style="auto" />
           </NavigationContainer>
-        </ApplicationProvider>
-      </SafeAreaView>
-    </>
+        </SafeAreaView>
+      </Layout>
+    </ApplicationProvider>
   )
 }
