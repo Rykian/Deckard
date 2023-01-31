@@ -1,4 +1,5 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
+import { useTheme } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import {
   Input,
@@ -8,10 +9,13 @@ import {
   SelectItem,
   Button,
   IndexPath,
+  Card,
+  ButtonGroup,
 } from '@ui-kitten/components'
 import { useEffect, useState } from 'react'
 import { StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
-import { RootStackParamList } from '../router'
+import { RootStackParamList } from '../App'
+import * as eva from '@eva-design/eva'
 
 const PROTOCOLS = ['http://', 'https://']
 
@@ -35,6 +39,11 @@ const useServerHistory = () => {
       setHistory(updatedHistory)
       storage.setItem(JSON.stringify(updatedHistory))
     },
+    removeHistory: (url: string) => {
+      const updatedHistory = history.filter((v) => v != url)
+      setHistory(updatedHistory)
+      storage.setItem(JSON.stringify(updatedHistory))
+    },
   }
 }
 
@@ -42,7 +51,7 @@ const ServerSelectionScreen = (props: Props) => {
   const [protocol, setProtocol] = useState(new IndexPath(0))
   const [address, setAdress] = useState('')
 
-  const { history, addHistory } = useServerHistory()
+  const { history, addHistory, removeHistory } = useServerHistory()
 
   return (
     <Layout
@@ -97,15 +106,37 @@ const ServerSelectionScreen = (props: Props) => {
           >
             <Text>Add & connect</Text>
           </Button>
+        </Layout>
+        <Layout style={{ width: '100%' }}>
+          <Text
+            category="c2"
+            style={{ fontWeight: 'bold', color: eva.light['color-basic-600'] }}
+          >
+            History
+          </Text>
           {history?.map((address) => (
-            <Button
-              onPress={() =>
-                props.navigation.navigate('Dashboard', { address })
-              }
+            <Card
               key={address}
+              style={{
+                width: 500,
+              }}
             >
-              {address}
-            </Button>
+              <Layout style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text category="c2" style={{ flexGrow: 1 }}>
+                  {address}
+                </Text>
+                <Button appearance="ghost" status="warning" onPress={() => removeHistory(address)}>
+                  Remove
+                </Button>
+                <Button
+                  onPress={() =>
+                    props.navigation.navigate('Dashboard', { address })
+                  }
+                >
+                  Connect
+                </Button>
+              </Layout>
+            </Card>
           ))}
         </Layout>
       </KeyboardAvoidingView>

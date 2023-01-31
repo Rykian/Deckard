@@ -24,7 +24,6 @@ export type RootStackParamList = {
 
 export const Stack = createNativeStackNavigator<RootStackParamList>()
 
-
 export default function App() {
   const [navigationTheme, evaTheme] =
     useColorScheme() === 'dark'
