@@ -20,19 +20,34 @@ type CheckScenesReport {
   missingItems: [ItemReport!]
 }
 
+type Track {
+  id: ID!
+  artists: [String!]!
+  album: String!
+  name: String!
+  release: String!
+  cover: String!
+  url: String!
+}
+
 type Query {
   obsConnected: Boolean!
   obsCurrentInstance: String
   obsInstanceList: [Instance!]!
   obsStreamIsStreaming: Boolean!
+  getSpotifyAuthURL(redirectURI: String!): String!
+  getCurrentTrack: Track
+  getSpotifyUserName: String
 }
 
 type Mutation {
   obsConnect(host: String!, port: String!, password: String): Boolean!
   obsScenesCheck: CheckScenesReport!
+  updateSpotifyAuth(code: String!, redirectURI: String!): Boolean!
 }
 
 type Subscription {
   obsCurrentInstanceUpdated: String
   obsStreamStreamingUpdated: Boolean!
+  currentTrackUpdated: Track
 }

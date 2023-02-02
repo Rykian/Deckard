@@ -115,17 +115,16 @@ const ServerSelectionScreen = (props: Props) => {
             History
           </Text>
           {history?.map((address) => (
-            <Card
-              key={address}
-              style={{
-                width: 500,
-              }}
-            >
+            <Card key={address} style={{ maxWidth: 500 }}>
               <Layout style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text category="c2" style={{ flexGrow: 1 }}>
                   {address}
                 </Text>
-                <Button appearance="ghost" status="warning" onPress={() => removeHistory(address)}>
+                <Button
+                  appearance="ghost"
+                  status="warning"
+                  onPress={() => removeHistory(address)}
+                >
                   Remove
                 </Button>
                 <Button

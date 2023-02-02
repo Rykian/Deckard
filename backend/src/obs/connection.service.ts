@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { RedisService } from 'src/redis.service';
 import { OBSAPI } from './_.service';
-import * as EvilScan from 'evilscan';
+import EvilScan from 'evilscan';
 import { Instance } from './connection.object';
 import { OBSWebSocketError } from 'obs-websocket-js';
 import { PubSub } from 'graphql-subscriptions';

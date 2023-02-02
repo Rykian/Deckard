@@ -14,4 +14,12 @@ export class RedisService {
     });
     this.client.connect();
   }
+
+  async getJSON(key: string) {
+    return JSON.parse(await this.client.get(key));
+  }
+
+  async setJSON(key: string, json: any) {
+    await this.client.set(key, JSON.stringify(json));
+  }
 }

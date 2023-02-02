@@ -1,34 +1,74 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import {
+  ApolloClient,
+  ApolloProvider,
+  HttpLink,
+  InMemoryCache,
+  split,
+} from '@apollo/client'
+import { css, Global } from '@emotion/react'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import $UbuntuFont from './assets/fonts/Ubuntu'
+import $UbuntuMonoFont from './assets/fonts/Ubuntu_Mono'
+import MusicOverlay from './overlays/Music'
+import { WebSocketLink } from '@apollo/client/link/ws'
+import { getMainDefinition } from '@apollo/client/utilities'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const List = () => {
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <ul>
+      <li>
+        <Link to="/music">/music</Link>
+      </li>
+    </ul>
   )
 }
+
+export const $global = css`
+  body {
+    margin: 0;
+    padding: 0;
+    ${$UbuntuFont}
+    ${$UbuntuMonoFont}
+    font-family: 'Ubuntu';
+  }
+`
+
+const url = 'http://localhost:3000'
+
+const httpLink = new HttpLink({ uri: url + '/graphql' })
+
+const wsLink = new WebSocketLink({
+  uri: url.replace('http', 'ws') + '/graphql',
+  options: { reconnect: true },
+})
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    )
+  },
+  wsLink,
+  httpLink
+)
+
+const client = new ApolloClient({
+  link: splitLink,
+  cache: new InMemoryCache(),
+})
+
+const App = () => (
+  <ApolloProvider client={client}>
+    <Global styles={$global} />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<List />} />
+        <Route path="/music" element={<MusicOverlay />} />
+      </Routes>
+    </BrowserRouter>
+  </ApolloProvider>
+)
 
 export default App

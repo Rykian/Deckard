@@ -7,9 +7,19 @@ import { resolve } from 'path';
 import { OBSModule } from './obs/_.module';
 import { WoWModule } from './wow/module';
 import { plugin as ApolloTracing } from 'apollo-tracing';
+import { SpotifyModule } from './spotify/module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: [
+        `.env.${process.env.NODE_ENV}.local`,
+        `.env.${process.env.NODE_ENV}`,
+        `.env.local`,
+        '.env',
+      ],
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: resolve('..', 'schema.graphql'),
@@ -17,6 +27,7 @@ import { plugin as ApolloTracing } from 'apollo-tracing';
       plugins: [ApolloTracing() as PluginDefinition, apolloLogger],
     }),
     OBSModule,
+    SpotifyModule,
     WoWModule,
   ],
 })

@@ -7,6 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "jsEngine": "hermes",
+    "scheme": "deckard",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -15,9 +16,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "co.heavycookie.deckard"
@@ -32,15 +31,11 @@
       "favicon": "./assets/favicon.png",
       "build": {
         "babel": {
-          "include": [
-            "@ui-kitten/components"
-          ]
+          "include": ["@ui-kitten/components"]
         }
       }
     },
-    "plugins": [
-      "expo-community-flipper"
-    ],
+    "plugins": ["expo-community-flipper"],
     "extra": {
       "eas": {
         "projectId": "c44d1d32-b89e-4705-890d-a18eb7ccd00d"

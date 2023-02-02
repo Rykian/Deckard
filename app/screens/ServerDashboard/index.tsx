@@ -1,30 +1,21 @@
-import { RootStackParamList } from '../../router'
-import { Layout, Text } from '@ui-kitten/components'
+import { RootStackParamList } from '../../App'
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack'
-import { useEffect, useMemo } from 'react'
-import {
-  ApolloClient,
-  ApolloProvider,
-  HttpLink,
-  InMemoryCache,
-  NormalizedCacheObject,
-  split,
-} from '@apollo/client'
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { useEffect } from 'react'
+import { ApolloProvider } from '@apollo/client'
 import Home from './Home'
 import OBSSelection from './OBSSelection'
-import { createClient } from 'graphql-ws'
-import { getMainDefinition } from '@apollo/client/utilities'
 import useApolloClient from '../../utils/useApolloClient'
+import SpotifySelection from './SpotifySelection'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>
 
 export type ServerDashboardStackParamList = {
   Home: undefined
   OBSSelection: undefined
+  SpotifySelection: undefined
 }
 
 const Stack = createNativeStackNavigator<ServerDashboardStackParamList>()
@@ -53,6 +44,7 @@ const ServerDashboardScreen = (props: Props) => {
         />
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="OBSSelection" component={OBSSelection} />
+          <Stack.Screen name="SpotifySelection" component={SpotifySelection} />
         </Stack.Group>
       </Stack.Navigator>
     </ApolloProvider>
