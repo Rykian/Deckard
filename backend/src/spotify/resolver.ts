@@ -23,13 +23,16 @@ export class SpotifyResolver {
 
   @Query(() => Track, { nullable: true })
   getCurrentTrack() {
-    return this.service.getCurrentTrack();
+    return this.service.currentTrack;
   }
 
   @Subscription(() => Track, { nullable: true, resolve: (payload) => payload })
   currentTrackUpdated() {
     setTimeout(1000).then(() =>
-      this.pubsub.publish(Topics.SPOTIFY_CURRENT_TRACK, this.getCurrentTrack()),
+      this.pubsub.publish(
+        Topics.SPOTIFY_CURRENT_TRACK,
+        this.service.currentTrack,
+      ),
     );
     return this.service.currentTrackIterator();
   }

@@ -34,6 +34,9 @@ export class SpotifyTrackService {
 
   #interval: NodeJS.Timer | undefined;
   #currentTrack: Track | null = null;
+  get currentTrack() {
+    return this.#currentTrack;
+  }
 
   constructor(
     private redis: RedisService,
@@ -79,7 +82,7 @@ export class SpotifyTrackService {
         this.pubsub.publish(Topics.SPOTIFY_CURRENT_TRACK, current);
         this.#currentTrack = current;
       }
-    }, 1000);
+    }, 3000);
   }
 
   stopTrackPolling() {

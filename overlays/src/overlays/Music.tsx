@@ -1,4 +1,5 @@
 import { gql, useSubscription } from '@apollo/client'
+import { useMemo } from 'react'
 import { CurrentTrackSubscription } from '../gql/graphql'
 import Music from '../stories/Music'
 
@@ -21,14 +22,18 @@ const MusicOverlay = () => {
     useSubscription<CurrentTrackSubscription>(CURRENT_TRACK)
   const trackData = currentTrackSubscription.data?.currentTrackUpdated
 
-  const track = trackData
-    ? {
-        cover: trackData.cover,
-        name: trackData.name,
-        album: trackData.album,
-        artists: trackData.artists,
-      }
-    : undefined
+  const track = useMemo(
+    () =>
+      trackData
+        ? {
+            cover: trackData.cover,
+            name: trackData.name,
+            album: trackData.album,
+            artists: trackData.artists,
+          }
+        : undefined,
+    [currentTrackSubscription.data]
+  )
   return <Music track={track} />
 }
 

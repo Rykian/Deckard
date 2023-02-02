@@ -28,7 +28,7 @@ const arrayFormater = new Intl.ListFormat('en', { style: 'long' })
 
 const Music = ({ track: nextData }: Props) => {
   const [colors, setColors] = useState<Colors>()
-  const [track, setTrack] = useState<Props['track']>(nextData)
+  const [track, setTrack] = useState<Props['track']>()
 
   const imageSpring = useSpring({
     from: { opacity: 0 },
@@ -44,51 +44,64 @@ const Music = ({ track: nextData }: Props) => {
     await imageSpring.opacity.start(0)
   }
 
+  // useEffect(() => {
+  //   if (!nextData) {
+  //     hide().then(() => setTrack(undefined))
+  //     return
+  //   }
+
+  //   // Preloading next image
+  //   const image = new Image()
+  //   image.src = nextData.cover
+  //   image.crossOrigin = 'anonymous'
+
+  //   // When image is loaded, remove current image, get palette of next image
+  //   image.onload = async (event) => {
+  //     if (nextData != track) await hide()
+  //     const palette = getColors(event.target as HTMLImageElement)
+
+  //     setColors(palette)
+  //     setTrack(nextData)
+  //   }
+  // }, [nextData])
+
   useEffect(() => {
-    if (!nextData) {
-      hide().then(() => setTrack(undefined))
-      return
-    }
-
-    // Preloading next image
-    const image = new Image()
-    image.src = nextData.cover
-    image.crossOrigin = 'anonymous'
-
-    // When image is loaded, remove current image, get palette of next image
-    image.onload = async (event) => {
-      if (nextData != track) await hide()
-      const palette = getColors(event.target as HTMLImageElement)
-
-      setColors(palette)
+    ;(async () => {
+      console.log('await hide()')
+      await hide()
+      console.log('setTrack(nextData)')
       setTrack(nextData)
-    }
+    })()
   }, [nextData])
 
-  return (
-    track ? (
-      <ThemeProvider theme={colors || {}}>
-        <div css={$container}>
-          <animated.img
-            onLoad={async () => {
-              await imageSpring.opacity.start(1)
-              await infoSpring.marginLeft.start('-10em', {
-                config: config.wobbly,
-              })
-            }}
-            css={$image}
-            style={imageSpring}
-            src={track.cover}
-            crossOrigin="anonymous"
-          />
-          <animated.div css={$infos} style={infoSpring}>
-            <div css={$name}>{track.name}</div>
-            <div css={$album}>{track.album}</div>
-            <div css={$artists}>{arrayFormater.format(track.artists)}</div>
-          </animated.div>
-        </div>
-      </ThemeProvider>
-    ) : <></>
+  return track ? (
+    <ThemeProvider theme={colors || {}}>
+      <div css={$container}>
+        <animated.img
+          onLoad={async (event) => {
+            console.log('const palette = getColors(event.target as HTMLImageElement)')
+            const palette = getColors(event.target as HTMLImageElement)
+            console.log('setColors(palette)')
+            setColors(palette)
+            await imageSpring.opacity.start(1)
+            await infoSpring.marginLeft.start('-10em', {
+              config: config.wobbly,
+            })
+          }}
+          css={$image}
+          style={imageSpring}
+          src={track.cover}
+          crossOrigin="anonymous"
+        />
+        <animated.div css={$infos} style={infoSpring}>
+          <div css={$name}>{track.name}</div>
+          <div css={$album}>{track.album}</div>
+          <div css={$artists}>{arrayFormater.format(track.artists)}</div>
+        </animated.div>
+      </div>
+    </ThemeProvider>
+  ) : (
+    <></>
   )
 }
 
