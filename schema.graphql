@@ -38,12 +38,17 @@ type Query {
   getSpotifyAuthURL(redirectURI: String!): String!
   getCurrentTrack: Track
   getSpotifyUserName: String
+  getTwitchAuthURL(redirectURI: String! = "http://localhost:3000/admin/oauth"): String!
+  getTwitchUserName: String
+  getTwitchEditStreamInfoUrl: String
+  twitchGetClientId: String
 }
 
 type Mutation {
   obsConnect(host: String!, port: String!, password: String): Boolean!
   obsScenesCheck: CheckScenesReport!
   updateSpotifyAuth(code: String!, redirectURI: String!): Boolean!
+  updateTwitchTokenFromCode(code: String!, redirectURI: String!): Boolean!
 }
 
 type Subscription {

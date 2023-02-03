@@ -9,6 +9,7 @@ import { WoWModule } from './wow/module';
 import { plugin as ApolloTracing } from 'apollo-tracing';
 import { SpotifyModule } from './spotify/module';
 import { ConfigModule } from '@nestjs/config';
+import { TwitchModule } from './twitch/module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     OBSModule,
     SpotifyModule,
+    TwitchModule,
     WoWModule,
   ],
 })

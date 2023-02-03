@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useApolloClient, useMutation, useQuery } from '@apollo/client'
 import { Button, Text } from '@ui-kitten/components'
 import * as AuthSession from 'expo-auth-session'
 import {
@@ -7,6 +7,7 @@ import {
   UpdateSpotifyMutation,
   UpdateSpotifyMutationVariables,
 } from '../../gql/graphql'
+import { SPOTIFY_USERNAME } from './Home'
 
 const SPOTIFY_URL = gql`
   query spotifyAuth($redirectURI: String!) {
@@ -20,9 +21,10 @@ const UPDATE_SPOTIFY = gql`
   }
 `
 
-const SpotifySelection = () => {
+const SpotifyLogin = () => {
+  const apollo = useApolloClient()
   const redirectURI = AuthSession.makeRedirectUri({ useProxy: true })
-  console.log({ redirectURI })
+
   const authUrl = useQuery<SpotifyAuthQuery, SpotifyAuthQueryVariables>(
     SPOTIFY_URL,
     {
@@ -45,6 +47,8 @@ const SpotifySelection = () => {
           await update({
             variables: { code: session.params['code'], redirectURI },
           })
+
+          await apollo.refetchQueries({ include: [SPOTIFY_USERNAME] })
         }
       }}
     >
@@ -53,4 +57,4 @@ const SpotifySelection = () => {
   )
 }
 
-export default SpotifySelection
+export default SpotifyLogin

@@ -15,8 +15,8 @@ export class RedisService {
     this.client.connect();
   }
 
-  async getJSON(key: string) {
-    return JSON.parse(await this.client.get(key));
+  async getJSON<T>(key: string) {
+    return JSON.parse(await this.client.get(key)) as T;
   }
 
   async setJSON(key: string, json: any) {

@@ -1,5 +1,9 @@
-import { gql, useQuery, useSubscription } from '@apollo/client'
-import { faChromecast, faSpotify } from '@fortawesome/free-brands-svg-icons'
+import { gql, useApolloClient, useQuery, useSubscription } from '@apollo/client'
+import {
+  faChromecast,
+  faSpotify,
+  faTwitch,
+} from '@fortawesome/free-brands-svg-icons'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { Layout, Text } from '@ui-kitten/components'
 import { StyleSheet } from 'react-native'
@@ -8,6 +12,7 @@ import { ServerDashboardStackParamList } from '.'
 import {
   ObsCurrentInstanceSubscription,
   SpotifyUserNameQuery,
+  TwitchUserNameQuery,
 } from '../../gql/graphql'
 import Switch from '../../components/Switch'
 
@@ -17,9 +22,15 @@ const CURRENT_INSTANCE = gql`
   }
 `
 
-const SPOTIFY_USERNAME = gql`
+export const SPOTIFY_USERNAME = gql`
   query spotifyUserName {
     getSpotifyUserName
+  }
+`
+
+export const TWITCH_USERNAME = gql`
+  query twitchUserName {
+    getTwitchUserName
   }
 `
 
@@ -30,6 +41,7 @@ const Home = (props: Props) => {
     useSubscription<ObsCurrentInstanceSubscription>(CURRENT_INSTANCE)
 
   const spotifyUserName = useQuery<SpotifyUserNameQuery>(SPOTIFY_USERNAME)
+  const twitchUserName = useQuery<TwitchUserNameQuery>(TWITCH_USERNAME)
 
   return (
     <>
@@ -43,11 +55,18 @@ const Home = (props: Props) => {
             OBS
           </ConnectionState>
           <ConnectionState
-            onPress={() => props.navigation.navigate('SpotifySelection')}
+            onPress={() => props.navigation.navigate('SpotifyLogin')}
             connected={!!spotifyUserName.data}
             icon={faSpotify}
           >
             {spotifyUserName.data?.getSpotifyUserName || 'Not connected'}
+          </ConnectionState>
+          <ConnectionState
+            onPress={() => props.navigation.navigate('TwitchLogin')}
+            connected={!!twitchUserName.data?.getTwitchUserName}
+            icon={faTwitch}
+          >
+            {twitchUserName.data?.getTwitchUserName || 'Not connected'}
           </ConnectionState>
         </Layout>
         <Text category="h1">Home</Text>

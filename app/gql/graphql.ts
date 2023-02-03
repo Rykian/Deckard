@@ -40,6 +40,7 @@ export type Mutation = {
   obsConnect: Scalars['Boolean'];
   obsScenesCheck: CheckScenesReport;
   updateSpotifyAuth: Scalars['Boolean'];
+  updateTwitchTokenFromCode: Scalars['Boolean'];
 };
 
 
@@ -55,20 +56,35 @@ export type MutationUpdateSpotifyAuthArgs = {
   redirectURI: Scalars['String'];
 };
 
+
+export type MutationUpdateTwitchTokenFromCodeArgs = {
+  code: Scalars['String'];
+  redirectURI: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getCurrentTrack?: Maybe<Track>;
   getSpotifyAuthURL: Scalars['String'];
   getSpotifyUserName?: Maybe<Scalars['String']>;
+  getTwitchAuthURL: Scalars['String'];
+  getTwitchEditStreamInfoUrl?: Maybe<Scalars['String']>;
+  getTwitchUserName?: Maybe<Scalars['String']>;
   obsConnected: Scalars['Boolean'];
   obsCurrentInstance?: Maybe<Scalars['String']>;
   obsInstanceList: Array<Instance>;
   obsStreamIsStreaming: Scalars['Boolean'];
+  twitchGetClientId?: Maybe<Scalars['String']>;
 };
 
 
 export type QueryGetSpotifyAuthUrlArgs = {
   redirectURI: Scalars['String'];
+};
+
+
+export type QueryGetTwitchAuthUrlArgs = {
+  redirectURI?: Scalars['String'];
 };
 
 export type Subscription = {
@@ -99,6 +115,11 @@ export type SpotifyUserNameQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type SpotifyUserNameQuery = { __typename?: 'Query', getSpotifyUserName?: string | null };
 
+export type TwitchUserNameQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TwitchUserNameQuery = { __typename?: 'Query', getTwitchUserName?: string | null };
+
 export type ListObsInstancesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -127,10 +148,28 @@ export type UpdateSpotifyMutationVariables = Exact<{
 
 export type UpdateSpotifyMutation = { __typename?: 'Mutation', updateSpotifyAuth: boolean };
 
+export type GetTwitchAuthUrlQueryVariables = Exact<{
+  redirectURI: Scalars['String'];
+}>;
+
+
+export type GetTwitchAuthUrlQuery = { __typename?: 'Query', getTwitchAuthURL: string };
+
+export type UpdateTwitchTokenMutationVariables = Exact<{
+  code: Scalars['String'];
+  redirectURI: Scalars['String'];
+}>;
+
+
+export type UpdateTwitchTokenMutation = { __typename?: 'Mutation', updateTwitchTokenFromCode: boolean };
+
 
 export const ObsCurrentInstanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"obsCurrentInstance"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsCurrentInstanceUpdated"}}]}}]} as unknown as DocumentNode<ObsCurrentInstanceSubscription, ObsCurrentInstanceSubscriptionVariables>;
 export const SpotifyUserNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spotifyUserName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSpotifyUserName"}}]}}]} as unknown as DocumentNode<SpotifyUserNameQuery, SpotifyUserNameQueryVariables>;
+export const TwitchUserNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"twitchUserName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTwitchUserName"}}]}}]} as unknown as DocumentNode<TwitchUserNameQuery, TwitchUserNameQueryVariables>;
 export const ListObsInstancesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ListObsInstances"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsInstanceList"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ip"}},{"kind":"Field","name":{"kind":"Name","value":"port"}},{"kind":"Field","name":{"kind":"Name","value":"hostname"}}]}}]}}]} as unknown as DocumentNode<ListObsInstancesQuery, ListObsInstancesQueryVariables>;
 export const SelectObsInstanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SelectOBSInstance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"host"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"port"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsConnect"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"host"},"value":{"kind":"Variable","name":{"kind":"Name","value":"host"}}},{"kind":"Argument","name":{"kind":"Name","value":"port"},"value":{"kind":"Variable","name":{"kind":"Name","value":"port"}}}]}]}}]} as unknown as DocumentNode<SelectObsInstanceMutation, SelectObsInstanceMutationVariables>;
 export const SpotifyAuthDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spotifyAuth"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSpotifyAuthURL"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<SpotifyAuthQuery, SpotifyAuthQueryVariables>;
 export const UpdateSpotifyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateSpotify"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSpotifyAuth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}},{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<UpdateSpotifyMutation, UpdateSpotifyMutationVariables>;
+export const GetTwitchAuthUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTwitchAuthURL"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTwitchAuthURL"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<GetTwitchAuthUrlQuery, GetTwitchAuthUrlQueryVariables>;
+export const UpdateTwitchTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTwitchToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTwitchTokenFromCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}},{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<UpdateTwitchTokenMutation, UpdateTwitchTokenMutationVariables>;

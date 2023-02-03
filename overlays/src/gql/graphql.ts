@@ -40,6 +40,7 @@ export type Mutation = {
   obsConnect: Scalars['Boolean'];
   obsScenesCheck: CheckScenesReport;
   updateSpotifyAuth: Scalars['Boolean'];
+  updateTwitchTokenFromCode: Scalars['Boolean'];
 };
 
 
@@ -55,20 +56,35 @@ export type MutationUpdateSpotifyAuthArgs = {
   redirectURI: Scalars['String'];
 };
 
+
+export type MutationUpdateTwitchTokenFromCodeArgs = {
+  code: Scalars['String'];
+  redirectURI: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getCurrentTrack?: Maybe<Track>;
   getSpotifyAuthURL: Scalars['String'];
   getSpotifyUserName?: Maybe<Scalars['String']>;
+  getTwitchAuthURL: Scalars['String'];
+  getTwitchEditStreamInfoUrl?: Maybe<Scalars['String']>;
+  getTwitchUserName?: Maybe<Scalars['String']>;
   obsConnected: Scalars['Boolean'];
   obsCurrentInstance?: Maybe<Scalars['String']>;
   obsInstanceList: Array<Instance>;
   obsStreamIsStreaming: Scalars['Boolean'];
+  twitchGetClientId?: Maybe<Scalars['String']>;
 };
 
 
 export type QueryGetSpotifyAuthUrlArgs = {
   redirectURI: Scalars['String'];
+};
+
+
+export type QueryGetTwitchAuthUrlArgs = {
+  redirectURI?: Scalars['String'];
 };
 
 export type Subscription = {
@@ -89,10 +105,16 @@ export type Track = {
   url: Scalars['String'];
 };
 
+export type TwitchInfosQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TwitchInfosQuery = { __typename?: 'Query', twitchGetClientId?: string | null, getTwitchUserName?: string | null };
+
 export type CurrentTrackSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurrentTrackSubscription = { __typename?: 'Subscription', currentTrackUpdated?: { __typename?: 'Track', id: string, artists: Array<string>, album: string, name: string, release: string, cover: string, url: string } | null };
 
 
+export const TwitchInfosDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TwitchInfos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"twitchGetClientId"}},{"kind":"Field","name":{"kind":"Name","value":"getTwitchUserName"}}]}}]} as unknown as DocumentNode<TwitchInfosQuery, TwitchInfosQueryVariables>;
 export const CurrentTrackDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"currentTrack"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentTrackUpdated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"artists"}},{"kind":"Field","name":{"kind":"Name","value":"album"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"release"}},{"kind":"Field","name":{"kind":"Name","value":"cover"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<CurrentTrackSubscription, CurrentTrackSubscriptionVariables>;

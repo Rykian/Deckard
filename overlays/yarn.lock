@@ -3510,6 +3510,11 @@
   dependencies:
     "@types/jest" "*"
 
+"@types/tmi.js@^1.8.2":
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/@types/tmi.js/-/tmi.js-1.8.2.tgz#7345399a4b74c39b9baa98540a397e24fa3a9e5c"
+  integrity sha512-meCZPCqs8zuCvw8Wl+0UXy2D6L/31Vskc99B/dZeQtIZvzX3EEzWSLTmRRxwI36m5hQFi3xjoLcnmEL8hBPqHA==
+
 "@types/uglify-js@*":
   version "3.17.1"
   resolved "https://registry.yarnpkg.com/@types/uglify-js/-/uglify-js-3.17.1.tgz#e0ffcef756476410e5bce2cb01384ed878a195b5"
@@ -11944,6 +11949,14 @@ title-case@^3.0.3:
   dependencies:
     tslib "^2.0.3"
 
+tmi.js@^1.8.5:
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/tmi.js/-/tmi.js-1.8.5.tgz#8298821677599f163af075113f5d1bd51a648087"
+  integrity sha512-A9qrydfe1e0VWM9MViVhhxVgvLpnk7pFShVUWePsSTtoi+A1X+Zjdoa7OJd7/YsgHXGj3GkNEvnWop/1WwZuew==
+  dependencies:
+    node-fetch "^2.6.1"
+    ws "^8.2.0"
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -12884,7 +12897,7 @@ write-file-atomic@^3.0.0:
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
 
-ws@8.12.0, ws@^8.2.3:
+ws@8.12.0, ws@^8.2.0, ws@^8.2.3:
   version "8.12.0"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.12.0.tgz#485074cc392689da78e1828a9ff23585e06cddd8"
   integrity sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig==

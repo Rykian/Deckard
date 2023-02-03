@@ -8,14 +8,16 @@ import { ApolloProvider } from '@apollo/client'
 import Home from './Home'
 import OBSSelection from './OBSSelection'
 import useApolloClient from '../../utils/useApolloClient'
-import SpotifySelection from './SpotifySelection'
+import SpotifyLogin from './SpotifyLogin'
+import TwitchLogin from './TwitchLogin'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>
 
 export type ServerDashboardStackParamList = {
   Home: undefined
   OBSSelection: undefined
-  SpotifySelection: undefined
+  SpotifyLogin: undefined
+  TwitchLogin: undefined
 }
 
 const Stack = createNativeStackNavigator<ServerDashboardStackParamList>()
@@ -44,7 +46,8 @@ const ServerDashboardScreen = (props: Props) => {
         />
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="OBSSelection" component={OBSSelection} />
-          <Stack.Screen name="SpotifySelection" component={SpotifySelection} />
+          <Stack.Screen name="SpotifyLogin" component={SpotifyLogin} />
+          <Stack.Screen name="TwitchLogin" component={TwitchLogin} />
         </Stack.Group>
       </Stack.Navigator>
     </ApolloProvider>

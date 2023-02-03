@@ -15,10 +15,13 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  subscription obsCurrentInstance {\n    obsCurrentInstanceUpdated\n  }\n": types.ObsCurrentInstanceDocument,
     "\n  query spotifyUserName {\n    getSpotifyUserName\n  }\n": types.SpotifyUserNameDocument,
+    "\n  query twitchUserName {\n    getTwitchUserName\n  }\n": types.TwitchUserNameDocument,
     "\n  query ListObsInstances {\n    obsInstanceList {\n      ip\n      port\n      hostname\n    }\n  }\n": types.ListObsInstancesDocument,
     "\n  mutation SelectOBSInstance($host: String!, $port: String!) {\n    obsConnect(host: $host, port: $port)\n  }\n": types.SelectObsInstanceDocument,
     "\n  query spotifyAuth($redirectURI: String!) {\n    getSpotifyAuthURL(redirectURI: $redirectURI)\n  }\n": types.SpotifyAuthDocument,
     "\n  mutation updateSpotify($code: String!, $redirectURI: String!) {\n    updateSpotifyAuth(code: $code, redirectURI: $redirectURI)\n  }\n": types.UpdateSpotifyDocument,
+    "\n  query GetTwitchAuthURL($redirectURI: String!) {\n    getTwitchAuthURL(redirectURI: $redirectURI)\n  }\n": types.GetTwitchAuthUrlDocument,
+    "\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n": types.UpdateTwitchTokenDocument,
 };
 
 /**
@@ -46,6 +49,10 @@ export function graphql(source: "\n  query spotifyUserName {\n    getSpotifyUser
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  query twitchUserName {\n    getTwitchUserName\n  }\n"): (typeof documents)["\n  query twitchUserName {\n    getTwitchUserName\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query ListObsInstances {\n    obsInstanceList {\n      ip\n      port\n      hostname\n    }\n  }\n"): (typeof documents)["\n  query ListObsInstances {\n    obsInstanceList {\n      ip\n      port\n      hostname\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -59,6 +66,14 @@ export function graphql(source: "\n  query spotifyAuth($redirectURI: String!) {\
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation updateSpotify($code: String!, $redirectURI: String!) {\n    updateSpotifyAuth(code: $code, redirectURI: $redirectURI)\n  }\n"): (typeof documents)["\n  mutation updateSpotify($code: String!, $redirectURI: String!) {\n    updateSpotifyAuth(code: $code, redirectURI: $redirectURI)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetTwitchAuthURL($redirectURI: String!) {\n    getTwitchAuthURL(redirectURI: $redirectURI)\n  }\n"): (typeof documents)["\n  query GetTwitchAuthURL($redirectURI: String!) {\n    getTwitchAuthURL(redirectURI: $redirectURI)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n"): (typeof documents)["\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
