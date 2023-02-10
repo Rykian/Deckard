@@ -1,55 +1,55 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common'
 import {
   ApiClient,
   HelixChannelUpdate,
   HelixPrivilegedUser,
-} from '@twurple/api';
+} from '@twurple/api'
 import {
   AccessToken,
   ClientCredentialsAuthProvider,
   exchangeCode,
   RefreshingAuthProvider,
-} from '@twurple/auth';
-import { EventSubListener } from '@twurple/eventsub';
-import { PubSub } from 'graphql-subscriptions';
-import { EnvironmentService } from 'src/env.service';
-import { RedisService } from 'src/redis.service';
+} from '@twurple/auth'
+import { EnvironmentService } from 'src/env.service'
+import { RedisService } from 'src/redis.service'
+import { TwitchCategory, TwitchChannelInfo } from './object'
+import EventEmitter from 'events'
+import TypedEmitter from 'typed-emitter'
+import { TwitchEvents } from './event.service'
 
 enum RedisKeys {
   TOKEN = 'twitch:token',
 }
 
 @Injectable()
-export class TwitchService {
+export class TwitchService extends (EventEmitter as new () => TypedEmitter<TwitchEvents>) {
   #appAuth = new ClientCredentialsAuthProvider(
     this.env.TWITCH_CLIENT_ID,
     this.env.TWITCH_CLIENT_SECRET,
-  );
+  )
   appAPI = new ApiClient({
     authProvider: this.#appAuth,
-  });
-  #listener: EventSubListener | undefined;
-  userAuth: RefreshingAuthProvider | undefined;
-  userAPI: ApiClient | undefined;
-  #user: HelixPrivilegedUser | undefined;
+  })
+  userAuth: RefreshingAuthProvider | undefined
+  userAPI: ApiClient | undefined
+  #user: HelixPrivilegedUser | undefined
   get clientId() {
-    return this.env.TWITCH_CLIENT_ID;
+    return this.env.TWITCH_CLIENT_ID
   }
 
-  private readonly logger = new Logger(TwitchService.name);
+  infos?: TwitchChannelInfo
 
-  constructor(
-    private redis: RedisService,
-    private pubsub: PubSub,
-    private env: EnvironmentService,
-  ) {
-    this.setupUserAPI();
+  private readonly logger = new Logger(TwitchService.name)
+
+  constructor(private redis: RedisService, private env: EnvironmentService) {
+    super()
+    this.setupUserAPI()
   }
 
   async setupUserAPI() {
-    if (this.userAuth) return;
-    const token = await this.redis.getJSON<AccessToken>(RedisKeys.TOKEN);
-    if (!token) return;
+    if (this.userAuth) return
+    const token = await this.redis.getJSON<AccessToken>(RedisKeys.TOKEN)
+    if (!token) return
 
     this.userAuth = new RefreshingAuthProvider(
       {
@@ -59,9 +59,33 @@ export class TwitchService {
           await this.redis.setJSON(RedisKeys.TOKEN, newToken),
       },
       token,
-    );
+    )
 
-    this.userAPI = new ApiClient({ authProvider: this.userAuth });
+    this.userAPI = new ApiClient({ authProvider: this.userAuth })
+    await this.getMe(true)
+    await this.fillInfosFromAPI()
+  }
+
+  async fillInfosFromAPI() {
+    const response = await this.userAPI.channels.getChannelInfoById(this.me)
+    const category = {
+      id: response.gameId,
+      name: response.gameName,
+    }
+
+    this.infos = {
+      title: response.title,
+      category,
+    }
+
+    this.emit('CategoryUpdated', category)
+  }
+
+  setCategory(category: TwitchCategory) {
+    if (this.infos?.category.id == category.id) return
+
+    this.infos = { ...this.infos, category: category }
+    this.emit('CategoryUpdated', category)
   }
 
   // async searchCategories(query: string) {
@@ -76,9 +100,9 @@ export class TwitchService {
   // }
 
   async setStreamInfo(update: HelixChannelUpdate) {
-    const user = await this.getMe();
-    if (!user) return;
-    this.appAPI.channels.updateChannelInfo(user?.id, update);
+    const user = await this.getMe()
+    if (!user) return
+    this.appAPI.channels.updateChannelInfo(user?.id, update)
   }
 
   async authFromCode(code: string, redirect_uri: string) {
@@ -87,15 +111,23 @@ export class TwitchService {
       this.env.TWITCH_CLIENT_SECRET,
       code,
       redirect_uri,
-    );
-    await this.redis.setJSON(RedisKeys.TOKEN, token);
-    await this.setupUserAPI();
+    )
+    await this.redis.setJSON(RedisKeys.TOKEN, token)
+    await this.setupUserAPI()
   }
 
   async getMe(force?: boolean) {
-    if (this.#user && !force) return this.#user;
+    if (this.#user && !force) return this.#user
 
-    this.#user = await this.userAPI?.users.getMe();
-    return this.#user;
+    this.#user = await this.userAPI?.users.getMe()
+    return this.#user
+  }
+
+  private get me() {
+    return this.#user
+  }
+
+  getChannel() {
+    return this.userAPI.channels.getChannelInfoById(this.me)
   }
 }
