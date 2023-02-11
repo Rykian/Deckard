@@ -16,6 +16,7 @@ import { TwitchCategory, TwitchChannelInfo } from './object'
 import EventEmitter from 'events'
 import TypedEmitter from 'typed-emitter'
 import { TwitchEvents } from './event.service'
+import { OBSStreamService } from 'src/obs/stream.service'
 
 enum RedisKeys {
   TOKEN = 'twitch:token',
@@ -41,7 +42,11 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
 
   private readonly logger = new Logger(TwitchService.name)
 
-  constructor(private redis: RedisService, private env: EnvironmentService) {
+  constructor(
+    private redis: RedisService,
+    private env: EnvironmentService,
+    private obs: OBSStreamService,
+  ) {
     super()
     this.setupUserAPI()
   }
@@ -129,5 +134,23 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
 
   getChannel() {
     return this.userAPI.channels.getChannelInfoById(this.me)
+  }
+
+  get isStreaming() {
+    return this.obs.isStreaming
+  }
+
+  updateTitle = async (title: string) => {
+    await this.userAPI.channels.updateChannelInfo(this.me, { title })
+    this.logger.debug(`Stream title updated to: "${title}"`)
+  }
+
+  createMarker = async (title: string) => {
+    if (this.isStreaming) {
+      await this.userAPI.streams.createStreamMarker(this.me, title)
+      this.logger.debug(`New marker: "${title}"`)
+    } else {
+      this.logger.debug(`Stream offline, marker "${title}" not created`)
+    }
   }
 }
