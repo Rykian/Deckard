@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query TwitchInfos {\n    twitchGetClientId\n    getTwitchUserName\n  }\n": types.TwitchInfosDocument,
     "\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n    }\n  }\n": types.CurrentTrackDocument,
+    "\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n": types.CountdownUpdateDocument,
 };
 
 /**
@@ -39,6 +40,10 @@ export function graphql(source: "\n  query TwitchInfos {\n    twitchGetClientId\
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n    }\n  }\n"): (typeof documents)["\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"): (typeof documents)["\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -44,32 +44,9 @@ const Music = ({ track: nextData }: Props) => {
     await imageSpring.opacity.start(0)
   }
 
-  // useEffect(() => {
-  //   if (!nextData) {
-  //     hide().then(() => setTrack(undefined))
-  //     return
-  //   }
-
-  //   // Preloading next image
-  //   const image = new Image()
-  //   image.src = nextData.cover
-  //   image.crossOrigin = 'anonymous'
-
-  //   // When image is loaded, remove current image, get palette of next image
-  //   image.onload = async (event) => {
-  //     if (nextData != track) await hide()
-  //     const palette = getColors(event.target as HTMLImageElement)
-
-  //     setColors(palette)
-  //     setTrack(nextData)
-  //   }
-  // }, [nextData])
-
   useEffect(() => {
     ;(async () => {
-      console.log('await hide()')
       await hide()
-      console.log('setTrack(nextData)')
       setTrack(nextData)
     })()
   }, [nextData])
@@ -79,9 +56,7 @@ const Music = ({ track: nextData }: Props) => {
       <div css={$container}>
         <animated.img
           onLoad={async (event) => {
-            console.log('const palette = getColors(event.target as HTMLImageElement)')
             const palette = getColors(event.target as HTMLImageElement)
-            console.log('setColors(palette)')
             setColors(palette)
             await imageSpring.opacity.start(1)
             await infoSpring.marginLeft.start('-10em', {

@@ -1,4 +1,4 @@
-import { gql, useApolloClient, useQuery, useSubscription } from '@apollo/client'
+import { gql, useQuery, useSubscription } from '@apollo/client'
 import {
   faChromecast,
   faSpotify,
@@ -14,7 +14,7 @@ import {
   SpotifyUserNameQuery,
   TwitchUserNameQuery,
 } from '../../gql/graphql'
-import Switch from '../../components/Switch'
+import StartButton from './buttons/Start'
 
 const CURRENT_INSTANCE = gql`
   subscription obsCurrentInstance {
@@ -30,7 +30,7 @@ export const SPOTIFY_USERNAME = gql`
 
 export const TWITCH_USERNAME = gql`
   query twitchUserName {
-    getTwitchUserName
+    twitchGetUsername
   }
 `
 
@@ -63,14 +63,14 @@ const Home = (props: Props) => {
           </ConnectionState>
           <ConnectionState
             onPress={() => props.navigation.navigate('TwitchLogin')}
-            connected={!!twitchUserName.data?.getTwitchUserName}
+            connected={!!twitchUserName.data?.twitchGetUsername}
             icon={faTwitch}
           >
-            {twitchUserName.data?.getTwitchUserName || 'Not connected'}
+            {twitchUserName.data?.twitchGetUsername || 'Not connected'}
           </ConnectionState>
         </Layout>
         <Text category="h1">Home</Text>
-        <Switch />
+        <StartButton />
       </Layout>
     </>
   )
@@ -84,6 +84,8 @@ const style = StyleSheet.create({
   },
   iconBar: {
     flex: undefined,
+    display: 'flex',
     alignItems: 'flex-start',
+    flexDirection: 'row',
   },
 })

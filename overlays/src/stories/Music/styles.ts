@@ -28,7 +28,6 @@ export const $infos = (theme: Colors) => css`
   padding-right: 1.5em;
   padding-left: 10.5em;
   border-radius: 0 0.5em 0.5em 0;
-  border: 1px solid rgba(255, 255, 255, 0.5);
   margin-left: -10em;
   background-color: ${theme?.primaryColor};
   height: min-content;

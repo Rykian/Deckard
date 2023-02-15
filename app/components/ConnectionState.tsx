@@ -1,5 +1,7 @@
-import { faChromecast, IconDefinition } from '@fortawesome/free-brands-svg-icons'
-import { FontAwesomeIcon, Props as FontAwesomeIconProps } from '@fortawesome/react-native-fontawesome'
+import {
+  FontAwesomeIcon,
+  Props as FontAwesomeIconProps,
+} from '@fortawesome/react-native-fontawesome'
 import { Button, ButtonProps } from '@ui-kitten/components'
 
 interface Props {
@@ -12,9 +14,10 @@ interface Props {
 const ConnectionState = (props: Props) => {
   return (
     <Button
-      status={!props.connected ? "disabled" : undefined}
+      status={!props.connected ? 'disabled' : undefined}
       size="tiny"
       onPress={props.onPress}
+      style={{ marginLeft: 5 }}
       accessoryLeft={(aProps) => (
         <FontAwesomeIcon
           style={aProps.style}

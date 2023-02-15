@@ -10,6 +10,7 @@ import { plugin as ApolloTracing } from 'apollo-tracing';
 import { SpotifyModule } from './spotify/module';
 import { ConfigModule } from '@nestjs/config';
 import { TwitchModule } from './twitch/module';
+import { StreamModule } from './stream/module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TwitchModule } from './twitch/module';
     OBSModule,
     SpotifyModule,
     TwitchModule,
+    StreamModule,
     WoWModule,
   ],
 })

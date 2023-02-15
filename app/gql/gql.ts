@@ -15,13 +15,24 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  subscription obsCurrentInstance {\n    obsCurrentInstanceUpdated\n  }\n": types.ObsCurrentInstanceDocument,
     "\n  query spotifyUserName {\n    getSpotifyUserName\n  }\n": types.SpotifyUserNameDocument,
-    "\n  query twitchUserName {\n    getTwitchUserName\n  }\n": types.TwitchUserNameDocument,
+    "\n  query twitchUserName {\n    twitchGetUsername\n  }\n": types.TwitchUserNameDocument,
     "\n  query ListObsInstances {\n    obsInstanceList {\n      ip\n      port\n      hostname\n    }\n  }\n": types.ListObsInstancesDocument,
     "\n  mutation SelectOBSInstance($host: String!, $port: String!) {\n    obsConnect(host: $host, port: $port)\n  }\n": types.SelectObsInstanceDocument,
     "\n  query spotifyAuth($redirectURI: String!) {\n    getSpotifyAuthURL(redirectURI: $redirectURI)\n  }\n": types.SpotifyAuthDocument,
     "\n  mutation updateSpotify($code: String!, $redirectURI: String!) {\n    updateSpotifyAuth(code: $code, redirectURI: $redirectURI)\n  }\n": types.UpdateSpotifyDocument,
     "\n  query GetTwitchAuthURL($redirectURI: String!) {\n    getTwitchAuthURL(redirectURI: $redirectURI)\n  }\n": types.GetTwitchAuthUrlDocument,
     "\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n": types.UpdateTwitchTokenDocument,
+    "\n  mutation PauseStream {\n    streamSequencePause\n  }\n": types.PauseStreamDocument,
+    "\n  mutation UnpauseStream($scene: String) {\n    streamSequencePauseUnpause(scene: $scene)\n  }\n": types.UnpauseStreamDocument,
+    "\n  mutation SetPauseTimer($resumeDate: String!) {\n    streamCountdownSet(target: $resumeDate, name: \"pause\")\n  }\n": types.SetPauseTimerDocument,
+    "\n  query GetTwitchUsername {\n    twitchGetUsername\n  }\n": types.GetTwitchUsernameDocument,
+    "\n  subscription StartTimerCountdown {\n    streamCountdownUpdated(name: \"start\")\n  }\n": types.StartTimerCountdownDocument,
+    "\n  mutation ToggleStartStreamOnExpiring($scene: String!) {\n    streamSequenceStartToggleOnCountdownExpiring(scene: $scene)\n  }\n": types.ToggleStartStreamOnExpiringDocument,
+    "\n  mutation StartImmediately($scene: String!) {\n    streamSequenceStartImmediatly(scene: $scene)\n  }\n": types.StartImmediatelyDocument,
+    "\n  query ListStartScenes {\n    obsScenesList\n  }\n": types.ListStartScenesDocument,
+    "\n  mutation StartStreaming($target: String) {\n    streamSequenceStart(targetedTime: $target)\n  }\n": types.StartStreamingDocument,
+    "\n  mutation StopStream {\n    streamSequenceStop\n  }\n": types.StopStreamDocument,
+    "\n  subscription StreamState {\n    streamStateChanged\n  }\n": types.StreamStateDocument,
 };
 
 /**
@@ -49,7 +60,7 @@ export function graphql(source: "\n  query spotifyUserName {\n    getSpotifyUser
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query twitchUserName {\n    getTwitchUserName\n  }\n"): (typeof documents)["\n  query twitchUserName {\n    getTwitchUserName\n  }\n"];
+export function graphql(source: "\n  query twitchUserName {\n    twitchGetUsername\n  }\n"): (typeof documents)["\n  query twitchUserName {\n    twitchGetUsername\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -74,6 +85,50 @@ export function graphql(source: "\n  query GetTwitchAuthURL($redirectURI: String
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n"): (typeof documents)["\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation PauseStream {\n    streamSequencePause\n  }\n"): (typeof documents)["\n  mutation PauseStream {\n    streamSequencePause\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation UnpauseStream($scene: String) {\n    streamSequencePauseUnpause(scene: $scene)\n  }\n"): (typeof documents)["\n  mutation UnpauseStream($scene: String) {\n    streamSequencePauseUnpause(scene: $scene)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation SetPauseTimer($resumeDate: String!) {\n    streamCountdownSet(target: $resumeDate, name: \"pause\")\n  }\n"): (typeof documents)["\n  mutation SetPauseTimer($resumeDate: String!) {\n    streamCountdownSet(target: $resumeDate, name: \"pause\")\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query GetTwitchUsername {\n    twitchGetUsername\n  }\n"): (typeof documents)["\n  query GetTwitchUsername {\n    twitchGetUsername\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription StartTimerCountdown {\n    streamCountdownUpdated(name: \"start\")\n  }\n"): (typeof documents)["\n  subscription StartTimerCountdown {\n    streamCountdownUpdated(name: \"start\")\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation ToggleStartStreamOnExpiring($scene: String!) {\n    streamSequenceStartToggleOnCountdownExpiring(scene: $scene)\n  }\n"): (typeof documents)["\n  mutation ToggleStartStreamOnExpiring($scene: String!) {\n    streamSequenceStartToggleOnCountdownExpiring(scene: $scene)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation StartImmediately($scene: String!) {\n    streamSequenceStartImmediatly(scene: $scene)\n  }\n"): (typeof documents)["\n  mutation StartImmediately($scene: String!) {\n    streamSequenceStartImmediatly(scene: $scene)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query ListStartScenes {\n    obsScenesList\n  }\n"): (typeof documents)["\n  query ListStartScenes {\n    obsScenesList\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation StartStreaming($target: String) {\n    streamSequenceStart(targetedTime: $target)\n  }\n"): (typeof documents)["\n  mutation StartStreaming($target: String) {\n    streamSequenceStart(targetedTime: $target)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation StopStream {\n    streamSequenceStop\n  }\n"): (typeof documents)["\n  mutation StopStream {\n    streamSequenceStop\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription StreamState {\n    streamStateChanged\n  }\n"): (typeof documents)["\n  subscription StreamState {\n    streamStateChanged\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

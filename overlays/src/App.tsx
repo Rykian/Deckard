@@ -12,8 +12,10 @@ import $UbuntuMonoFont from './assets/fonts/Ubuntu_Mono'
 import MusicOverlay from './overlays/Music'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
-import Chat from './stories/Chat'
 import ChatOverlay from './overlays/Chat'
+import Start from './scenes/start'
+import Stop from './scenes/stop'
+import Pause from './scenes/pause'
 
 const List = () => {
   return (
@@ -53,7 +55,7 @@ const splitLink = split(
     )
   },
   wsLink,
-  httpLink
+  httpLink,
 )
 
 const client = new ApolloClient({
@@ -69,6 +71,9 @@ const App = () => (
         <Route path="/" element={<List />} />
         <Route path="/music" element={<MusicOverlay />} />
         <Route path="/chat" element={<ChatOverlay />} />
+        <Route path="/scenes/start" element={<Start />} />
+        <Route path="/scenes/stop" element={<Stop />} />
+        <Route path="/scenes/pause" element={<Pause />} />
       </Routes>
     </BrowserRouter>
   </ApolloProvider>

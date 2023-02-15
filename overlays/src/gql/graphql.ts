@@ -39,6 +39,9 @@ export type Mutation = {
   __typename?: 'Mutation';
   obsConnect: Scalars['Boolean'];
   obsScenesCheck: CheckScenesReport;
+  obsScenesSwitch: Scalars['Boolean'];
+  /** Return the name of the countdown */
+  streamCountdownSet: Scalars['String'];
   updateSpotifyAuth: Scalars['Boolean'];
   updateTwitchTokenFromCode: Scalars['Boolean'];
 };
@@ -48,6 +51,18 @@ export type MutationObsConnectArgs = {
   host: Scalars['String'];
   password?: InputMaybe<Scalars['String']>;
   port: Scalars['String'];
+};
+
+
+export type MutationObsScenesSwitchArgs = {
+  instant?: InputMaybe<Scalars['Boolean']>;
+  scene: Scalars['String'];
+};
+
+
+export type MutationStreamCountdownSetArgs = {
+  name: Scalars['String'];
+  target: Scalars['String'];
 };
 
 
@@ -74,6 +89,8 @@ export type Query = {
   obsCurrentInstance?: Maybe<Scalars['String']>;
   obsInstanceList: Array<Instance>;
   obsStreamIsStreaming: Scalars['Boolean'];
+  /** Expiration date as ISO string */
+  streamCountdownGet: Scalars['String'];
   twitchGetClientId?: Maybe<Scalars['String']>;
 };
 
@@ -87,11 +104,30 @@ export type QueryGetTwitchAuthUrlArgs = {
   redirectURI?: Scalars['String'];
 };
 
+
+export type QueryStreamCountdownGetArgs = {
+  name: Scalars['String'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   currentTrackUpdated?: Maybe<Track>;
   obsCurrentInstanceUpdated?: Maybe<Scalars['String']>;
   obsStreamStreamingUpdated: Scalars['Boolean'];
+  /** Return the name of expired counters */
+  streamCountdownExpired: Scalars['String'];
+  /** Notify when a countdown has been updated */
+  streamCountdownUpdated: Scalars['String'];
+};
+
+
+export type SubscriptionStreamCountdownExpiredArgs = {
+  name?: InputMaybe<Scalars['String']>;
+};
+
+
+export type SubscriptionStreamCountdownUpdatedArgs = {
+  name: Scalars['String'];
 };
 
 export type Track = {
@@ -115,6 +151,14 @@ export type CurrentTrackSubscriptionVariables = Exact<{ [key: string]: never; }>
 
 export type CurrentTrackSubscription = { __typename?: 'Subscription', currentTrackUpdated?: { __typename?: 'Track', id: string, artists: Array<string>, album: string, name: string, release: string, cover: string, url: string } | null };
 
+export type CountdownUpdateSubscriptionVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type CountdownUpdateSubscription = { __typename?: 'Subscription', streamCountdownUpdated: string };
+
 
 export const TwitchInfosDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TwitchInfos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"twitchGetClientId"}},{"kind":"Field","name":{"kind":"Name","value":"getTwitchUserName"}}]}}]} as unknown as DocumentNode<TwitchInfosQuery, TwitchInfosQueryVariables>;
 export const CurrentTrackDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"currentTrack"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentTrackUpdated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"artists"}},{"kind":"Field","name":{"kind":"Name","value":"album"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"release"}},{"kind":"Field","name":{"kind":"Name","value":"cover"}},{"kind":"Field","name":{"kind":"Name","value":"url"}}]}}]}}]} as unknown as DocumentNode<CurrentTrackSubscription, CurrentTrackSubscriptionVariables>;
+export const CountdownUpdateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"countdownUpdate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamCountdownUpdated"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}]}}]} as unknown as DocumentNode<CountdownUpdateSubscription, CountdownUpdateSubscriptionVariables>;

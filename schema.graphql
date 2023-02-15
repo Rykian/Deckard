@@ -20,6 +20,16 @@ type CheckScenesReport {
   missingItems: [ItemReport!]
 }
 
+type TwitchCategory {
+  id: String!
+  name: String!
+}
+
+type TwitchChannelInfo {
+  category: TwitchCategory!
+  title: String!
+}
+
 type Track {
   id: ID!
   artists: [String!]!
@@ -34,25 +44,77 @@ type Query {
   obsConnected: Boolean!
   obsCurrentInstance: String
   obsInstanceList: [Instance!]!
+  obsScenesList: [String!]!
   obsStreamIsStreaming: Boolean!
   getSpotifyAuthURL(redirectURI: String!): String!
   getCurrentTrack: Track
   getSpotifyUserName: String
   getTwitchAuthURL(redirectURI: String! = "http://localhost:3000/admin/oauth"): String!
-  getTwitchUserName: String
+  getTwitchUserName: String @deprecated(reason: "Switching query naming scheme, use `twitchGetUsername` instead")
   getTwitchEditStreamInfoUrl: String
   twitchGetClientId: String
+  twitchGetChannelInfo: TwitchChannelInfo!
+  twitchGetUsername: String!
+
+  """Expiration date as ISO string"""
+  streamCountdownGet(name: String!): String!
 }
 
 type Mutation {
   obsConnect(host: String!, port: String!, password: String): Boolean!
   obsScenesCheck: CheckScenesReport!
+  obsScenesSwitch(scene: String!, instant: Boolean): Boolean!
   updateSpotifyAuth(code: String!, redirectURI: String!): Boolean!
   updateTwitchTokenFromCode(code: String!, redirectURI: String!): Boolean!
+
+  """Return the name of the countdown"""
+  streamCountdownSet(
+    """Targeted date in ISO format"""
+    target: String!
+
+    """Counter name"""
+    name: String!
+  ): String!
+  streamSequenceStart(targetedTime: String): Boolean!
+  streamSequenceStartToggleOnCountdownExpiring(scene: String!): Boolean!
+  streamSequenceStartImmediatly(scene: String!): Boolean!
+
+  """
+  Set pause scene on stream and returns the previous scene name (before pause)
+  """
+  streamSequencePause: String!
+
+  """Unpause the stream"""
+  streamSequencePauseUnpause(
+    """
+    Name of the scene to switch to. If not define it will be the scene before the stream was paused
+    """
+    scene: String
+  ): Boolean!
+  streamSequenceStop: Boolean!
+  streamSequenceStopCancel(scene: String): Boolean!
 }
 
 type Subscription {
   obsCurrentInstanceUpdated: String
   obsStreamStreamingUpdated: Boolean!
   currentTrackUpdated: Track
+
+  """Return the name of expired counters"""
+  streamCountdownExpired(
+    """Countdown name"""
+    name: String
+  ): String!
+
+  """Notify when a countdown has been updated"""
+  streamCountdownUpdated(name: String!): String!
+  streamStateChanged: StreamStateEnum
+}
+
+enum StreamStateEnum {
+  offline
+  starting
+  streaming
+  pausing
+  stopping
 }

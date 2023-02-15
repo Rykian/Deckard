@@ -47,6 +47,7 @@ export class OBSConnectionService {
     this.#protocol = 'ws://';
 
     this.api.on('Identified', () => {
+      this.logger.debug('Identified');
       this.redis.client.set('last_connection_url', this.url);
       if (password)
         this.redis.client.set('last_connection_password', this.#password);

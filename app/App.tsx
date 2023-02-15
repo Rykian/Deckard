@@ -1,10 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import {
-  ApplicationProvider,
-  IconRegistry,
-  Layout,
-  Text,
-} from '@ui-kitten/components'
+import { ApplicationProvider, Layout } from '@ui-kitten/components'
 import * as eva from '@eva-design/eva'
 import ServerSelectionScreen from './screens/ServerSelection'
 import { SafeAreaView, useColorScheme } from 'react-native'
@@ -16,6 +11,8 @@ import {
 import ServerDashboardScreen from './screens/ServerDashboard'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import store from './store'
+import { StoreProvider } from 'easy-peasy'
 
 export type RootStackParamList = {
   'Server selection': undefined
@@ -31,24 +28,26 @@ export default function App() {
       : [DefaultTheme, eva.light]
 
   return (
-    <ApplicationProvider {...eva} theme={evaTheme}>
-      <Layout style={{flex: 1}}>
-        <SafeAreaView style={{ flex: 1 }}>
-          <NavigationContainer theme={navigationTheme}>
-            <Stack.Navigator>
-              <Stack.Screen
-                name="Server selection"
-                component={ServerSelectionScreen}
-              />
-              <Stack.Screen
-                name="Dashboard"
-                component={ServerDashboardScreen}
-              />
-            </Stack.Navigator>
-            <StatusBar style="auto" />
-          </NavigationContainer>
-        </SafeAreaView>
-      </Layout>
-    </ApplicationProvider>
+    <StoreProvider store={store}>
+      <ApplicationProvider {...eva} theme={evaTheme}>
+        <Layout style={{ flex: 1 }}>
+          <SafeAreaView style={{ flex: 1 }}>
+            <NavigationContainer theme={navigationTheme}>
+              <Stack.Navigator>
+                <Stack.Screen
+                  name="Server selection"
+                  component={ServerSelectionScreen}
+                />
+                <Stack.Screen
+                  name="Dashboard"
+                  component={ServerDashboardScreen}
+                />
+              </Stack.Navigator>
+              <StatusBar style="auto" />
+            </NavigationContainer>
+          </SafeAreaView>
+        </Layout>
+      </ApplicationProvider>
+    </StoreProvider>
   )
 }

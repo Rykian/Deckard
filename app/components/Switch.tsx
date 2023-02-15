@@ -1,28 +1,28 @@
-import { faPlay, faPlayCircle } from '@fortawesome/free-solid-svg-icons'
+import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Card, Icon, Text } from '@ui-kitten/components'
-import { StyleSheet } from 'react-native'
+import { Card, Text } from '@ui-kitten/components'
+import { ReactNode } from 'react'
+import { GestureResponderEvent, StyleSheet } from 'react-native'
 
-const Switch = () => {
-  return (
-    <Card style={styles.card}>
-      <FontAwesomeIcon
-        size={styles.icon.fontSize}
-        icon={faPlayCircle}
-      />
-      <Text
-        category="c2"
-        style={{
-          textTransform: 'uppercase',
-          textAlign: 'center',
-          marginTop: 10,
-        }}
-      >
-        Start stream
-      </Text>
-    </Card>
-  )
+export interface Props {
+  onPress?: (event: GestureResponderEvent) => void
+  onLongPress?: (event: GestureResponderEvent) => void
+  icon?: IconProp
+  text?: string
+  children?: ReactNode
 }
+
+const Switch = ({ icon, text, children, onPress, onLongPress }: Props) => (
+  <Card style={styles.card} onPress={onPress} onLongPress={onLongPress}>
+    {icon && <FontAwesomeIcon size={styles.icon.fontSize} icon={icon} />}
+    {text && (
+      <Text category="c2" style={styles.text}>
+        {text}
+      </Text>
+    )}
+    {children}
+  </Card>
+)
 
 const styles = StyleSheet.create({
   card: {
@@ -33,6 +33,11 @@ const styles = StyleSheet.create({
   },
   icon: {
     fontSize: 70,
+  },
+  text: {
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    marginTop: 10,
   },
 })
 
