@@ -12,12 +12,20 @@ const DIFFICULTIES = Object.entries({
   Heroic: [2, 5, 6, 11, 15, 39, 149],
   Mythic: [8, 16, 23, 40],
   Timewalking: [24, 33],
-}).reduce((acc, [difficulty, ids]) => {
-  ids.forEach((id) => {
-    acc[id] = difficulty
-  })
-  return acc
-}, {} as Record<number, string>)
+}).reduce(
+  (acc, [difficulty, ids]) => {
+    ids.forEach((id) => {
+      acc[id] = difficulty
+    })
+    return acc
+  },
+  {} as Record<
+    /** Difficulty ID */
+    string,
+    /** Difficulty name */
+    string
+  >,
+)
 
 @Injectable()
 export class WoWService {
@@ -30,7 +38,7 @@ export class WoWService {
     boss?: string
   }
 
-  #key: {
+  #key?: {
     name: string
     level: string
   }
@@ -62,6 +70,9 @@ export class WoWService {
   }
 
   dungeonStart = (name: string, level: string) => {
+    if (!this.twitch.infos)
+      throw new WoWServiceError('Twitch infos not available')
+
     this.#key = { name, level }
     this.previousTitle = this.twitch.infos.title
     return this.updateTitle(`${name} +${level}`)
@@ -73,6 +84,9 @@ export class WoWService {
   }
 
   raidStart = async (name: string, difficulty: string) => {
+    if (!this.twitch.infos)
+      throw new WoWServiceError('Twitch infos not available')
+
     this.#raid = { name: name, difficulty: difficulty }
     this.previousTitle = this.twitch.infos.title
     await this.updateTitle(`${name} ${difficulty}`)
@@ -96,6 +110,8 @@ export class WoWService {
     }
   }
   raidEnd = async () => {
+    if (!this.previousTitle)
+      throw new WoWServiceError("Title wasn't set at raid start event")
     await this.updateTitle(this.previousTitle)
     this.previousTitle = undefined
     this.logs.off('encounterStart', this.raidEncounterStartHandler)
@@ -107,3 +123,5 @@ export class WoWService {
     await this.twitch.createMarker(title)
   }
 }
+
+class WoWServiceError extends Error {}

@@ -1,7 +1,7 @@
 import { formatDuration, intervalToDuration, isPast, parseISO } from 'date-fns'
 import { useEffect, useState } from 'react'
 
-const useCountdownDisplay = (expirationDate: string | Date) => {
+const useCountdownDisplay = (expirationDate?: string | Date) => {
   const [timeleft, setTimeleft] = useState<string>()
   useEffect(() => {
     const date = expirationDate

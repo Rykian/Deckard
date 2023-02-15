@@ -1,19 +1,19 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class ItemReport {
   @Field()
-  scene: string;
+  scene: string
 
   @Field(() => [String])
-  items: string[] = [];
+  items: string[] = []
 }
 
 @ObjectType()
 export class CheckScenesReport {
   @Field(() => [String], { nullable: true })
-  missingScenes?: string[];
+  missingScenes?: string[]
 
   @Field(() => [ItemReport], { nullable: true })
-  missingItems?: ItemReport[];
+  missingItems?: ItemReport[]
 }

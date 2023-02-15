@@ -1,5 +1,5 @@
 import { gql, useApolloClient, useMutation, useQuery } from '@apollo/client'
-import { Button, Text } from '@ui-kitten/components'
+import { Button } from '@ui-kitten/components'
 import * as AuthSession from 'expo-auth-session'
 import {
   SpotifyAuthQuery,
@@ -29,7 +29,7 @@ const SpotifyLogin = () => {
     SPOTIFY_URL,
     {
       variables: { redirectURI },
-    }
+    },
   ).data?.getSpotifyAuthURL
 
   const [update] = useMutation<

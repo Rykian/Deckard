@@ -72,7 +72,13 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   }
 
   async fillInfosFromAPI() {
+    if (!this.userAPI) throw new TwitchServiceError('userAPI not available')
+    if (!this.me) throw new TwitchServiceError('Current user not available')
+
     const response = await this.userAPI.channels.getChannelInfoById(this.me)
+    if (!response)
+      throw new TwitchServiceError('Channel informations are empty')
+
     const category = {
       id: response.gameId,
       name: response.gameName,
@@ -87,22 +93,12 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   }
 
   setCategory(category: TwitchCategory) {
+    if (!this.infos) throw new TwitchServiceError('Infos should be present')
     if (this.infos?.category.id == category.id) return
 
     this.infos = { ...this.infos, category: category }
     this.emit('CategoryUpdated', category)
   }
-
-  // async searchCategories(query: string) {
-  //   const results = await this.appAPI.search.searchCategories(query);
-  //   return results.data.map((game) =>
-  //     Object.assign(new Game(), {
-  //       id: game.id,
-  //       name: game.name,
-  //       image: game.boxArtUrl,
-  //     }),
-  //   );
-  // }
 
   async setStreamInfo(update: HelixChannelUpdate) {
     const user = await this.getMe()
@@ -133,6 +129,9 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   }
 
   getChannel() {
+    if (!this.userAPI) throw new TwitchServiceError('userAPI not available')
+    if (!this.me) throw new TwitchServiceError('User not set')
+
     return this.userAPI.channels.getChannelInfoById(this.me)
   }
 
@@ -141,12 +140,18 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   }
 
   updateTitle = async (title: string) => {
+    if (!this.userAPI) throw new TwitchServiceError('userAPI not available')
+    if (!this.me) throw new TwitchServiceError('User not set')
+
     await this.userAPI.channels.updateChannelInfo(this.me, { title })
     this.logger.debug(`Stream title updated to: "${title}"`)
   }
 
   createMarker = async (title: string) => {
     if (this.isStreaming) {
+      if (!this.userAPI) throw new TwitchServiceError('userAPI not available')
+      if (!this.me) throw new TwitchServiceError('User not set')
+
       await this.userAPI.streams.createStreamMarker(this.me, title)
       this.logger.debug(`New marker: "${title}"`)
     } else {
@@ -154,3 +159,5 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
     }
   }
 }
+
+class TwitchServiceError extends Error {}

@@ -44,7 +44,7 @@ export class TwitchEventService {
     await this.service.appAPI.eventSub.deleteAllSubscriptions()
 
     this.#listener.subscribeToChannelUpdateEvents(user, (event) => {
-      if (event.categoryId != this.service.infos.category.id) return
+      if (event.categoryId != this.service.infos?.category.id) return
 
       const category = new TwitchCategory()
       category.id = event.categoryId

@@ -55,7 +55,7 @@ export class OBSScenesService extends (EventEmitter as new () => TypedEventEmitt
           await api.call('GetCurrentPreviewScene')
         ).currentPreviewSceneName
       } catch (e) {
-        if (e.code != 506) throw e
+        if (!(e instanceof OBSWebSocketError) || e.code != 506) throw e
       }
       this.#programScene = (
         await api.call('GetCurrentProgramScene')

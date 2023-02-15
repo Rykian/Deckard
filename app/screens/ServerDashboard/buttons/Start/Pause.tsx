@@ -70,9 +70,12 @@ const Pause = (props: StartButtonRouteProps) => {
           <RNDateTimePicker
             mode="time"
             value={resumeDate}
-            onChange={(e) => setResumeDate(new Date(e.nativeEvent.timestamp))}
+            onChange={(e) =>
+              e.nativeEvent.timestamp &&
+              setResumeDate(new Date(e.nativeEvent.timestamp))
+            }
           />
-          <Text>({time})</Text>
+          {time && <Text>({time})</Text>}
         </Layout>
 
         <Button
@@ -92,7 +95,9 @@ const Pause = (props: StartButtonRouteProps) => {
           props.navigation.navigate('Button')
         }}
       >
-        <Text>Unpause (switch to scene "{unpauseScene}")</Text>
+        <Text>
+          Unpause{unpauseScene ? ' (switch to scene "{unpauseScene}")' : ''}
+        </Text>
       </Button>
     </>
   )

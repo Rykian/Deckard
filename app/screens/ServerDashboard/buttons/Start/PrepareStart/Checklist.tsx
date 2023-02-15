@@ -100,10 +100,13 @@ const Checklist = (props: StepProps) => {
             false
           }
           onChange={() =>
+            startScene &&
             startOnExpiration({ variables: { scene: startScene } })
           }
         >
-          <Text>Start on timer expiration (left: {timer}) and go to </Text>
+          <Text>
+            Start on timer expiration (left: {timer ?? ''}) and go to{' '}
+          </Text>
         </CheckBox>
         {sceneList && (
           <DropDownPicker
@@ -111,13 +114,15 @@ const Checklist = (props: StepProps) => {
             items={sceneList.map((name) => ({ label: name, value: name }))}
             open={pickerOpen}
             setOpen={setPickerOpen}
-            value={startScene}
+            value={startScene ?? null}
             setValue={setStartScene}
           />
         )}
       </Layout>
       <Button
         onPress={async () => {
+          if (!startScene) return
+
           await startImmediately({ variables: { scene: startScene } })
           props.navigation.navigate('Button')
         }}

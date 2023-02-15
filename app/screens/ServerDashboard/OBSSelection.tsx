@@ -56,12 +56,14 @@ const OBSSelection = (props: Props) => {
   > = ({ item }) => (
     <Card
       onPress={() =>
-        selectMutation({ variables: { host: item.ip, port: item.port } }).then(() => props.navigation.goBack())
+        selectMutation({ variables: { host: item.ip, port: item.port } }).then(
+          () => props.navigation.goBack(),
+        )
       }
     >
       <Text>
         {item.ip}:{item.port}
-        {item.hostname && <> ({item.hostname})</>}
+        {item.hostname ? ` (${item.hostname})` : ''}
       </Text>
     </Card>
   )

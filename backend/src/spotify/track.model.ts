@@ -1,25 +1,25 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class Track {
   @Field(() => ID)
-  id: string;
+  id: string
 
   @Field(() => [String])
-  artists: string[];
+  artists: string[]
 
   @Field()
-  album: string;
+  album: string
 
   @Field()
-  name: string;
+  name: string
 
   @Field()
-  release: string;
+  release: string
 
   @Field()
-  cover: string;
+  cover: string
 
   @Field()
-  url: string;
+  url: string
 }

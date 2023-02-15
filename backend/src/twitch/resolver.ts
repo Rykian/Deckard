@@ -30,11 +30,6 @@ export class TwitchResolver {
     )
   }
 
-  // @Query(() => [Game])
-  // searchCategory(@Args('query') query: string): Promise<Game[]> {
-  //   return this.service.searchCategories(query);
-  // }
-
   @Mutation(() => Boolean)
   async updateTwitchTokenFromCode(
     @Args('code') code: string,
@@ -69,6 +64,8 @@ export class TwitchResolver {
   @Query(() => TwitchChannelInfo)
   async twitchGetChannelInfo(): Promise<TwitchChannelInfo> {
     const channelInfos = await this.service.getChannel()
+    if (!channelInfos)
+      throw new TwitchResolverError('Channel data not available')
     const data = {
       category: (await channelInfos.getGame()).name,
       title: channelInfos.title,
@@ -82,3 +79,5 @@ export class TwitchResolver {
     return (await this.service.getMe())?.displayName
   }
 }
+
+class TwitchResolverError extends Error {}

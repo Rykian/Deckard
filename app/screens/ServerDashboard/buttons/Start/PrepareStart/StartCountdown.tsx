@@ -33,7 +33,10 @@ const StartCountdown = (props: StepProps) => {
           <RNDateTimePicker
             mode="time"
             value={startDate}
-            onChange={(e) => setStartDate(new Date(e.nativeEvent.timestamp))}
+            onChange={(e) =>
+              e.nativeEvent.timestamp &&
+              setStartDate(new Date(e.nativeEvent.timestamp))
+            }
           />
         </Layout>
       </Layout>

@@ -1,8 +1,8 @@
-import { Query, Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { identity } from 'rxjs';
-import { setTimeout } from 'timers/promises';
-import { OBSStreamService } from './stream.service';
+import { Query, Resolver, Subscription } from '@nestjs/graphql'
+import { PubSub } from 'graphql-subscriptions'
+import { identity } from 'rxjs'
+import { setTimeout } from 'timers/promises'
+import { OBSStreamService } from './stream.service'
 
 @Resolver()
 export class OBSStreamResolver {
@@ -10,7 +10,7 @@ export class OBSStreamResolver {
 
   @Query(() => Boolean)
   obsStreamIsStreaming() {
-    return this.service.isStreaming;
+    return this.service.isStreaming
   }
 
   @Subscription(() => Boolean, { resolve: identity })
@@ -20,7 +20,7 @@ export class OBSStreamResolver {
         this.service.IS_STREAMING,
         this.obsStreamIsStreaming(),
       ),
-    );
-    return this.pubsub.asyncIterator(this.service.IS_STREAMING);
+    )
+    return this.pubsub.asyncIterator(this.service.IS_STREAMING)
   }
 }

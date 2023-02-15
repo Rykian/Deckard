@@ -1,16 +1,16 @@
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { PluginDefinition } from 'apollo-server-core';
-import { Module } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
-import apolloLogger from 'src/apollo-logger';
-import { resolve } from 'path';
-import { OBSModule } from './obs/_.module';
-import { WoWModule } from './wow/module';
-import { plugin as ApolloTracing } from 'apollo-tracing';
-import { SpotifyModule } from './spotify/module';
-import { ConfigModule } from '@nestjs/config';
-import { TwitchModule } from './twitch/module';
-import { StreamModule } from './stream/module';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
+import { PluginDefinition } from 'apollo-server-core'
+import { Module } from '@nestjs/common'
+import { GraphQLModule } from '@nestjs/graphql'
+import apolloLogger from 'src/apollo-logger'
+import { resolve } from 'path'
+import { OBSModule } from './obs/_.module'
+import { WoWModule } from './wow/module'
+import { plugin as ApolloTracing } from 'apollo-tracing'
+import { SpotifyModule } from './spotify/module'
+import { ConfigModule } from '@nestjs/config'
+import { TwitchModule } from './twitch/module'
+import { StreamModule } from './stream/module'
 
 @Module({
   imports: [

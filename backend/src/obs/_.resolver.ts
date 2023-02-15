@@ -1,6 +1,6 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Query, Resolver } from '@nestjs/graphql'
 
-import { OBSAPI } from './_.service';
+import { OBSAPI } from './_.service'
 
 @Resolver()
 export class OBSResolver {
@@ -8,6 +8,6 @@ export class OBSResolver {
 
   @Query(() => Boolean)
   obsConnected(): boolean {
-    return this.obs.identified;
+    return this.obs.identified
   }
 }

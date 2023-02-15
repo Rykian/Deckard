@@ -23,7 +23,7 @@ const useApolloClient = (url: string) =>
         )
       },
       wsLink,
-      httpLink
+      httpLink,
     )
 
     return new ApolloClient({

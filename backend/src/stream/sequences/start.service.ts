@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common'
+import { OBSWebSocketError } from 'obs-websocket-js'
 import { EnvironmentService } from 'src/env.service'
 import { OBSStreamService } from 'src/obs/stream.service'
 import {
@@ -26,7 +27,7 @@ export class StreamSequencesStartService {
       await this.obsStream.start()
     } catch (e) {
       // 500: Stream is already running
-      if (e.code != 500) throw e
+      if (!(e instanceof OBSWebSocketError) || e.code != 500) throw e
     }
   }
 

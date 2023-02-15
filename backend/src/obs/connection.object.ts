@@ -1,19 +1,19 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class Instance {
   @Field()
-  ip: string;
+  ip: string
 
   @Field()
-  port: string;
+  port: string
 
   @Field({ nullable: true })
-  hostname?: string;
+  hostname?: string
 
   @Field({ nullable: true })
-  password?: string;
+  password?: string
 
   @Field({ nullable: true })
-  secure?: boolean;
+  secure?: boolean
 }

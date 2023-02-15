@@ -33,7 +33,7 @@ export const STREAM_STATE_SUBSCRIPTION = gql`
 `
 
 const getSwitchPropsFromState = (
-  state: StreamStateEnum,
+  state: StreamStateEnum | undefined | null,
   props: StartButtonRouteProps,
 ): SwitchProps | undefined => {
   if (!state) return undefined

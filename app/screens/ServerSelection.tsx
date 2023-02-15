@@ -25,7 +25,7 @@ const useServerHistory = () => {
 
   useEffect(() => {
     storage.getItem().then((result) => {
-      const parsed = JSON.parse(result)
+      const parsed = result ? JSON.parse(result) : undefined
       setHistory(parsed || [])
     })
   }, [])
