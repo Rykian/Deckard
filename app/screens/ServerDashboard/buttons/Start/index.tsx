@@ -1,9 +1,5 @@
 import { gql, useSubscription } from '@apollo/client'
 import { faPauseCircle, faPlayCircle } from '@fortawesome/free-solid-svg-icons'
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack'
 import Switch from '../../../../components/Switch'
 import {
   StreamStateEnum,
@@ -12,19 +8,8 @@ import {
 import PrepareStart from './PrepareStart'
 import { Props as SwitchProps } from '../../../../components/Switch'
 import Pause from './Pause'
-import { StyleSheet } from 'react-native'
 import Stop from './Stop'
-
-type Routes = {
-  Button: undefined
-  Start: undefined
-  Pause: undefined
-  Stop: undefined
-}
-
-const Stack = createNativeStackNavigator<Routes>()
-
-export type StartButtonRouteProps = NativeStackScreenProps<Routes>
+import { Stack, StartButtonRouteProps } from './routes'
 
 export const STREAM_STATE_SUBSCRIPTION = gql`
   subscription StreamState {
@@ -95,11 +80,5 @@ const StartButton = () => {
     </>
   )
 }
-
-export const styles = StyleSheet.create({
-  nextButton: {
-    height: 80,
-  },
-})
 
 export default StartButton

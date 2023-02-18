@@ -3,8 +3,6 @@ import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { Button, Layout, Text } from '@ui-kitten/components'
 import { addMinutes } from 'date-fns'
 import { useEffect, useMemo, useState } from 'react'
-
-import { StartButtonRouteProps, styles } from '.'
 import {
   PauseStreamMutation,
   PauseStreamMutationVariables,
@@ -14,6 +12,8 @@ import {
   UnpauseStreamMutationVariables,
 } from '../../../../gql/graphql'
 import useCountdownDisplay from '../../../../utils/useCountdownDisplay'
+import { StartButtonRouteProps } from './routes'
+import { styles } from './styles'
 
 const PAUSE = gql`
   mutation PauseStream {
