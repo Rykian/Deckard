@@ -6,7 +6,7 @@ import {
   CountdownUpdateSubscriptionVariables,
 } from '../gql/graphql'
 import MusicOverlay from '../overlays/Music'
-import Countdown from '../stories/Countdown'
+import Countdown from '../components/Countdown'
 
 const $container = css`
   position: relative;

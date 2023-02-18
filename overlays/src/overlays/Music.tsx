@@ -1,7 +1,7 @@
 import { gql, useSubscription } from '@apollo/client'
 import { useMemo } from 'react'
 import { CurrentTrackSubscription } from '../gql/graphql'
-import Music from '../stories/Music'
+import Music from '../components/Music'
 
 const CURRENT_TRACK = gql`
   subscription currentTrack {
@@ -32,7 +32,7 @@ const MusicOverlay = () => {
             artists: trackData.artists,
           }
         : undefined,
-    [currentTrackSubscription.data]
+    [currentTrackSubscription.data],
   )
   return <Music track={track} />
 }

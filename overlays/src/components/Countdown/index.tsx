@@ -62,7 +62,7 @@ const LateMessage = (props: {
       currentIndex = nextIndex
       timeout = setTimeout(
         setNextMessage,
-        props.changeEvery * 1_000 * nextIndex
+        props.changeEvery * 1_000 * nextIndex,
       )
     }
 
