@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Instance {
+type PortScannerResult {
   ip: String!
   port: String!
   hostname: String
@@ -43,7 +43,7 @@ type Track {
 type Query {
   obsConnected: Boolean!
   obsCurrentInstance: String
-  obsInstanceList: [Instance!]!
+  obsInstanceList: [PortScannerResult!]!
   obsScenesList: [String!]!
   obsStreamIsStreaming: Boolean!
   getSpotifyAuthURL(redirectURI: String!): String!

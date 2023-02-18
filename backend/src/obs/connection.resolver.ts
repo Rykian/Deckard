@@ -2,7 +2,7 @@ import { Args, Mutation, Resolver, Query, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { identity } from 'rxjs'
 import { setTimeout } from 'timers/promises'
-import { Instance } from './connection.object'
+import { PortScannerResult } from '../port-scanner.object'
 import { OBSConnectionService, Topics } from './connection.service'
 
 @Resolver()
@@ -38,7 +38,7 @@ export class OBSConnectionResolver {
     return this.pubsub.asyncIterator(Topics.INSTANCE_UPDATED)
   }
 
-  @Query(() => [Instance])
+  @Query(() => [PortScannerResult])
   async obsInstanceList() {
     return this.connection.listNetworkOBSInstances()
   }

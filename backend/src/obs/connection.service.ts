@@ -1,10 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { RedisService } from 'src/redis.service'
 import { OBSAPI } from './_.service'
-import EvilScan from 'evilscan'
-import { Instance } from './connection.object'
 import { OBSWebSocketError } from 'obs-websocket-js'
 import { PubSub } from 'graphql-subscriptions'
+import { PortScannerService } from 'src/port-scanner.service'
 
 export enum Topics {
   INSTANCE_UPDATED = 'INSTANCE_UPDATED',
@@ -27,6 +26,7 @@ export class OBSConnectionService {
     private api: OBSAPI,
     private redis: RedisService,
     private pubsub: PubSub,
+    private portScanner: PortScannerService,
   ) {}
 
   get url(): string | undefined {
@@ -78,42 +78,7 @@ export class OBSConnectionService {
     })
   }
 
-  async listNetworkOBSInstances() {
-    return await new Promise((resolve, reject) => {
-      const results: Instance[] = []
-      const scan = new EvilScan({
-        target: '192.168.1.0/24',
-        port: 4455,
-        status: 'O',
-        reverse: true,
-      })
-      scan.on(
-        'result',
-        (data: {
-          status: string
-          ip: string
-          port: string
-          reverse: string
-        }) => {
-          if (data.status == 'open')
-            results.push(
-              Object.assign(new Instance(), {
-                ip: data.ip,
-                port: data.port,
-                hostname: data.reverse,
-              }),
-            )
-        },
-      )
-
-      scan.on('error', (err: object) => {
-        reject(err.toString())
-      })
-
-      scan.on('done', () => {
-        resolve(results)
-      })
-      scan.run()
-    })
+  listNetworkOBSInstances() {
+    return this.portScanner.list(4455)
   }
 }

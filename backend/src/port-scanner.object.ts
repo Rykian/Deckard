@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
-export class Instance {
+export class PortScannerResult {
   @Field()
   ip: string
 

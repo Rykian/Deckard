@@ -9,6 +9,7 @@ import { OBSAPI } from './_.service'
 import { OBSStreamService } from './stream.service'
 import { PubSubModule } from 'src/pubsub.module'
 import { OBSStreamResolver } from './stream.resolver'
+import { PortScannerModule } from 'src/port-scanner.module'
 
 @Module({
   providers: [
@@ -21,7 +22,7 @@ import { OBSStreamResolver } from './stream.resolver'
     OBSStreamService,
     OBSAPI,
   ],
-  imports: [RedisModule, PubSubModule],
+  imports: [RedisModule, PubSubModule, PortScannerModule],
   exports: [OBSStreamService, OBSScenesService],
 })
 export class OBSModule {}
