@@ -97,6 +97,8 @@ type Mutation {
 
 type Subscription {
   obsCurrentInstanceUpdated: String
+  obsScenesListUpdated: [String!]!
+  obsScenesCurrentChanged: String!
   obsStreamStreamingUpdated: Boolean!
   currentTrackUpdated: Track
 

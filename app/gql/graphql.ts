@@ -20,15 +20,6 @@ export type CheckScenesReport = {
   missingScenes?: Maybe<Array<Scalars['String']>>;
 };
 
-export type Instance = {
-  __typename?: 'Instance';
-  hostname?: Maybe<Scalars['String']>;
-  ip: Scalars['String'];
-  password?: Maybe<Scalars['String']>;
-  port: Scalars['String'];
-  secure?: Maybe<Scalars['Boolean']>;
-};
-
 export type ItemReport = {
   __typename?: 'ItemReport';
   items: Array<Scalars['String']>;
@@ -111,6 +102,15 @@ export type MutationUpdateTwitchTokenFromCodeArgs = {
   redirectURI: Scalars['String'];
 };
 
+export type PortScannerResult = {
+  __typename?: 'PortScannerResult';
+  hostname?: Maybe<Scalars['String']>;
+  ip: Scalars['String'];
+  password?: Maybe<Scalars['String']>;
+  port: Scalars['String'];
+  secure?: Maybe<Scalars['Boolean']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   getCurrentTrack?: Maybe<Track>;
@@ -122,7 +122,7 @@ export type Query = {
   getTwitchUserName?: Maybe<Scalars['String']>;
   obsConnected: Scalars['Boolean'];
   obsCurrentInstance?: Maybe<Scalars['String']>;
-  obsInstanceList: Array<Instance>;
+  obsInstanceList: Array<PortScannerResult>;
   obsScenesList: Array<Scalars['String']>;
   obsStreamIsStreaming: Scalars['Boolean'];
   /** Expiration date as ISO string */
@@ -159,6 +159,8 @@ export type Subscription = {
   __typename?: 'Subscription';
   currentTrackUpdated?: Maybe<Track>;
   obsCurrentInstanceUpdated?: Maybe<Scalars['String']>;
+  obsScenesCurrentChanged: Scalars['String'];
+  obsScenesListUpdated: Array<Scalars['String']>;
   obsStreamStreamingUpdated: Scalars['Boolean'];
   /** Return the name of expired counters */
   streamCountdownExpired: Scalars['String'];
@@ -218,7 +220,7 @@ export type TwitchUserNameQuery = { __typename?: 'Query', twitchGetUsername: str
 export type ListObsInstancesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListObsInstancesQuery = { __typename?: 'Query', obsInstanceList: Array<{ __typename?: 'Instance', ip: string, port: string, hostname?: string | null }> };
+export type ListObsInstancesQuery = { __typename?: 'Query', obsInstanceList: Array<{ __typename?: 'PortScannerResult', ip: string, port: string, hostname?: string | null }> };
 
 export type SelectObsInstanceMutationVariables = Exact<{
   host: Scalars['String'];
@@ -257,6 +259,23 @@ export type UpdateTwitchTokenMutationVariables = Exact<{
 
 
 export type UpdateTwitchTokenMutation = { __typename?: 'Mutation', updateTwitchTokenFromCode: boolean };
+
+export type ScenesListForSwitchesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ScenesListForSwitchesSubscription = { __typename?: 'Subscription', obsScenesListUpdated: Array<string> };
+
+export type SwitchSceneFromSwitchesMutationVariables = Exact<{
+  scene: Scalars['String'];
+}>;
+
+
+export type SwitchSceneFromSwitchesMutation = { __typename?: 'Mutation', obsScenesSwitch: boolean };
+
+export type CurrentSceneForSwitchesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CurrentSceneForSwitchesSubscription = { __typename?: 'Subscription', obsScenesCurrentChanged: string };
 
 export type PauseStreamMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -333,6 +352,9 @@ export const SpotifyAuthDocument = {"kind":"Document","definitions":[{"kind":"Op
 export const UpdateSpotifyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateSpotify"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSpotifyAuth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}},{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<UpdateSpotifyMutation, UpdateSpotifyMutationVariables>;
 export const GetTwitchAuthUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTwitchAuthURL"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTwitchAuthURL"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<GetTwitchAuthUrlQuery, GetTwitchAuthUrlQueryVariables>;
 export const UpdateTwitchTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTwitchToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTwitchTokenFromCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}},{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<UpdateTwitchTokenMutation, UpdateTwitchTokenMutationVariables>;
+export const ScenesListForSwitchesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"ScenesListForSwitches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsScenesListUpdated"}}]}}]} as unknown as DocumentNode<ScenesListForSwitchesSubscription, ScenesListForSwitchesSubscriptionVariables>;
+export const SwitchSceneFromSwitchesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SwitchSceneFromSwitches"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"scene"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsScenesSwitch"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"scene"},"value":{"kind":"Variable","name":{"kind":"Name","value":"scene"}}}]}]}}]} as unknown as DocumentNode<SwitchSceneFromSwitchesMutation, SwitchSceneFromSwitchesMutationVariables>;
+export const CurrentSceneForSwitchesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"CurrentSceneForSwitches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsScenesCurrentChanged"}}]}}]} as unknown as DocumentNode<CurrentSceneForSwitchesSubscription, CurrentSceneForSwitchesSubscriptionVariables>;
 export const PauseStreamDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"PauseStream"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamSequencePause"}}]}}]} as unknown as DocumentNode<PauseStreamMutation, PauseStreamMutationVariables>;
 export const UnpauseStreamDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UnpauseStream"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"scene"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamSequencePauseUnpause"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"scene"},"value":{"kind":"Variable","name":{"kind":"Name","value":"scene"}}}]}]}}]} as unknown as DocumentNode<UnpauseStreamMutation, UnpauseStreamMutationVariables>;
 export const SetPauseTimerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetPauseTimer"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"resumeDate"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamCountdownSet"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"target"},"value":{"kind":"Variable","name":{"kind":"Name","value":"resumeDate"}}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"StringValue","value":"pause","block":false}}]}]}}]} as unknown as DocumentNode<SetPauseTimerMutation, SetPauseTimerMutationVariables>;

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import EventEmitter from 'events'
+import { PubSub } from 'graphql-subscriptions'
 import { OBSWebSocketError } from 'obs-websocket-js'
 import { setTimeout } from 'timers/promises'
 import TypedEventEmitter from 'typed-emitter'
@@ -19,6 +20,11 @@ type Events = {
   sceneChanged: (event: OBSSceneChangedEvent) => void
 }
 
+export enum Topics {
+  CHANGED = 'obs:scenes:changed',
+  LIST_UPDATED = 'obs:scenes:list_updated',
+}
+
 @Injectable()
 export class OBSScenesService extends (EventEmitter as new () => TypedEventEmitter<Events>) {
   #programScene: string
@@ -34,21 +40,22 @@ export class OBSScenesService extends (EventEmitter as new () => TypedEventEmitt
     return this.#availableScenes
   }
 
-  constructor(private api: OBSAPI) {
+  constructor(private api: OBSAPI, private pubsub: PubSub) {
     super()
     api.on('CurrentProgramSceneChanged', ({ sceneName }) => {
       this.#programScene = sceneName
       this.emit('sceneChanged', { scene: sceneName })
+      this.pubsub.publish(Topics.CHANGED, this.#programScene)
     })
     api.on(
       'CurrentPreviewSceneChanged',
       ({ sceneName }) => (this.#previewScene = sceneName),
     )
-    api.on(
-      'SceneListChanged',
-      (e) =>
-        (this.#availableScenes = e.scenes.map((s) => s['sceneName'] as string)),
-    )
+    api.on('SceneListChanged', (e) => {
+      console.log(e.scenes)
+      this.#availableScenes = e.scenes.map((s) => s['sceneName'] as string)
+      this.pubsub.publish(Topics.LIST_UPDATED, this.#availableScenes)
+    })
     api.on('Identified', async () => {
       try {
         this.#previewScene = (

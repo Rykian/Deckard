@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { StartButtonRouteProps } from '..'
 import { HeaderBackButton } from '@react-navigation/elements'
 import CheckStreamDetails from './CheckStreamDetails'
 import StartCountdown from './StartCountdown'
 import Checklist from './Checklist'
+import { StartButtonRouteProps } from '../routes'
 
 export interface StepProps extends StartButtonRouteProps {
   nextStep: () => any

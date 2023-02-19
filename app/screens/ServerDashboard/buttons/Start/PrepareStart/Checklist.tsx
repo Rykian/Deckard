@@ -13,8 +13,8 @@ import {
 import { useStoreActions, useStoreState } from '../../../../../store'
 // import { Picker } from '@react-native-picker/picker'
 import DropDownPicker from 'react-native-dropdown-picker'
-import { styles } from '..'
 import useCountdownDisplay from '../../../../../utils/useCountdownDisplay'
+import { styles } from '../styles'
 
 const TIMER = gql`
   subscription StartTimerCountdown {

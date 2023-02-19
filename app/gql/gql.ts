@@ -22,6 +22,9 @@ const documents = {
     "\n  mutation updateSpotify($code: String!, $redirectURI: String!) {\n    updateSpotifyAuth(code: $code, redirectURI: $redirectURI)\n  }\n": types.UpdateSpotifyDocument,
     "\n  query GetTwitchAuthURL($redirectURI: String!) {\n    getTwitchAuthURL(redirectURI: $redirectURI)\n  }\n": types.GetTwitchAuthUrlDocument,
     "\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n": types.UpdateTwitchTokenDocument,
+    "\n  subscription ScenesListForSwitches {\n    obsScenesListUpdated\n  }\n": types.ScenesListForSwitchesDocument,
+    "\n  mutation SwitchSceneFromSwitches($scene: String!) {\n    obsScenesSwitch(scene: $scene)\n  }\n": types.SwitchSceneFromSwitchesDocument,
+    "\n  subscription CurrentSceneForSwitches {\n    obsScenesCurrentChanged\n  }\n": types.CurrentSceneForSwitchesDocument,
     "\n  mutation PauseStream {\n    streamSequencePause\n  }\n": types.PauseStreamDocument,
     "\n  mutation UnpauseStream($scene: String) {\n    streamSequencePauseUnpause(scene: $scene)\n  }\n": types.UnpauseStreamDocument,
     "\n  mutation SetPauseTimer($resumeDate: String!) {\n    streamCountdownSet(target: $resumeDate, name: \"pause\")\n  }\n": types.SetPauseTimerDocument,
@@ -85,6 +88,18 @@ export function graphql(source: "\n  query GetTwitchAuthURL($redirectURI: String
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n"): (typeof documents)["\n  mutation updateTwitchToken($code: String!, $redirectURI: String!) {\n    updateTwitchTokenFromCode(code: $code, redirectURI: $redirectURI)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription ScenesListForSwitches {\n    obsScenesListUpdated\n  }\n"): (typeof documents)["\n  subscription ScenesListForSwitches {\n    obsScenesListUpdated\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation SwitchSceneFromSwitches($scene: String!) {\n    obsScenesSwitch(scene: $scene)\n  }\n"): (typeof documents)["\n  mutation SwitchSceneFromSwitches($scene: String!) {\n    obsScenesSwitch(scene: $scene)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription CurrentSceneForSwitches {\n    obsScenesCurrentChanged\n  }\n"): (typeof documents)["\n  subscription CurrentSceneForSwitches {\n    obsScenesCurrentChanged\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

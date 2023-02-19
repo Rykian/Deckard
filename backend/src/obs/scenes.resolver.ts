@@ -1,14 +1,17 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
+import { PubSub } from 'graphql-subscriptions'
+import { identity } from 'rxjs'
+import { setTimeout } from 'timers/promises'
 import { CheckScenesReport } from './scenes.object'
-import { OBSScenesService } from './scenes.service'
+import { OBSScenesService, Topics } from './scenes.service'
 
 @Resolver()
 export class OBSScenesResolver {
-  constructor(private scenes: OBSScenesService) {}
+  constructor(private service: OBSScenesService, private pubsub: PubSub) {}
 
   @Mutation(() => CheckScenesReport)
   obsScenesCheck() {
-    return this.scenes.checkScenes()
+    return this.service.checkScenes()
   }
 
   @Mutation(() => Boolean)
@@ -16,12 +19,28 @@ export class OBSScenesResolver {
     @Args('scene') scene: string,
     @Args('instant', { nullable: true }) instant: boolean,
   ) {
-    await this.scenes.switchScene(scene, instant)
+    await this.service.switchScene(scene, instant)
     return true
   }
 
   @Query(() => [String])
   async obsScenesList() {
-    return this.scenes.availableScenes
+    return this.service.availableScenes
+  }
+
+  @Subscription(() => [String], { resolve: identity })
+  obsScenesListUpdated() {
+    setTimeout(1000).then(() =>
+      this.pubsub.publish(Topics.LIST_UPDATED, this.service.availableScenes),
+    )
+    return this.pubsub.asyncIterator(Topics.LIST_UPDATED)
+  }
+
+  @Subscription(() => String, { resolve: identity })
+  obsScenesCurrentChanged() {
+    setTimeout(1000).then(() =>
+      this.pubsub.publish(Topics.CHANGED, this.service.programScene),
+    )
+    return this.pubsub.asyncIterator(Topics.CHANGED)
   }
 }

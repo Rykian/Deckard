@@ -1,6 +1,6 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { Card, Text } from '@ui-kitten/components'
+import { Card, Layout, Text } from '@ui-kitten/components'
 import { ReactNode } from 'react'
 import { GestureResponderEvent, StyleSheet } from 'react-native'
 
@@ -10,25 +10,47 @@ export interface Props {
   icon?: IconProp
   text?: string
   children?: ReactNode
+  pushed?: boolean
 }
 
-const Switch = ({ icon, text, children, onPress, onLongPress }: Props) => (
-  <Card style={styles.card} onPress={onPress} onLongPress={onLongPress}>
-    {icon && <FontAwesomeIcon size={styles.icon.fontSize} icon={icon} />}
-    {text && (
-      <Text category="c2" style={styles.text}>
-        {text}
-      </Text>
-    )}
-    {children}
-  </Card>
-)
+const Switch = ({
+  icon,
+  text,
+  children,
+  onPress,
+  onLongPress,
+  pushed,
+}: Props) => {
+  return (
+    <Card
+      status={pushed ? 'info' : undefined}
+      style={styles.card}
+      onPress={onPress}
+      onLongPress={onLongPress}
+    >
+      <Layout style={styles.cardContent}>
+        {icon && <FontAwesomeIcon size={styles.icon.fontSize} icon={icon} />}
+        {text && (
+          <Text category="c2" style={styles.text}>
+            {text}
+          </Text>
+        )}
+        {children}
+      </Layout>
+    </Card>
+  )
+}
 
 const styles = StyleSheet.create({
   card: {
     width: 130,
     height: 130,
-    justifyContent: 'center',
+  },
+  cardContent: {
+    width: 130,
+    height: 130,
+    position: 'absolute',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   icon: {

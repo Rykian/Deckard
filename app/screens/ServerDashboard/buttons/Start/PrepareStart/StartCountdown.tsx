@@ -4,11 +4,11 @@ import { Button, Layout, Text } from '@ui-kitten/components'
 import { addMinutes } from 'date-fns'
 import { useState } from 'react'
 import { StepProps } from '.'
-import { styles } from '..'
 import {
   StartStreamingMutation,
   StartStreamingMutationVariables,
 } from '../../../../../gql/graphql'
+import { styles } from '../styles'
 
 const START_STREAMING = gql`
   mutation StartStreaming($target: String) {

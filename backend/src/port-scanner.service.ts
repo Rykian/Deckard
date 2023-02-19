@@ -27,14 +27,15 @@ export class PortScannerService {
     })
   }
 
-  onResult = (results: PortScannerResult[]) => (data: EvilScanResult) => {
-    if (data.status == 'open')
-      results.push(
-        Object.assign(new PortScannerResult(), {
-          ip: data.ip,
-          port: data.port,
-          hostname: data.reverse,
-        }),
-      )
-  }
+  private onResult =
+    (results: PortScannerResult[]) => (data: EvilScanResult) => {
+      if (data.status == 'open')
+        results.push(
+          Object.assign(new PortScannerResult(), {
+            ip: data.ip,
+            port: data.port,
+            hostname: data.reverse,
+          }),
+        )
+    }
 }

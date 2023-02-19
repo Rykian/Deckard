@@ -15,6 +15,7 @@ import {
   TwitchUserNameQuery,
 } from '../../gql/graphql'
 import StartButton from './buttons/Start'
+import Scenes from './buttons/Scenes'
 
 const CURRENT_INSTANCE = gql`
   subscription obsCurrentInstance {
@@ -71,6 +72,10 @@ const Home = (props: Props) => {
         </Layout>
         <Text category="h1">Home</Text>
         <StartButton />
+
+        <Layout level="3" style={{ flexDirection: 'row' }}>
+          <Scenes />
+        </Layout>
       </Layout>
     </>
   )

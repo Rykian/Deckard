@@ -4,8 +4,9 @@ import { useEffect } from 'react'
 import { Platform } from 'react-native'
 import WebView from 'react-native-webview'
 import { StepProps } from '.'
-import { styles } from '..'
+
 import { GetTwitchUsernameQuery } from '../../../../../gql/graphql'
+import { styles } from '../styles'
 
 const USERNAME = gql`
   query GetTwitchUsername {
