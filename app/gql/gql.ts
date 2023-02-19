@@ -36,6 +36,8 @@ const documents = {
     "\n  mutation StartStreaming($target: String) {\n    streamSequenceStart(targetedTime: $target)\n  }\n": types.StartStreamingDocument,
     "\n  mutation StopStream {\n    streamSequenceStop\n  }\n": types.StopStreamDocument,
     "\n  subscription StreamState {\n    streamStateChanged\n  }\n": types.StreamStateDocument,
+    "\n  mutation ToggleCameraVisibility {\n    streamWebcamToggle\n  }\n": types.ToggleCameraVisibilityDocument,
+    "\n  subscription CameraVisibilityChanged {\n    streamWebcamChanged\n  }\n": types.CameraVisibilityChangedDocument,
 };
 
 /**
@@ -144,6 +146,14 @@ export function graphql(source: "\n  mutation StopStream {\n    streamSequenceSt
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  subscription StreamState {\n    streamStateChanged\n  }\n"): (typeof documents)["\n  subscription StreamState {\n    streamStateChanged\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation ToggleCameraVisibility {\n    streamWebcamToggle\n  }\n"): (typeof documents)["\n  mutation ToggleCameraVisibility {\n    streamWebcamToggle\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription CameraVisibilityChanged {\n    streamWebcamChanged\n  }\n"): (typeof documents)["\n  subscription CameraVisibilityChanged {\n    streamWebcamChanged\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

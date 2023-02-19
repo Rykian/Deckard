@@ -12,6 +12,8 @@ import { StreamSequencesStopResolver } from './sequences/stop.resolver'
 import { StreamSequencesStopService } from './sequences/stop.service'
 import { StreamStateResolver } from './state.resolver'
 import { StreamStateService } from './state.service'
+import { StreamWebcamResolver } from './webcam.resolver'
+import { StreamWebcamService } from './webcam.service'
 
 @Module({
   imports: [OBSModule, PubSubModule, EnvironmentModule],
@@ -20,6 +22,8 @@ import { StreamStateService } from './state.service'
     StreamCountdownResolver,
     StreamStateService,
     StreamStateResolver,
+    StreamWebcamService,
+    StreamWebcamResolver,
     StreamSequencesStartService,
     StreamSequencesStartResolver,
     StreamSequencesPauseService,

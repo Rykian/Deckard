@@ -80,6 +80,7 @@ const Home = (props: Props) => {
           }}
         >
           <Button />
+          <Webcam />
         </Layout>
 
         <Layout level="3" style={{ flexDirection: 'row' }}>

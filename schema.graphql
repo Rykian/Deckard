@@ -75,6 +75,7 @@ type Mutation {
     """Counter name"""
     name: String!
   ): String!
+  streamWebcamToggle: Boolean!
   streamSequenceStart(targetedTime: String): Boolean!
   streamSequenceStartToggleOnCountdownExpiring(scene: String!): Boolean!
   streamSequenceStartImmediatly(scene: String!): Boolean!
@@ -111,6 +112,7 @@ type Subscription {
   """Notify when a countdown has been updated"""
   streamCountdownUpdated(name: String!): String!
   streamStateChanged: StreamStateEnum
+  streamWebcamChanged: Boolean!
 }
 
 enum StreamStateEnum {

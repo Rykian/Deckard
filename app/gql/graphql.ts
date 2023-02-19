@@ -42,6 +42,7 @@ export type Mutation = {
   streamSequenceStartToggleOnCountdownExpiring: Scalars['Boolean'];
   streamSequenceStop: Scalars['Boolean'];
   streamSequenceStopCancel: Scalars['Boolean'];
+  streamWebcamToggle: Scalars['Boolean'];
   updateSpotifyAuth: Scalars['Boolean'];
   updateTwitchTokenFromCode: Scalars['Boolean'];
 };
@@ -167,6 +168,7 @@ export type Subscription = {
   /** Notify when a countdown has been updated */
   streamCountdownUpdated: Scalars['String'];
   streamStateChanged?: Maybe<StreamStateEnum>;
+  streamWebcamChanged: Scalars['Boolean'];
 };
 
 
@@ -342,6 +344,16 @@ export type StreamStateSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 export type StreamStateSubscription = { __typename?: 'Subscription', streamStateChanged?: StreamStateEnum | null };
 
+export type ToggleCameraVisibilityMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ToggleCameraVisibilityMutation = { __typename?: 'Mutation', streamWebcamToggle: boolean };
+
+export type CameraVisibilityChangedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CameraVisibilityChangedSubscription = { __typename?: 'Subscription', streamWebcamChanged: boolean };
+
 
 export const ObsCurrentInstanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"obsCurrentInstance"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsCurrentInstanceUpdated"}}]}}]} as unknown as DocumentNode<ObsCurrentInstanceSubscription, ObsCurrentInstanceSubscriptionVariables>;
 export const SpotifyUserNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spotifyUserName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSpotifyUserName"}}]}}]} as unknown as DocumentNode<SpotifyUserNameQuery, SpotifyUserNameQueryVariables>;
@@ -366,3 +378,5 @@ export const ListStartScenesDocument = {"kind":"Document","definitions":[{"kind"
 export const StartStreamingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"StartStreaming"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"target"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamSequenceStart"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"targetedTime"},"value":{"kind":"Variable","name":{"kind":"Name","value":"target"}}}]}]}}]} as unknown as DocumentNode<StartStreamingMutation, StartStreamingMutationVariables>;
 export const StopStreamDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"StopStream"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamSequenceStop"}}]}}]} as unknown as DocumentNode<StopStreamMutation, StopStreamMutationVariables>;
 export const StreamStateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"StreamState"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamStateChanged"}}]}}]} as unknown as DocumentNode<StreamStateSubscription, StreamStateSubscriptionVariables>;
+export const ToggleCameraVisibilityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ToggleCameraVisibility"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamWebcamToggle"}}]}}]} as unknown as DocumentNode<ToggleCameraVisibilityMutation, ToggleCameraVisibilityMutationVariables>;
+export const CameraVisibilityChangedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"CameraVisibilityChanged"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamWebcamChanged"}}]}}]} as unknown as DocumentNode<CameraVisibilityChangedSubscription, CameraVisibilityChangedSubscriptionVariables>;
