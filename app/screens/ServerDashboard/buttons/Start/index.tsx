@@ -5,11 +5,9 @@ import {
   StreamStateEnum,
   StreamStateSubscription,
 } from '../../../../gql/graphql'
-import PrepareStart from './PrepareStart'
 import { Props as SwitchProps } from '../../../../components/Switch'
-import Pause from './Pause'
-import Stop from './Stop'
-import { Stack, StartButtonRouteProps } from './routes'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
+import { ServerDashboardStackParamList } from '../..'
 
 export const STREAM_STATE_SUBSCRIPTION = gql`
   subscription StreamState {
@@ -19,7 +17,7 @@ export const STREAM_STATE_SUBSCRIPTION = gql`
 
 const getSwitchPropsFromState = (
   state: StreamStateEnum | undefined | null,
-  props: StartButtonRouteProps,
+  navigation: NavigationProp<ServerDashboardStackParamList>,
 ): SwitchProps | undefined => {
   if (!state) return undefined
   switch (state) {
@@ -28,14 +26,14 @@ const getSwitchPropsFromState = (
       return {
         icon: faPlayCircle,
         text: 'Start stream',
-        onPress: () => props.navigation.navigate('Start'),
+        onPress: () => navigation.navigate('StartButton/Start'),
       }
     case StreamStateEnum.Streaming:
       return {
         icon: faPauseCircle,
         text: 'Pause stream',
-        onPress: () => props.navigation.navigate('Pause'),
-        onLongPress: () => props.navigation.navigate('Stop'),
+        onPress: () => navigation.navigate('StartButton/Pause'),
+        onLongPress: () => navigation.navigate('StartButton/Stop'),
       }
     case StreamStateEnum.Pausing:
       return {
@@ -51,34 +49,19 @@ const getSwitchPropsFromState = (
   }
 }
 
-const Button = (props: StartButtonRouteProps) => {
+const Button = () => {
+  const navigation =
+    useNavigation<NavigationProp<ServerDashboardStackParamList>>()
   const state = useSubscription<StreamStateSubscription>(
     STREAM_STATE_SUBSCRIPTION,
   )
 
   const switchProps = getSwitchPropsFromState(
     state.data?.streamStateChanged,
-    props,
+    navigation,
   )
 
   return <Switch {...switchProps}></Switch>
 }
 
-const StartButton = () => {
-  return (
-    <>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Button" component={Button} />
-        <Stack.Group
-          screenOptions={{ presentation: 'modal', headerShown: true }}
-        >
-          <Stack.Screen name="Start" component={PrepareStart} />
-          <Stack.Screen name="Pause" component={Pause} />
-          <Stack.Screen name="Stop" component={Stop} />
-        </Stack.Group>
-      </Stack.Navigator>
-    </>
-  )
-}
-
-export default StartButton
+export default Button

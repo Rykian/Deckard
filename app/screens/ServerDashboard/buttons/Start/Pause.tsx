@@ -1,8 +1,10 @@
 import { gql, useMutation } from '@apollo/client'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { Button, Layout, Text } from '@ui-kitten/components'
 import { addMinutes } from 'date-fns'
 import { useEffect, useMemo, useState } from 'react'
+import { ServerDashboardStackParamList } from '../..'
 import {
   PauseStreamMutation,
   PauseStreamMutationVariables,
@@ -12,7 +14,6 @@ import {
   UnpauseStreamMutationVariables,
 } from '../../../../gql/graphql'
 import useCountdownDisplay from '../../../../utils/useCountdownDisplay'
-import { StartButtonRouteProps } from './routes'
 import { styles } from './styles'
 
 const PAUSE = gql`
@@ -33,7 +34,9 @@ const SET_TIMER = gql`
   }
 `
 
-const Pause = (props: StartButtonRouteProps) => {
+const Pause = () => {
+  const navigation =
+    useNavigation<NavigationProp<ServerDashboardStackParamList>>()
   const [setPauseTimer] = useMutation<
     SetPauseTimerMutation,
     SetPauseTimerMutationVariables
@@ -92,11 +95,11 @@ const Pause = (props: StartButtonRouteProps) => {
         style={styles.nextButton}
         onPress={async () => {
           await unpause()
-          props.navigation.navigate('Button')
+          navigation.navigate('Home')
         }}
       >
         <Text>
-          Unpause{unpauseScene ? ' (switch to scene "{unpauseScene}")' : ''}
+          Unpause{unpauseScene ? ` (switch to scene "${unpauseScene}")` : ''}
         </Text>
       </Button>
     </>

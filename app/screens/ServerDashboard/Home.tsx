@@ -14,8 +14,9 @@ import {
   SpotifyUserNameQuery,
   TwitchUserNameQuery,
 } from '../../gql/graphql'
-import StartButton from './buttons/Start'
+import Button from './buttons/Start'
 import Scenes from './buttons/Scenes'
+import Webcam from './buttons/Webcam'
 
 const CURRENT_INSTANCE = gql`
   subscription obsCurrentInstance {
@@ -71,7 +72,15 @@ const Home = (props: Props) => {
           </ConnectionState>
         </Layout>
         <Text category="h1">Home</Text>
-        <StartButton />
+        <Layout
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+          }}
+        >
+          <Button />
+        </Layout>
 
         <Layout level="3" style={{ flexDirection: 'row' }}>
           <Scenes />

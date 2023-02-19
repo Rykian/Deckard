@@ -43,6 +43,7 @@ const Switch = ({
 
 const styles = StyleSheet.create({
   card: {
+    margin: 1,
     width: 130,
     height: 130,
   },

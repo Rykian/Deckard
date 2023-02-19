@@ -10,6 +10,9 @@ import OBSSelection from './OBSSelection'
 import useApolloClient from '../../utils/useApolloClient'
 import SpotifyLogin from './SpotifyLogin'
 import TwitchLogin from './TwitchLogin'
+import PrepareStart from './buttons/Start/PrepareStart'
+import Pause from './buttons/Start/Pause'
+import Stop from './buttons/Start/Stop'
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>
 
@@ -18,6 +21,9 @@ export type ServerDashboardStackParamList = {
   OBSSelection: undefined
   SpotifyLogin: undefined
   TwitchLogin: undefined
+  'StartButton/Start': undefined
+  'StartButton/Pause': undefined
+  'StartButton/Stop': undefined
 }
 
 const Stack = createNativeStackNavigator<ServerDashboardStackParamList>()
@@ -48,6 +54,9 @@ const ServerDashboardScreen = (props: Props) => {
           <Stack.Screen name="OBSSelection" component={OBSSelection} />
           <Stack.Screen name="SpotifyLogin" component={SpotifyLogin} />
           <Stack.Screen name="TwitchLogin" component={TwitchLogin} />
+          <Stack.Screen name="StartButton/Start" component={PrepareStart} />
+          <Stack.Screen name="StartButton/Pause" component={Pause} />
+          <Stack.Screen name="StartButton/Stop" component={Stop} />
         </Stack.Group>
       </Stack.Navigator>
     </ApolloProvider>

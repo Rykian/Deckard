@@ -11,7 +11,6 @@ import {
   ToggleStartStreamOnExpiringMutationVariables,
 } from '../../../../../gql/graphql'
 import { useStoreActions, useStoreState } from '../../../../../store'
-// import { Picker } from '@react-native-picker/picker'
 import DropDownPicker from 'react-native-dropdown-picker'
 import useCountdownDisplay from '../../../../../utils/useCountdownDisplay'
 import { styles } from '../styles'
@@ -124,7 +123,7 @@ const Checklist = (props: StepProps) => {
           if (!startScene) return
 
           await startImmediately({ variables: { scene: startScene } })
-          props.navigation.navigate('Button')
+          props.navigation.navigate('Home')
         }}
         disabled={!allChecked}
         style={styles.nextButton}

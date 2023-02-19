@@ -1,5 +1,7 @@
 import { gql, useMutation } from '@apollo/client'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { Button, Layout } from '@ui-kitten/components'
+import { ServerDashboardStackParamList } from '../..'
 
 const STOP = gql`
   mutation StopStream {
@@ -9,9 +11,19 @@ const STOP = gql`
 
 const Stop = () => {
   const [stop] = useMutation(STOP)
+  const navigation =
+    useNavigation<NavigationProp<ServerDashboardStackParamList>>()
+
   return (
     <Layout style={{ flex: 1 }}>
-      <Button onPress={() => stop()}>Stop</Button>
+      <Button
+        onPress={async () => {
+          await stop()
+          navigation.navigate('Home')
+        }}
+      >
+        Stop
+      </Button>
     </Layout>
   )
 }
