@@ -12,10 +12,12 @@ import $UbuntuMonoFont from './assets/fonts/Ubuntu_Mono'
 import MusicOverlay from './overlays/Music'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
-import ChatOverlay from './overlays/Chat'
-import Start from './scenes/start'
-import Stop from './scenes/stop'
-import Pause from './scenes/pause'
+import React from 'react'
+
+const ChatOverlay = React.lazy(() => import('./overlays/Chat'))
+const Start = React.lazy(() => import('./scenes/start'))
+const Stop = React.lazy(() => import('./scenes/stop'))
+const Pause = React.lazy(() => import('./scenes/pause'))
 
 const List = () => {
   return (

@@ -3447,6 +3447,11 @@
   resolved "https://registry.yarnpkg.com/@types/npmlog/-/npmlog-4.1.4.tgz#30eb872153c7ead3e8688c476054ddca004115f6"
   integrity sha512-WKG4gTr8przEZBiJ5r3s8ZIAoMXNbOgQ+j/d5O4X3x6kZJRLNvyUJuUK/KoG3+8BaOHPhp2m7WC6JKKeovDSzQ==
 
+"@types/obs-studio@^2.17.0":
+  version "2.17.0"
+  resolved "https://registry.yarnpkg.com/@types/obs-studio/-/obs-studio-2.17.0.tgz#6e84ccbf25ace4e5cf05dbac7608e307cae1d0f1"
+  integrity sha512-/xHSAZI/4mUbXkIpZp1t7INYmgfa6GoBRr47NZR4VbIIDPHdosTeg04HfKM8/qMPd4uVtxUZQ78Wd78cfRUk/A==
+
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
