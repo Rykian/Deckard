@@ -1,6 +1,6 @@
 import { gql, useSubscription } from '@apollo/client'
 import { css, Interpolation, Theme } from '@emotion/react'
-import styled from '@emotion/styled'
+import { useSpring, animated, to } from '@react-spring/web'
 import { parseISO } from 'date-fns'
 import { ReactNode } from 'react'
 import {
@@ -19,9 +19,10 @@ const $container = css`
     position: absolute;
   }
   font-size: 30px;
+  /* background-color: black; */
 `
 
-const WhiteBorder = styled.div`
+const $whiteBorder = css`
   height: 100%;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.8);
@@ -29,7 +30,6 @@ const WhiteBorder = styled.div`
 `
 
 const $iframe = css`
-  /* opacity: 0.95; */
   border: 0;
   height: 100vh;
   width: 150vw;
@@ -79,6 +79,10 @@ interface Props {
   lateMessages?: ReactNode | ReactNode[]
   message: ReactNode
 }
+const wait = (ms: number) =>
+  new Promise<undefined>((resolve) => {
+    setTimeout(() => resolve(undefined), ms)
+  })
 
 const FullScene = (props: Props) => {
   const countdownSub = useSubscription<
@@ -91,11 +95,54 @@ const FullScene = (props: Props) => {
     : undefined
 
   const sceneCSS = scenes[props.sceneName]
+
+  const spring = useSpring({
+    from: {
+      whiteTop: 0,
+      whiteBottom: 0,
+      darkTop: 0,
+      darkBottom: 0,
+    },
+    to: async (next) => {
+      await wait(500)
+      const promises = []
+      promises.push(next({ whiteTop: 60 }))
+      await wait(50)
+      promises.push(next({ darkTop: 110 }))
+      await wait(50)
+      promises.push(next({ darkBottom: 100 }))
+      await wait(50)
+      await next({ whiteBottom: 50 })
+
+      await Promise.all(promises)
+    },
+    // config: config.molasses,
+  })
+
   return (
     <div css={$container}>
-      <WhiteBorder>
-        <iframe css={$iframe} src={`/scenes/${props.sceneName}/index.html`} />
-      </WhiteBorder>
+      <animated.div
+        css={$whiteBorder}
+        style={{
+          clipPath: to(
+            [spring.whiteTop, spring.whiteBottom],
+            (whiteTop, whiteBottom) =>
+              `polygon(0 0, calc(${whiteTop}vw + 0.1em) 0, calc(${whiteBottom}vw + 1em) 100%, 0 100%)`,
+          ),
+        }}
+      >
+        <animated.iframe
+          css={$iframe}
+          style={{
+            clipPath: to(
+              [spring.darkTop, spring.darkBottom],
+              (darkTop, darkBottom) =>
+                `polygon(0 0, ${darkTop}vw 0, ${darkBottom}vw 100%, 0 100%)`,
+            ),
+          }}
+          src={`/scenes/${props.sceneName}/index.html`}
+        />
+      </animated.div>
       <div css={sceneCSS.countdown}>
         {countdown && (
           <Countdown
