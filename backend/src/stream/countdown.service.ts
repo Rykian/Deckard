@@ -24,6 +24,7 @@ export class StreamCountdownService extends (EventEmitter as new () => TypedEven
 
   constructor(private pubsub: PubSub) {
     super()
+    setInterval(this.check, 20_000)
   }
 
   set(name: string, target: Date) {
