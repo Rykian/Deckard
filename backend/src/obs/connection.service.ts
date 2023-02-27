@@ -27,12 +27,24 @@ export class OBSConnectionService {
     private redis: RedisService,
     private pubsub: PubSub,
     private portScanner: PortScannerService,
-  ) {}
+  ) {
+    this.restoreConnection()
+  }
 
   get url(): string | undefined {
     if (!this.#protocol || !this.#host || !this.#port) return undefined
 
     return `${this.#protocol}${this.#host}:${this.#port}`
+  }
+
+  private set url(url: string | undefined) {
+    if (!url) return
+
+    const parsed = new URL(url)
+    console.log({ protocol: this.#protocol })
+    this.#protocol = parsed.protocol as 'wss://' | 'ws://'
+    this.#host = parsed.host
+    this.#port = parsed.port
   }
 
   onError = (error: OBSWebSocketError) => {
@@ -59,6 +71,13 @@ export class OBSConnectionService {
     this.api.on('ConnectionError', this.onError)
 
     return await this.connection()
+  }
+
+  async restoreConnection() {
+    this.url = (await this.redis.client.get('last_connection_url')) || undefined
+    if (!this.url) return
+
+    this.connect()
   }
 
   async connection() {
