@@ -23,6 +23,6 @@ import { PortScannerModule } from 'src/port-scanner.module'
     OBSAPI,
   ],
   imports: [RedisModule, PubSubModule, PortScannerModule],
-  exports: [OBSStreamService, OBSScenesService],
+  exports: [OBSStreamService, OBSScenesService, OBSAPI],
 })
 export class OBSModule {}

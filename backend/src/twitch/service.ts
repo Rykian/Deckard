@@ -10,13 +10,13 @@ import {
   exchangeCode,
   RefreshingAuthProvider,
 } from '@twurple/auth'
-import { EnvironmentService } from 'src/env.service'
-import { RedisService } from 'src/redis.service'
+import { EnvironmentService } from '../env.service'
+import { RedisService } from '../redis.service'
 import { TwitchCategory, TwitchChannelInfo } from './object'
 import EventEmitter from 'events'
 import TypedEmitter from 'typed-emitter'
 import { TwitchEvents } from './event.service'
-import { OBSStreamService } from 'src/obs/stream.service'
+import { OBSStreamService } from '../obs/stream.service'
 
 enum RedisKeys {
   TOKEN = 'twitch:token',

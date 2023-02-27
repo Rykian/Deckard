@@ -1,6 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import qs from 'qs'
-import { EnvironmentService } from 'src/env.service'
+import { EnvironmentService } from '../env.service'
 import { TwitchChannelInfo } from './object'
 import { TwitchService } from './service'
 
@@ -70,7 +70,6 @@ export class TwitchResolver {
       category: (await channelInfos.getGame()).name,
       title: channelInfos.title,
     }
-    console.log({ data })
     return Object.assign(new TwitchChannelInfo(), data)
   }
 

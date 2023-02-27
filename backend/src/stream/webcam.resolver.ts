@@ -16,8 +16,21 @@ export class StreamWebcamResolver {
   @Subscription(() => Boolean, { resolve: identity })
   streamWebcamChanged() {
     setTimeout(1000).then(() =>
-      this.pubsub.publish(Topics.VISIBILITY, this.service.enabled),
+      this.pubsub.publish(Topics.VISIBILITY, this.service.visible),
     )
     return this.pubsub.asyncIterator(Topics.VISIBILITY)
+  }
+
+  @Mutation(() => Boolean)
+  streamWebcamToggleBlur() {
+    return this.service.toggleBlur()
+  }
+
+  @Subscription(() => Boolean, { resolve: identity })
+  streamWebcamBlurChanged() {
+    setTimeout(1000).then(() => {
+      this.pubsub.publish(Topics.BLUR, this.service.blured)
+    })
+    return this.pubsub.asyncIterator(Topics.BLUR)
   }
 }
