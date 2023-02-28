@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { RedisService } from 'src/redis.service'
 import { OBSAPI } from './_.service'
-import { OBSWebSocketError } from 'obs-websocket-js'
 import { PubSub } from 'graphql-subscriptions'
 import { PortScannerService } from 'src/port-scanner.service'
 
@@ -21,6 +20,7 @@ export class OBSConnectionService {
   get connected() {
     return this.#connected
   }
+  #interval?: NodeJS.Timer
 
   constructor(
     private api: OBSAPI,
@@ -28,6 +28,30 @@ export class OBSConnectionService {
     private pubsub: PubSub,
     private portScanner: PortScannerService,
   ) {
+    api.on('Identified', () => {
+      this.logger.debug('Connected to OBS')
+
+      clearInterval(this.#interval)
+      this.#interval = undefined
+
+      // Store credentials
+      if (this.url) this.redis.client.set('last_connection_url', this.url)
+      if (this.#password)
+        this.redis.client.set('last_connection_password', this.#password)
+
+      this.pubsub.publish(Topics.INSTANCE_UPDATED, this.url)
+      this.#connected = true
+    })
+
+    api.on('ConnectionClosed', () => {
+      this.logger.debug('Disconnected from OBS')
+      this.pubsub.publish(Topics.INSTANCE_UPDATED, undefined)
+      this.#connected = false
+      if (!this.#interval)
+        this.#interval = setInterval(() => this.restoreConnection(), 10_000)
+    })
+    api.on('ConnectionError', this.logger.error)
+
     this.restoreConnection()
   }
 
@@ -41,43 +65,26 @@ export class OBSConnectionService {
     if (!url) return
 
     const parsed = new URL(url)
-    console.log({ protocol: this.#protocol })
-    this.#protocol = parsed.protocol as 'wss://' | 'ws://'
-    this.#host = parsed.host
+    this.#protocol = (parsed.protocol + '//') as 'wss://' | 'ws://'
+    this.#host = parsed.hostname
     this.#port = parsed.port
   }
 
-  onError = (error: OBSWebSocketError) => {
-    this.logger.error(error)
-    this.pubsub.publish(Topics.INSTANCE_UPDATED, undefined)
-  }
-
-  async connect(host = 'localhost', port = '4455', password?: string) {
+  connect(host = 'localhost', port = '4455', password?: string) {
     this.#host = host
     this.#port = port
     this.#password = password
     this.#protocol = 'ws://'
-
-    this.api.on('Identified', () => {
-      this.logger.debug('Identified')
-      if (this.url) this.redis.client.set('last_connection_url', this.url)
-      if (this.#password)
-        this.redis.client.set('last_connection_password', this.#password)
-      this.pubsub.publish(Topics.INSTANCE_UPDATED, this.url)
-      this.#connected = true
-    })
-
-    this.api.on('ConnectionClosed', this.onError)
-    this.api.on('ConnectionError', this.onError)
-
-    return await this.connection()
+    return this.connection()
   }
 
-  async restoreConnection() {
+  private async restoreConnection() {
     this.url = (await this.redis.client.get('last_connection_url')) || undefined
     if (!this.url) return
 
-    this.connect()
+    await this.connection().catch(() =>
+      this.logger.error('Connection failed, retrying in 10s'),
+    )
   }
 
   async connection() {
@@ -85,15 +92,12 @@ export class OBSConnectionService {
       await this.api.disconnect()
     }
     return new Promise<OBSAPI>((resolve, reject) => {
-      const rejectHandler = (err: OBSWebSocketError) => reject(err)
-      this.api.on('ConnectionError', rejectHandler)
-      this.api.on('ConnectionClosed', rejectHandler)
+      this.api.once('ConnectionError', reject)
       this.api.once('Identified', () => {
-        this.api.removeListener('ConnectionClosed', rejectHandler)
-        this.api.removeListener('ConnectionError', rejectHandler)
+        this.api.removeListener('ConnectionError', reject)
         resolve(this.api)
       })
-      this.api.connect(this.url, this.#password).catch(rejectHandler)
+      this.api.connect(this.url, this.#password).catch(reject)
     })
   }
 
