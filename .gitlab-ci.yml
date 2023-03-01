@@ -1,0 +1,6 @@
+include:
+  - backend/.gitlab-ci.yml
+
+stages:
+  - test
+  - build
