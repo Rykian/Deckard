@@ -51,7 +51,6 @@ export class OBSStreamService extends (EventEmitter as new () => TypedEventEmitt
 
   async checkCurrentState() {
     const data = await this.api.call('GetStreamStatus')
-    this.logger.debug(`Current stream state: ${JSON.stringify(data)}`)
     this.isStreaming = data.outputActive
   }
 

@@ -33,25 +33,37 @@ describe(StreamWebcamService.name, () => {
     sceneItemId: 1,
     sceneItemEnabled: true,
   }
-  const webcamBlurredSceneItem = {
-    sourceName: 'webcam-blurred',
-    sceneItemId: 2,
-    sceneItemEnabled: false,
-  }
-  const sceneItems = [webcamSceneItem, webcamBlurredSceneItem]
+  const sceneItems = [webcamSceneItem]
+  const filters = [
+    'blur_1',
+    'blur_2',
+    'blur_3',
+    'blur_4',
+    'blur_5',
+    'blur_6',
+  ].map((filterName) => ({
+    filterName,
+    sourceName: 'webcam',
+    filterEnabled: true,
+  }))
 
   describe('assignIds', () => {
     it('assigns webcam item id', async () => {
-      apiMock.call.mockImplementation(async (_type, _data) => ({ sceneItems }))
+      apiMock.call.mockImplementation(async (type) => {
+        switch (type) {
+          case 'GetSceneItemList':
+            return { sceneItems }
+          case 'GetSourceFilterList':
+            return { filters }
+        }
+      })
 
       await service.assignIds()
-      expect(service.webcamId).toEqual(1)
+      expect(service.itemId).toEqual(1)
     })
 
     it('throws an error if webcam is not present', async () => {
-      apiMock.call.mockImplementation(async (_type, _data) => ({
-        sceneItems: [],
-      }))
+      apiMock.call.mockImplementation(async () => ({ sceneItems: [] }))
 
       await expect(service.assignIds()).rejects.toBeInstanceOf(
         StreamWebcamError,
@@ -60,31 +72,18 @@ describe(StreamWebcamService.name, () => {
         item: 'webcam',
       })
     })
-
-    it('throws an error if blurred webcam is not present', async () => {
-      apiMock.call.mockImplementation(async (_type, _data) => ({
-        sceneItems: [sceneItems[0]],
-      }))
-
-      await expect(service.assignIds()).rejects.toBeInstanceOf(
-        StreamWebcamError,
-      )
-      await expect(service.assignIds()).rejects.toMatchObject({
-        item: 'webcam-blurred',
-      })
-    })
-
-    it('assigns blurredWebcam item id', async () => {
-      apiMock.call.mockImplementation(async (_type, _data) => ({ sceneItems }))
-
-      await service.assignIds()
-      expect(service.blurredWebcamId).toEqual(2)
-    })
   })
 
   describe('toggle', () => {
     it('sends a command to hide the webcam when webcam is visible', async () => {
-      apiMock.call.mockImplementation(async () => ({ sceneItems }))
+      apiMock.call.mockImplementation(async (type) => {
+        switch (type) {
+          case 'GetSceneItemList':
+            return { sceneItems }
+          case 'GetSourceFilterList':
+            return { filters }
+        }
+      })
 
       await service.assignIds()
       expect(service.visible).toBeTruthy()
@@ -94,20 +93,19 @@ describe(StreamWebcamService.name, () => {
         sceneItemId: 1,
         sceneName: '_maincam',
       })
-      expect(apiMock.call).toBeCalledWith('SetSceneItemEnabled', {
-        sceneItemEnabled: false,
-        sceneItemId: 2,
-        sceneName: '_maincam',
-      })
     })
 
     it('sends a command to show the webcam when webcam is not visible', async () => {
-      apiMock.call.mockImplementation(async () => ({
-        sceneItems: [
-          { ...webcamSceneItem, sceneItemEnabled: false },
-          webcamBlurredSceneItem,
-        ],
-      }))
+      apiMock.call.mockImplementation(async (type) => {
+        switch (type) {
+          case 'GetSceneItemList':
+            return {
+              sceneItems: [{ ...webcamSceneItem, sceneItemEnabled: false }],
+            }
+          case 'GetSourceFilterList':
+            return { filters }
+        }
+      })
 
       await service.assignIds()
       expect(service.visible).toBeFalsy()
@@ -126,32 +124,46 @@ describe(StreamWebcamService.name, () => {
   })
 
   describe('toggleBlur', () => {
-    it('sends a command to show the blurred webcam', async () => {
-      apiMock.call.mockImplementation(async () => ({ sceneItems }))
+    it('sends a command to blur the webcam', async () => {
+      apiMock.call.mockImplementation(async (type) => {
+        switch (type) {
+          case 'GetSceneItemList':
+            return { sceneItems }
+          case 'GetSourceFilterList':
+            return {
+              filters: filters.map((filter) => ({
+                ...filter,
+                filterEnabled: false,
+              })),
+            }
+        }
+      })
       await service.assignIds()
       expect(service.blured).toBeFalsy()
       await service.toggleBlur()
-      expect(apiMock.call).toBeCalledWith('SetSceneItemEnabled', {
-        sceneItemEnabled: true,
-        sceneItemId: 2,
-        sceneName: '_maincam',
+      expect(apiMock.call).toBeCalledWith('SetSourceFilterEnabled', {
+        sourceName: 'webcam',
+        filterName: 'blur_6',
+        filterEnabled: true,
       })
     })
 
-    it('sends a command to hide the blurred webcam', async () => {
-      apiMock.call.mockImplementation(async () => ({
-        sceneItems: [
-          webcamSceneItem,
-          { ...webcamBlurredSceneItem, sceneItemEnabled: true },
-        ],
-      }))
+    it('sends a command to unblur the webcam', async () => {
+      apiMock.call.mockImplementation(async (type) => {
+        switch (type) {
+          case 'GetSceneItemList':
+            return { sceneItems }
+          case 'GetSourceFilterList':
+            return { filters }
+        }
+      })
       await service.assignIds()
       expect(service.blured).toBeTruthy()
       await service.toggleBlur()
-      expect(apiMock.call).toBeCalledWith('SetSceneItemEnabled', {
-        sceneItemEnabled: false,
-        sceneItemId: 2,
-        sceneName: '_maincam',
+      expect(apiMock.call).toBeCalledWith('SetSourceFilterEnabled', {
+        sourceName: 'webcam',
+        filterName: 'blur_1',
+        filterEnabled: false,
       })
     })
   })

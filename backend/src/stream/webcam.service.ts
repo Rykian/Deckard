@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PubSub } from 'graphql-subscriptions'
+import { setTimeout } from 'timers/promises'
 import { EnvironmentService } from '../env.service'
 import { OBSAPI } from '../obs/_.service'
 
@@ -10,14 +11,12 @@ export enum Topics {
 
 @Injectable()
 export class StreamWebcamService {
-  webcamId?: number
-  blurredWebcamId?: number
+  itemId?: number
   #visible = false
   #blured = false
 
   readonly scene = '_maincam'
-  readonly blurredItemName = 'webcam-blurred'
-  readonly itemName = 'webcam'
+  readonly source = 'webcam'
   readonly blurredScenes = [
     this.env.SCENE_START,
     this.env.SCENE_PAUSE,
@@ -47,16 +46,16 @@ export class StreamWebcamService {
   ) {
     this.api.on('Identified', this.assignIds)
     this.api.on('SceneItemEnableStateChanged', (e) => {
-      if (e.sceneName == this.scene) return
+      if (e.sceneName != this.scene) return
+      if (e.sceneItemId != this.itemId) return
 
-      switch (e.sceneItemId) {
-        case this.webcamId:
-          this.visible = e.sceneItemEnabled
-          break
-        case this.blurredWebcamId:
-          this.blured = e.sceneItemEnabled
-          break
-      }
+      this.visible = e.sceneItemEnabled
+    })
+    this.api.on('SourceFilterEnableStateChanged', (e) => {
+      if (e.sourceName != this.source) return
+      if (!e.filterName.startsWith('blur_')) return
+
+      this.blured = e.filterEnabled
     })
     this.api.on('CurrentProgramSceneChanged', (e) =>
       this.setBlur(this.blurredScenes.includes(e.sceneName)),
@@ -68,38 +67,46 @@ export class StreamWebcamService {
       sceneName: this.scene,
     })
     const item = items.sceneItems.find((item) =>
-      (item['sourceName'] as string).includes(this.itemName),
+      (item['sourceName'] as string).includes(this.source),
     )
 
-    if (!item) throw new StreamWebcamError(this.itemName, this.scene)
+    if (!item) throw new StreamWebcamError(this.source, this.scene)
 
-    const blurredItem = items.sceneItems.find((item) =>
-      (item['sourceName'] as string).includes(this.blurredItemName),
-    )
-
-    if (!blurredItem)
-      throw new StreamWebcamError(this.blurredItemName, this.scene)
-
-    this.webcamId = item['sceneItemId'] as number | undefined
-    this.blurredWebcamId = blurredItem['sceneItemId'] as number | undefined
+    this.itemId = item['sceneItemId'] as number | undefined
 
     this.visible = !!item['sceneItemEnabled']
-    this.blured = !!blurredItem['sceneItemEnabled']
+    this.blured = (
+      await this.api.call('GetSourceFilterList', { sourceName: this.source })
+    ).filters.some((v) => v['filterEnabled'])
   }
 
   async setVisible(visible: boolean) {
-    if (!this.webcamId) return
-    if (!this.blurredWebcamId) return
+    if (!this.itemId) return
 
-    if (!visible) await this.setVisiblility(this.blurredWebcamId, visible)
-    return this.setVisiblility(this.webcamId, visible)
+    return this.setVisiblility(this.itemId, visible)
   }
   toggle = () => this.setVisible(!this.visible)
 
   async setBlur(blur: boolean) {
-    if (!this.blurredWebcamId) return
+    const { filters } = await this.api.call('GetSourceFilterList', {
+      sourceName: this.source,
+    })
 
-    return this.setVisiblility(this.blurredWebcamId, blur)
+    const blurs = filters.filter((filter) =>
+      (filter['filterName'] as string).includes('blur_'),
+    )
+
+    if (!blur) blurs.reverse()
+
+    for (const filter of blurs) {
+      await this.api.call('SetSourceFilterEnabled', {
+        sourceName: this.source,
+        filterName: filter['filterName'] as string,
+        filterEnabled: blur,
+      })
+      await setTimeout(32)
+    }
+    return blur
   }
   toggleBlur = () => this.setBlur(!this.blured)
 
