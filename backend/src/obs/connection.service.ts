@@ -35,9 +35,9 @@ export class OBSConnectionService {
       this.#interval = undefined
 
       // Store credentials
-      if (this.url) this.redis.client.set('last_connection_url', this.url)
+      if (this.url) this.redis.set('last_connection_url', this.url)
       if (this.#password)
-        this.redis.client.set('last_connection_password', this.#password)
+        this.redis.set('last_connection_password', this.#password)
 
       this.pubsub.publish(Topics.INSTANCE_UPDATED, this.url)
       this.#connected = true
@@ -79,7 +79,7 @@ export class OBSConnectionService {
   }
 
   private async restoreConnection() {
-    this.url = (await this.redis.client.get('last_connection_url')) || undefined
+    this.url = (await this.redis.get('last_connection_url')) || undefined
     if (!this.url) return
 
     await this.connection().catch(() =>

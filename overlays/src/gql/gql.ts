@@ -13,9 +13,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel-plugin for production.
  */
 const documents = {
-    "\n  query TwitchInfos {\n    twitchGetClientId\n    getTwitchUserName\n  }\n": types.TwitchInfosDocument,
-    "\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n    }\n  }\n": types.CurrentTrackDocument,
     "\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n": types.CountdownUpdateDocument,
+    "\n  query TwitchInfos {\n    twitchGetClientId\n    getTwitchUserName\n  }\n": types.TwitchInfosDocument,
+    "\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n      duration\n    }\n  }\n": types.CurrentTrackDocument,
+    "\n  subscription currentTrackProgress {\n    currentTrackProgress\n  }\n": types.CurrentTrackProgressDocument,
 };
 
 /**
@@ -35,15 +36,19 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"): (typeof documents)["\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "\n  query TwitchInfos {\n    twitchGetClientId\n    getTwitchUserName\n  }\n"): (typeof documents)["\n  query TwitchInfos {\n    twitchGetClientId\n    getTwitchUserName\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n    }\n  }\n"): (typeof documents)["\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n    }\n  }\n"];
+export function graphql(source: "\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n      duration\n    }\n  }\n"): (typeof documents)["\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n      duration\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"): (typeof documents)["\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"];
+export function graphql(source: "\n  subscription currentTrackProgress {\n    currentTrackProgress\n  }\n"): (typeof documents)["\n  subscription currentTrackProgress {\n    currentTrackProgress\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

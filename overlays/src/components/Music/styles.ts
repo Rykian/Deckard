@@ -21,6 +21,8 @@ export const $image = css`
 
 export const $infos = (theme: Colors) => css`
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
   z-index: 0;
   display: grid;
   grid-auto-rows: min-content;
@@ -51,4 +53,14 @@ export const $name = (theme: Colors) => css`
 export const $artists = (theme: Colors) => css`
   color: ${theme?.secondaryColor};
   ${ellipsis};
+`
+
+export const $progress = (theme: Colors) => css`
+  --max-width: 17.8em;
+  background-color: ${theme?.tercaryColor};
+  height: 3px;
+  transition: width 1s linear;
+  position: absolute;
+  left: 10em;
+  bottom: 0;
 `

@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common'
 import { add, getUnixTime } from 'date-fns'
 import { PubSub } from 'graphql-subscriptions'
 import SpotifyWebApi from 'spotify-web-api-node'
-import { EnvironmentService } from 'src/env.service'
-import { RedisService } from 'src/redis.service'
+import { EnvironmentService } from '../env.service'
+import { RedisService } from '../redis.service'
 
 import { Track } from './track.model'
 
@@ -13,7 +13,8 @@ enum Redis {
 }
 
 export enum Topics {
-  SPOTIFY_CURRENT_TRACK = 'spotify:current_track',
+  CURRENT_TRACK = 'spotify:current_track',
+  PROGRESS = 'spotify:current_track:progress',
 }
 
 interface AuthorizationCodeGrantResponse {
@@ -22,6 +23,10 @@ interface AuthorizationCodeGrantResponse {
   refresh_token?: string | undefined
   scope: string
   token_type: string
+}
+
+export type SpotifyTrack = SpotifyApi.CurrentlyPlayingResponse & {
+  item: SpotifyApi.TrackObjectFull
 }
 
 @Injectable()
@@ -36,6 +41,22 @@ export class SpotifyTrackService {
   #currentTrack: Track | null = null
   get currentTrack() {
     return this.#currentTrack
+  }
+
+  set currentTrack(track: Track | null) {
+    if (track == this.#currentTrack) return
+
+    if (!track) {
+      this.logger.debug('Paused')
+      this.pubsub.publish(Topics.CURRENT_TRACK, track)
+      this.pubsub.publish(Topics.PROGRESS, null)
+    } else if (track?.id != this.#currentTrack?.id) {
+      this.logger.debug(
+        `Track changed: ${track.name} (${track.album}) - ${track.artists}`,
+      )
+      this.pubsub.publish(Topics.CURRENT_TRACK, track)
+    }
+    this.#currentTrack = track
   }
 
   constructor(
@@ -74,14 +95,11 @@ export class SpotifyTrackService {
     this.logger.log('Polling track changes')
 
     this.#interval = setInterval(async () => {
-      const current = await this.getCurrentTrack()
-      if (current?.id != this.#currentTrack?.id) {
-        this.logger.debug(
-          `Track changed: ${current?.name} (${current?.album}) - ${current?.artists}`,
-        )
-        this.pubsub.publish(Topics.SPOTIFY_CURRENT_TRACK, current)
-        this.#currentTrack = current
-      }
+      const data = await this.getCurrentTrack()
+      if (!data) return (this.currentTrack = null)
+
+      this.currentTrack = new Track(data.item)
+      this.pubsub.publish(Topics.PROGRESS, data.progress_ms)
     }, 3000)
   }
 
@@ -90,10 +108,11 @@ export class SpotifyTrackService {
     if (!this.#interval) return
 
     clearTimeout(this.#interval)
+    this.#interval = undefined
   }
 
   async getTokens() {
-    if (!(await this.redis.client.exists(Redis.SPOTIFY_TOKENS))) return
+    if (!(await this.redis.exists(Redis.SPOTIFY_TOKENS))) return
     return (await this.redis.getJSON(
       Redis.SPOTIFY_TOKENS,
     )) as unknown as AuthorizationCodeGrantResponse
@@ -104,7 +123,7 @@ export class SpotifyTrackService {
     const expirationDate = add(new Date(), {
       seconds: tokens.expires_in,
     })
-    await this.redis.client.set(Redis.TOKEN_VALID, 'true', {
+    await this.redis.set(Redis.TOKEN_VALID, 'true', {
       EXAT: getUnixTime(expirationDate),
     })
     this.#api.setAccessToken(tokens.access_token)
@@ -112,7 +131,7 @@ export class SpotifyTrackService {
   }
 
   async isTokenValid() {
-    return (await this.redis.client.exists(Redis.TOKEN_VALID)) == 1
+    return (await this.redis.exists(Redis.TOKEN_VALID)) == 1
   }
 
   async renewTokenIfNeeded() {
@@ -144,28 +163,8 @@ export class SpotifyTrackService {
     }
     if (!response.is_playing) return null
     if (response.item?.type != 'track') return null
-    const data = response.item
 
-    if (!data) return null
-    if (data.type != 'track') return null
-
-    const track = new Track()
-    track.album = data.album.name
-    track.artists = data.artists.map((artist) => artist.name)
-    track.id = data.id
-    track.release = data.album.release_date
-    track.cover = (
-      data.album.images.find((image) => (image.width || 1000) < 600) ||
-      data.album.images[0]
-    ).url
-    track.name = data.name
-    track.url = data.external_urls['spotify']
-
-    return track
-  }
-
-  currentTrackIterator() {
-    return this.pubsub.asyncIterator(Topics.SPOTIFY_CURRENT_TRACK)
+    return response as SpotifyTrack
   }
 
   getAuthorizationURL(redirectURI: string) {

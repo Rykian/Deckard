@@ -2,7 +2,15 @@
 import { ThemeProvider } from '@emotion/react'
 import { useEffect, useRef, useState } from 'react'
 import { getColors } from './colors'
-import { $album, $artists, $container, $image, $infos, $name } from './styles'
+import {
+  $album,
+  $artists,
+  $container,
+  $image,
+  $infos,
+  $name,
+  $progress,
+} from './styles'
 import { animated, useSpring, config } from '@react-spring/web'
 
 interface Track {
@@ -14,10 +22,13 @@ interface Track {
   album: string
   /** Artists names */
   artists: string[]
+  /** Track duration in ms */
+  duration: number
 }
 
 interface Props {
   track?: Track
+  progress?: number
 }
 
 export type Colors = Partial<{
@@ -28,7 +39,27 @@ export type Colors = Partial<{
 
 const arrayFormater = new Intl.ListFormat('en', { style: 'long' })
 
-const Music = ({ track: nextData }: Props) => {
+const Progress = (props: { progress: number; duration: number }) => {
+  const [progress, setProgress] = useState(props.progress)
+
+  useEffect(() => setProgress(props.progress), [props.progress])
+
+  useEffect(() => {
+    const interval = setTimeout(() => setProgress(progress + 1000), 1000)
+    return () => clearInterval(interval)
+  }, [progress])
+
+  return (
+    <div
+      css={$progress}
+      style={{
+        width: `calc(${progress / props.duration} * var(--max-width))`,
+      }}
+    ></div>
+  )
+}
+
+const Music = ({ track: nextData, progress }: Props) => {
   const [colors, setColors] = useState<Colors>()
   const [track, setTrack] = useState<Track>()
   const imgRef = useRef<HTMLImageElement>(null)
@@ -84,6 +115,9 @@ const Music = ({ track: nextData }: Props) => {
           <div css={$name}>{track.name}</div>
           <div css={$album}>{track.album}</div>
           <div css={$artists}>{arrayFormater.format(track.artists)}</div>
+          {progress && (
+            <Progress duration={track.duration} progress={progress} />
+          )}
         </animated.div>
       </div>
     </ThemeProvider>

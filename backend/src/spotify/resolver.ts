@@ -1,8 +1,16 @@
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
+import {
+  Args,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql'
 import { SpotifyTrackService, Topics } from './track.service'
 import { Track } from './track.model'
 import { setTimeout } from 'timers/promises'
 import { PubSub } from 'graphql-subscriptions'
+import { identity } from 'rxjs'
 
 @Resolver()
 export class SpotifyResolver {
@@ -29,14 +37,15 @@ export class SpotifyResolver {
   @Subscription(() => Track, { nullable: true, resolve: (payload) => payload })
   currentTrackUpdated() {
     setTimeout(1000).then(() =>
-      this.pubsub.publish(
-        Topics.SPOTIFY_CURRENT_TRACK,
-        this.service.currentTrack,
-      ),
+      this.pubsub.publish(Topics.CURRENT_TRACK, this.service.currentTrack),
     )
-    return this.service.currentTrackIterator()
+    return this.pubsub.asyncIterator(Topics.CURRENT_TRACK)
   }
 
+  @Subscription(() => Int, { nullable: true, resolve: identity })
+  currentTrackProgress() {
+    return this.pubsub.asyncIterator(Topics.PROGRESS)
+  }
   @Query(() => String, { nullable: true })
   async getSpotifyUserName() {
     return (await this.service.getCurrentUser())?.display_name

@@ -38,6 +38,9 @@ type Track {
   release: String!
   cover: String!
   url: String!
+
+  """Duration in ms"""
+  duration: Float!
 }
 
 type Query {
@@ -103,6 +106,7 @@ type Subscription {
   obsScenesCurrentChanged: String!
   obsStreamStreamingUpdated: Boolean!
   currentTrackUpdated: Track
+  currentTrackProgress: Int
 
   """Return the name of expired counters"""
   streamCountdownExpired(
