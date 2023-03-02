@@ -1,7 +1,14 @@
-include:
-  - template: Security/SAST.gitlab-ci.yml
-  - backend/.gitlab-ci.yml
-
 stages:
   - test
   - build
+
+.setup:
+  rules:
+    - changes:
+      - $PACKAGE/**/*
+  before_script:
+    - cd $PACKAGE
+
+include:
+  - backend/.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml

@@ -1,14 +1,31 @@
 variables:
   AUTO_BUILD_IMAGE_VERSION: 'v1.28.0'
+  PACKAGE: backend
 
-.backend-setup:
-  before_script:
-    - cd backend
+test-backend:
+  extends: .setup
+  stage: test
+  image: node:18
+  script:
+    - yarn
+    - yarn jest --ci --reporters=default --reporters=jest-junit --coverage
+  artifacts:
+    when: always
+    paths:
+    #   - backend/junit.xml
+      - backend/coverage/
+    reports:
+      junit: backend/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: backend/coverage/cobertura-coverage.xml
 
+# https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml
 build-backend:
-  extends: .backend-setup
+  extends: .setup
   stage: build
   image: '${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-build-image:${AUTO_BUILD_IMAGE_VERSION}'
+  needs: [test-backend]
   variables:
     DOCKER_TLS_CERTDIR: ''
   services:
@@ -24,36 +41,3 @@ build-backend:
         export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
       fi
     - /build/build.sh
-  # artifacts:
-  #   reports:
-  #     dotenv: gl-auto-build-variables.env
-  rules:
-    - if: '$BUILD_DISABLED'
-      when: never
-    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
-      when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
-
-# https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/lib/gitlab/ci/templates/Jobs/Test.gitlab-ci.yml
-test-backend:
-  extends: .backend-setup
-  stage: test
-  image: node:18
-  needs: []
-  script:
-    - yarn
-    - yarn jest --ci --reporters=default --reporters=jest-junit --coverage
-  rules:
-    - if: '$TEST_DISABLED'
-      when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
-  artifacts:
-    when: always
-    paths:
-    #   - backend/junit.xml
-      - backend/coverage/
-    reports:
-      junit: backend/junit.xml
-      coverage_report:
-        coverage_format: cobertura
-        path: backend/coverage/cobertura-coverage.xml
