@@ -1,21 +1,23 @@
 /** @jsxImportSource @emotion/react */
-import { css, ThemeProvider } from '@emotion/react'
-import { ReactEventHandler, useEffect, useRef, useState } from 'react'
+import { ThemeProvider } from '@emotion/react'
+import { useEffect, useRef, useState } from 'react'
 import { getColors } from './colors'
 import { $album, $artists, $container, $image, $infos, $name } from './styles'
 import { animated, useSpring, config } from '@react-spring/web'
 
+interface Track {
+  /** Cover art image */
+  cover: string
+  /** Song name */
+  name: string
+  /** Album name */
+  album: string
+  /** Artists names */
+  artists: string[]
+}
+
 interface Props {
-  track?: {
-    /** Cover art image */
-    cover: string
-    /** Song name */
-    name: string
-    /** Album name */
-    album: string
-    /** Artists names */
-    artists: string[]
-  }
+  track?: Track
 }
 
 export type Colors = Partial<{
@@ -28,7 +30,8 @@ const arrayFormater = new Intl.ListFormat('en', { style: 'long' })
 
 const Music = ({ track: nextData }: Props) => {
   const [colors, setColors] = useState<Colors>()
-  const [track, setTrack] = useState<Props['track']>()
+  const [track, setTrack] = useState<Track>()
+  const imgRef = useRef<HTMLImageElement>(null)
 
   const imageSpring = useSpring({
     from: { opacity: 0 },
@@ -44,10 +47,25 @@ const Music = ({ track: nextData }: Props) => {
     await imageSpring.opacity.start(0)
   }
 
+  const onLoad = async () => {
+    if (!imgRef.current) return
+
+    const palette = getColors(imgRef.current)
+    setColors(palette)
+    await imageSpring.opacity.start(1)
+    await infoSpring.marginLeft.start('-10em', {
+      config: config.wobbly,
+    })
+  }
+
   useEffect(() => {
     ;(async () => {
       await hide()
       setTrack(nextData)
+
+      // When the image src attribute is the same, onLoad event isn't
+      // dispatched, so we're simulating the dispatch
+      if (nextData && track?.cover == nextData?.cover) onLoad()
     })()
   }, [nextData])
 
@@ -55,17 +73,11 @@ const Music = ({ track: nextData }: Props) => {
     <ThemeProvider theme={colors || {}}>
       <div css={$container}>
         <animated.img
-          onLoad={async (event) => {
-            const palette = getColors(event.target as HTMLImageElement)
-            setColors(palette)
-            await imageSpring.opacity.start(1)
-            await infoSpring.marginLeft.start('-10em', {
-              config: config.wobbly,
-            })
-          }}
+          onLoad={onLoad}
           css={$image}
           style={imageSpring}
           src={track.cover}
+          ref={imgRef}
           crossOrigin="anonymous"
         />
         <animated.div css={$infos} style={infoSpring}>

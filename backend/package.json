@@ -92,7 +92,6 @@
     ],
     "coverageDirectory": "../coverage",
     "coverageReporters": [
-      "html",
       "text",
       "text-summary",
       "cobertura"
