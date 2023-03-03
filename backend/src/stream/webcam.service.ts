@@ -3,6 +3,8 @@ import { PubSub } from 'graphql-subscriptions'
 import { setTimeout } from 'timers/promises'
 import { EnvironmentService } from '../env.service'
 import { OBSAPI } from '../obs/_.service'
+import { Topics as SceneTriggers } from '../obs/scenes.service'
+import { SceneChanging } from 'src/obs/scenes.object'
 
 export enum Topics {
   VISIBILITY = 'stream:webcam:visibility',
@@ -56,6 +58,9 @@ export class StreamWebcamService {
       if (!e.filterName.startsWith('blur_')) return
 
       this.blured = e.filterEnabled
+    })
+    this.pubsub.subscribe(SceneTriggers.CHANGING, (message: SceneChanging) => {
+      if (this.blurredScenes.includes(message.to)) this.setBlur(true)
     })
     this.api.on('CurrentProgramSceneChanged', (e) =>
       this.setBlur(this.blurredScenes.includes(e.sceneName)),
