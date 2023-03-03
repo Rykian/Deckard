@@ -25,6 +25,8 @@ export class StreamStateService {
   #_state?: State
 
   set #state(sequence: State) {
+    if (this.#_state == sequence) return
+
     this.#_state = sequence
     this.pubsub.publish(Topics.CHANGED, sequence)
     this.logger.debug(`changed: ${this.state}`)

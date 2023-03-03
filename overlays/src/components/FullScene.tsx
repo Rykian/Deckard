@@ -2,10 +2,11 @@ import { gql, useSubscription } from '@apollo/client'
 import { css, Interpolation, Theme } from '@emotion/react'
 import { useSpring, animated, to } from '@react-spring/web'
 import { parseISO } from 'date-fns'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import {
   CountdownUpdateSubscription,
   CountdownUpdateSubscriptionVariables,
+  SceneChangingSubscription,
 } from '../gql/graphql'
 import MusicOverlay from '../overlays/Music'
 import Countdown from './Countdown'
@@ -73,6 +74,15 @@ const COUNTDOWN = gql`
   }
 `
 
+const SCENE_CHANGING = gql`
+  subscription sceneChanging {
+    obsScenesChanging {
+      from
+      to
+    }
+  }
+`
+
 interface Props {
   name: string
   sceneName: SceneNames
@@ -89,6 +99,18 @@ const FullScene = (props: Props) => {
     CountdownUpdateSubscription,
     CountdownUpdateSubscriptionVariables
   >(COUNTDOWN, { variables: { name: props.name } })
+  const sceneChangingSub =
+    useSubscription<SceneChangingSubscription>(SCENE_CHANGING)
+  const [active, setActive] = useState(false)
+
+  useEffect(() => {
+    setActive(
+      sceneChangingSub.data
+        ? sceneChangingSub.data?.obsScenesChanging.to.toLowerCase() ==
+            props.name.toLowerCase()
+        : true,
+    )
+  }, [sceneChangingSub.data?.obsScenesChanging.to, props.sceneName])
 
   const countdown = countdownSub.data
     ? parseISO(countdownSub.data?.streamCountdownUpdated)
@@ -98,26 +120,40 @@ const FullScene = (props: Props) => {
 
   const spring = useSpring({
     from: {
-      whiteTop: 0,
-      whiteBottom: 0,
-      darkTop: 0,
-      darkBottom: 0,
+      whiteTop: 60,
+      whiteBottom: 50,
+      darkTop: 110,
+      darkBottom: 100,
     },
-    to: async (next) => {
-      await wait(500)
-      const promises = []
-      promises.push(next({ whiteTop: 60 }))
-      await wait(50)
-      promises.push(next({ darkTop: 110 }))
-      await wait(50)
-      promises.push(next({ darkBottom: 100 }))
-      await wait(50)
-      await next({ whiteBottom: 50 })
-
-      await Promise.all(promises)
-    },
-    // config: config.molasses,
   })
+
+  const appear = async () => {
+    await wait(500)
+    spring.whiteTop.start(60)
+    await wait(50)
+    spring.darkTop.start(110)
+    await wait(50)
+    spring.darkBottom.start(100)
+    await wait(50)
+    spring.whiteBottom.start(50)
+  }
+  const disappear = async () => {
+    spring.whiteBottom.start(0)
+    await wait(50)
+    spring.darkBottom.start(0)
+    await wait(50)
+    spring.darkTop.start(0)
+    await wait(50)
+    spring.whiteTop.start(0)
+  }
+
+  useEffect(() => {
+    if (active) {
+      appear()
+    } else {
+      disappear()
+    }
+  }, [active])
 
   return (
     <div css={$container}>

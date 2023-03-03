@@ -119,8 +119,8 @@
     "versioned_id": "coreaudio_output_capture",
     "volume": 0.017804894596338272
   },
-  "current_program_scene": "Start",
-  "current_scene": "Start",
+  "current_program_scene": "scene-default",
+  "current_scene": "scene-default",
   "current_transition": "Move",
   "groups": [
     {
@@ -415,7 +415,7 @@
       "settings": {
         "height": 1080,
         "restart_when_active": false,
-        "shutdown": true,
+        "shutdown": false,
         "url": "http://localhost:5173/scenes/stop",
         "webpage_control_level": 2,
         "width": 1920
@@ -451,8 +451,9 @@
       "settings": {
         "height": 1080,
         "restart_when_active": false,
-        "shutdown": true,
+        "shutdown": false,
         "url": "http://localhost:5173/scenes/pause",
+        "webpage_control_level": 2,
         "width": 1920
       },
       "sync": 0,
@@ -486,8 +487,9 @@
       "settings": {
         "height": 1080,
         "restart_when_active": false,
-        "shutdown": true,
+        "shutdown": false,
         "url": "http://localhost:5173/scenes/start",
+        "webpage_control_level": 2,
         "width": 1920
       },
       "sync": 0,
@@ -532,7 +534,7 @@
           "balance": 0.5,
           "deinterlace_field_order": 0,
           "deinterlace_mode": 0,
-          "enabled": true,
+          "enabled": false,
           "flags": 0,
           "hotkeys": {},
           "id": "streamfx-filter-blur",
@@ -560,7 +562,7 @@
           "balance": 0.5,
           "deinterlace_field_order": 0,
           "deinterlace_mode": 0,
-          "enabled": true,
+          "enabled": false,
           "flags": 0,
           "hotkeys": {},
           "id": "streamfx-filter-blur",
@@ -588,7 +590,7 @@
           "balance": 0.5,
           "deinterlace_field_order": 0,
           "deinterlace_mode": 0,
-          "enabled": true,
+          "enabled": false,
           "flags": 0,
           "hotkeys": {},
           "id": "streamfx-filter-blur",
@@ -616,7 +618,7 @@
           "balance": 0.5,
           "deinterlace_field_order": 0,
           "deinterlace_mode": 0,
-          "enabled": true,
+          "enabled": false,
           "flags": 0,
           "hotkeys": {},
           "id": "streamfx-filter-blur",
@@ -644,7 +646,7 @@
           "balance": 0.5,
           "deinterlace_field_order": 0,
           "deinterlace_mode": 0,
-          "enabled": true,
+          "enabled": false,
           "flags": 0,
           "hotkeys": {},
           "id": "streamfx-filter-blur",
@@ -672,7 +674,7 @@
           "balance": 0.5,
           "deinterlace_field_order": 0,
           "deinterlace_mode": 0,
-          "enabled": true,
+          "enabled": false,
           "flags": 0,
           "hotkeys": {},
           "id": "streamfx-filter-blur",
@@ -813,7 +815,13 @@
             "crop_right": 0,
             "crop_top": 0,
             "group_item_backup": false,
-            "hide_transition": { "duration": 0 },
+            "hide_transition": {
+              "duration": 1000,
+              "id": "move_transition",
+              "name": "rounded-maincam Hide Transition",
+              "transition": {},
+              "versioned_id": "move_transition"
+            },
             "id": 4,
             "locked": false,
             "name": "rounded-maincam",
@@ -822,7 +830,17 @@
             "rot": 0.0,
             "scale": { "x": 1.0, "y": 1.0 },
             "scale_filter": "disable",
-            "show_transition": { "duration": 0 },
+            "show_transition": {
+              "duration": 1000,
+              "id": "move_transition",
+              "name": "rounded-maincam Show Transition",
+              "transition": {
+                "transition_in": "None",
+                "transition_match": "None",
+                "transition_out": "None"
+              },
+              "versioned_id": "move_transition"
+            },
             "visible": true
           },
           {
@@ -1075,9 +1093,9 @@
             "align": 5,
             "blend_method": "default",
             "blend_type": "normal",
-            "bounds": { "x": 0.0, "y": 0.0 },
+            "bounds": { "x": 1920.0, "y": 1080.0 },
             "bounds_align": 0,
-            "bounds_type": 0,
+            "bounds_type": 2,
             "crop_bottom": 0,
             "crop_left": 0,
             "crop_right": 0,

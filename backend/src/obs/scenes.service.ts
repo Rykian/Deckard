@@ -22,6 +22,7 @@ type Events = {
 
 export enum Topics {
   CHANGED = 'obs:scenes:changed',
+  CHANGING = 'obs:scenes:changing',
   LIST_UPDATED = 'obs:scenes:list_updated',
 }
 
@@ -74,6 +75,10 @@ export class OBSScenesService extends (EventEmitter as new () => TypedEventEmitt
   }
 
   async switchScene(name: string, instant = true) {
+    this.pubsub.publish(Topics.CHANGING, {
+      from: this.programScene,
+      to: name,
+    })
     if (!instant) {
       await this.api.call('SetStudioModeEnabled', { studioModeEnabled: true })
       await this.api.call('SetCurrentPreviewScene', { sceneName: name })

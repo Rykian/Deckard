@@ -149,6 +149,12 @@ export type QueryStreamCountdownGetArgs = {
   name: Scalars['String'];
 };
 
+export type SceneChanging = {
+  __typename?: 'SceneChanging';
+  from: Scalars['String'];
+  to: Scalars['String'];
+};
+
 export enum StreamStateEnum {
   Offline = 'offline',
   Pausing = 'pausing',
@@ -162,6 +168,7 @@ export type Subscription = {
   currentTrackProgress?: Maybe<Scalars['Int']>;
   currentTrackUpdated?: Maybe<Track>;
   obsCurrentInstanceUpdated?: Maybe<Scalars['String']>;
+  obsScenesChanging: SceneChanging;
   obsScenesCurrentChanged: Scalars['String'];
   obsScenesListUpdated: Array<Scalars['String']>;
   obsStreamStreamingUpdated: Scalars['Boolean'];
@@ -216,6 +223,11 @@ export type CountdownUpdateSubscriptionVariables = Exact<{
 
 export type CountdownUpdateSubscription = { __typename?: 'Subscription', streamCountdownUpdated: string };
 
+export type SceneChangingSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SceneChangingSubscription = { __typename?: 'Subscription', obsScenesChanging: { __typename?: 'SceneChanging', from: string, to: string } };
+
 export type TwitchInfosQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -233,6 +245,7 @@ export type CurrentTrackProgressSubscription = { __typename?: 'Subscription', cu
 
 
 export const CountdownUpdateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"countdownUpdate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamCountdownUpdated"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}]}}]} as unknown as DocumentNode<CountdownUpdateSubscription, CountdownUpdateSubscriptionVariables>;
+export const SceneChangingDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"sceneChanging"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsScenesChanging"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"from"}},{"kind":"Field","name":{"kind":"Name","value":"to"}}]}}]}}]} as unknown as DocumentNode<SceneChangingSubscription, SceneChangingSubscriptionVariables>;
 export const TwitchInfosDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TwitchInfos"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"twitchGetClientId"}},{"kind":"Field","name":{"kind":"Name","value":"getTwitchUserName"}}]}}]} as unknown as DocumentNode<TwitchInfosQuery, TwitchInfosQueryVariables>;
 export const CurrentTrackDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"currentTrack"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentTrackUpdated"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"artists"}},{"kind":"Field","name":{"kind":"Name","value":"album"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"release"}},{"kind":"Field","name":{"kind":"Name","value":"cover"}},{"kind":"Field","name":{"kind":"Name","value":"url"}},{"kind":"Field","name":{"kind":"Name","value":"duration"}}]}}]}}]} as unknown as DocumentNode<CurrentTrackSubscription, CurrentTrackSubscriptionVariables>;
 export const CurrentTrackProgressDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"currentTrackProgress"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"currentTrackProgress"}}]}}]} as unknown as DocumentNode<CurrentTrackProgressSubscription, CurrentTrackProgressSubscriptionVariables>;

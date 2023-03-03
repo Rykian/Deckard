@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n": types.CountdownUpdateDocument,
+    "\n  subscription sceneChanging {\n    obsScenesChanging {\n      from\n      to\n    }\n  }\n": types.SceneChangingDocument,
     "\n  query TwitchInfos {\n    twitchGetClientId\n    getTwitchUserName\n  }\n": types.TwitchInfosDocument,
     "\n  subscription currentTrack {\n    currentTrackUpdated {\n      id\n      artists\n      album\n      name\n      release\n      cover\n      url\n      duration\n    }\n  }\n": types.CurrentTrackDocument,
     "\n  subscription currentTrackProgress {\n    currentTrackProgress\n  }\n": types.CurrentTrackProgressDocument,
@@ -37,6 +38,10 @@ export function graphql(source: string): unknown;
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"): (typeof documents)["\n  subscription countdownUpdate($name: String!) {\n    streamCountdownUpdated(name: $name)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription sceneChanging {\n    obsScenesChanging {\n      from\n      to\n    }\n  }\n"): (typeof documents)["\n  subscription sceneChanging {\n    obsScenesChanging {\n      from\n      to\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

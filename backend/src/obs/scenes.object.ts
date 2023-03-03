@@ -17,3 +17,12 @@ export class CheckScenesReport {
   @Field(() => [ItemReport], { nullable: true })
   missingItems?: ItemReport[]
 }
+
+@ObjectType()
+export class SceneChanging {
+  @Field()
+  from: string
+
+  @Field()
+  to: string
+}

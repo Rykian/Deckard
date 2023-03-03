@@ -2,7 +2,7 @@ import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { identity } from 'rxjs'
 import { setTimeout } from 'timers/promises'
-import { CheckScenesReport } from './scenes.object'
+import { CheckScenesReport, SceneChanging } from './scenes.object'
 import { OBSScenesService, Topics } from './scenes.service'
 
 @Resolver()
@@ -42,5 +42,10 @@ export class OBSScenesResolver {
       this.pubsub.publish(Topics.CHANGED, this.service.programScene),
     )
     return this.pubsub.asyncIterator(Topics.CHANGED)
+  }
+
+  @Subscription(() => SceneChanging, { resolve: identity })
+  obsScenesChanging() {
+    return this.pubsub.asyncIterator(Topics.CHANGING)
   }
 }

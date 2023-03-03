@@ -20,6 +20,11 @@ type CheckScenesReport {
   missingItems: [ItemReport!]
 }
 
+type SceneChanging {
+  from: String!
+  to: String!
+}
+
 type TwitchCategory {
   id: String!
   name: String!
@@ -104,6 +109,7 @@ type Subscription {
   obsCurrentInstanceUpdated: String
   obsScenesListUpdated: [String!]!
   obsScenesCurrentChanged: String!
+  obsScenesChanging: SceneChanging!
   obsStreamStreamingUpdated: Boolean!
   currentTrackUpdated: Track
   currentTrackProgress: Int
