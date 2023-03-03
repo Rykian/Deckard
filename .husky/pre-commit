@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+set -o allexport
+[ -e ".env" ] && source .env
+[ -f '.env.local' ] && source .env.local
+set +o allexport
+
+if [ -e "$OBS_SCENE_FILE" ]; then
+  cp "$OBS_SCENE_FILE" $(dirname -- "$0")/../obs/scenes.json
+  yarn prettier --write $(dirname -- "$0")/../obs/scenes.json
+  git add $(dirname -- "$0")/../obs/scenes.json
+fi
