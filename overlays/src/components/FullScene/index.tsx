@@ -1,15 +1,16 @@
 import { gql, useSubscription } from '@apollo/client'
 import { css, Interpolation, Theme } from '@emotion/react'
-import { useSpring, animated, to } from '@react-spring/web'
+import { animated, to } from '@react-spring/web'
 import { parseISO } from 'date-fns'
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 import {
   CountdownUpdateSubscription,
   CountdownUpdateSubscriptionVariables,
-  SceneChangingSubscription,
-} from '../gql/graphql'
-import MusicOverlay from '../overlays/Music'
-import Countdown from './Countdown'
+} from '../../gql/graphql'
+import MusicOverlay from '../../overlays/Music'
+import Countdown from '../Countdown'
+import useSpringEffect from './useSpringEffect'
+import useIsActive from './useIsActive'
 
 const $container = css`
   position: relative;
@@ -74,86 +75,27 @@ const COUNTDOWN = gql`
   }
 `
 
-const SCENE_CHANGING = gql`
-  subscription sceneChanging {
-    obsScenesChanging {
-      from
-      to
-    }
-  }
-`
-
 interface Props {
   name: string
   sceneName: SceneNames
   lateMessages?: ReactNode | ReactNode[]
   message: ReactNode
 }
-const wait = (ms: number) =>
-  new Promise<undefined>((resolve) => {
-    setTimeout(() => resolve(undefined), ms)
-  })
 
 const FullScene = (props: Props) => {
+  const active = useIsActive(props.name)
+  const spring = useSpringEffect(active)
+
   const countdownSub = useSubscription<
     CountdownUpdateSubscription,
     CountdownUpdateSubscriptionVariables
   >(COUNTDOWN, { variables: { name: props.name } })
-  const sceneChangingSub =
-    useSubscription<SceneChangingSubscription>(SCENE_CHANGING)
-  const [active, setActive] = useState(false)
-
-  useEffect(() => {
-    setActive(
-      sceneChangingSub.data
-        ? sceneChangingSub.data?.obsScenesChanging.to.toLowerCase() ==
-            props.name.toLowerCase()
-        : true,
-    )
-  }, [sceneChangingSub.data?.obsScenesChanging.to, props.sceneName])
 
   const countdown = countdownSub.data
     ? parseISO(countdownSub.data?.streamCountdownUpdated)
     : undefined
 
   const sceneCSS = scenes[props.sceneName]
-
-  const spring = useSpring({
-    from: {
-      whiteTop: 60,
-      whiteBottom: 50,
-      darkTop: 110,
-      darkBottom: 100,
-    },
-  })
-
-  const appear = async () => {
-    await wait(500)
-    spring.whiteTop.start(60)
-    await wait(50)
-    spring.darkTop.start(110)
-    await wait(50)
-    spring.darkBottom.start(100)
-    await wait(50)
-    spring.whiteBottom.start(50)
-  }
-  const disappear = async () => {
-    spring.whiteBottom.start(0)
-    await wait(50)
-    spring.darkBottom.start(0)
-    await wait(50)
-    spring.darkTop.start(0)
-    await wait(50)
-    spring.whiteTop.start(0)
-  }
-
-  useEffect(() => {
-    if (active) {
-      appear()
-    } else {
-      disappear()
-    }
-  }, [active])
 
   return (
     <div css={$container}>
