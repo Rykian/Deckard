@@ -1,14 +1,15 @@
-variables:
-  AUTO_BUILD_IMAGE_VERSION: 'v1.28.0'
-  PACKAGE: backend
+.setup-backend:
+  variables:
+    APP_DIRECTORY: backend
+  extends: .setup
 
 test-backend:
-  extends: .setup
+  extends: .setup-backend
   stage: test
   image: node:18
   script:
     - yarn
-    - yarn jest --ci --reporters=default --reporters=jest-junit --coverage
+    - yarn test --ci --reporters=default --reporters=jest-junit --coverage
   artifacts:
     when: always
     paths:
@@ -22,7 +23,7 @@ test-backend:
 
 # https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml
 build-backend:
-  extends: .setup
+  extends: .setup-backend
   stage: build
   image: '${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-build-image:${AUTO_BUILD_IMAGE_VERSION}'
   needs: [test-backend]

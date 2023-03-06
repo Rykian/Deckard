@@ -1,3 +1,6 @@
+variables:
+  AUTO_BUILD_IMAGE_VERSION: 'v1.28.0'
+
 stages:
 - test
 - build
@@ -5,11 +8,13 @@ stages:
 .setup:
   rules:
     - changes:
-      - $PACKAGE/**/*
+      - $APP_DIRECTORY/**/*
+
   before_script:
-    - cd $PACKAGE
+    - cd $APP_DIRECTORY
 
 include:
 - backend/.gitlab-ci.yml
+- overlays/.gitlab-ci.yml
 - template: Security/SAST.gitlab-ci.yml
 - template: Security/Secret-Detection.gitlab-ci.yml
