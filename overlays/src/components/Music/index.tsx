@@ -13,7 +13,7 @@ import {
 } from './styles'
 import { animated, useSpring, config } from '@react-spring/web'
 
-interface Track {
+export interface Track {
   /** Cover art image */
   cover: string
   /** Song name */
