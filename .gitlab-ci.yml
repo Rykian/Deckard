@@ -1,7 +1,21 @@
-include:
-  - template: Security/SAST.gitlab-ci.yml
-  - backend/.gitlab-ci.yml
+variables:
+  AUTO_BUILD_IMAGE_VERSION: 'v1.28.0'
 
 stages:
-  - test
-  - build
+- test
+- build
+
+.setup:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - changes:
+      - $APP_DIRECTORY/**/*
+
+  before_script:
+    - cd $APP_DIRECTORY
+
+include:
+- backend/.gitlab-ci.yml
+- overlays/.gitlab-ci.yml
+- template: Security/SAST.gitlab-ci.yml
+- template: Security/Secret-Detection.gitlab-ci.yml

@@ -1,52 +1,15 @@
-variables:
-  AUTO_BUILD_IMAGE_VERSION: 'v1.28.0'
-
-.backend-setup:
-  before_script:
-    - cd backend
-
-build-backend:
-  extends: .backend-setup
-  stage: build
-  image: '${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-build-image:${AUTO_BUILD_IMAGE_VERSION}'
+.setup-backend:
   variables:
-    DOCKER_TLS_CERTDIR: ''
-  services:
-    - name: 'docker:20.10.12-dind'
-      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
-  script:
-    - |
-      if [[ -z "$CI_COMMIT_TAG" ]]; then
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
-      else
-        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
-        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
-      fi
-    - /build/build.sh
-  # artifacts:
-  #   reports:
-  #     dotenv: gl-auto-build-variables.env
-  rules:
-    - if: '$BUILD_DISABLED'
-      when: never
-    - if: '$AUTO_DEVOPS_PLATFORM_TARGET == "EC2"'
-      when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+    APP_DIRECTORY: backend
+  extends: .setup
 
-# https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/lib/gitlab/ci/templates/Jobs/Test.gitlab-ci.yml
 test-backend:
-  extends: .backend-setup
+  extends: .setup-backend
   stage: test
   image: node:18
-  needs: []
   script:
     - yarn
-    - yarn jest --ci --reporters=default --reporters=jest-junit --coverage
-  rules:
-    - if: '$TEST_DISABLED'
-      when: never
-    - if: '$CI_COMMIT_TAG || $CI_COMMIT_BRANCH'
+    - yarn test --ci --reporters=default --reporters=jest-junit --coverage
   artifacts:
     when: always
     paths:
@@ -57,3 +20,25 @@ test-backend:
       coverage_report:
         coverage_format: cobertura
         path: backend/coverage/cobertura-coverage.xml
+
+# https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml
+build-backend:
+  extends: .setup-backend
+  stage: build
+  image: '${CI_TEMPLATE_REGISTRY_HOST}/gitlab-org/cluster-integration/auto-build-image:${AUTO_BUILD_IMAGE_VERSION}'
+  needs: [test-backend]
+  variables:
+    DOCKER_TLS_CERTDIR: ''
+  services:
+    - name: 'docker:20.10.12-dind'
+      command: ['--tls=false', '--host=tcp://0.0.0.0:2375']
+  script:
+    - |
+      if [[ -z "$CI_COMMIT_TAG" ]]; then
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}/${APP_DIRECTORY}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+      else
+        export CI_APPLICATION_REPOSITORY=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}/${APP_DIRECTORY}
+        export CI_APPLICATION_TAG=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+      fi
+    - /build/build.sh
