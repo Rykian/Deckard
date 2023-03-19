@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { addMinutes } from 'date-fns'
 import { EnvironmentService } from 'src/env.service'
 import { OBSStreamService } from 'src/obs/stream.service'
-import { StreamCountdownService } from 'src/stream/countdown.service'
+import {
+  StreamCountdownExpired,
+  StreamCountdownService,
+} from 'src/stream/countdown.service'
 import { OBSScenesService } from '../../obs/scenes.service'
 
 @Injectable()
@@ -15,7 +18,7 @@ export class StreamSequencesStopService {
   ) {}
 
   async stop() {
-    this.countdown.once('streamCountdownExpired', this.#kill)
+    this.countdown.on('streamCountdownExpired', this.#kill)
     this.countdown.set('stop', addMinutes(new Date(), 3))
     await this.scene.switchScene(this.env.SCENE_STOP)
   }
@@ -25,5 +28,10 @@ export class StreamSequencesStopService {
     if (scene) await this.scene.switchScene(scene)
   }
 
-  #kill = () => this.stream.stop()
+  #kill = (e: StreamCountdownExpired) => {
+    if (e.name != 'stop') return
+
+    this.stream.stop()
+    this.countdown.off('streamCountdownExpired', this.#kill)
+  }
 }

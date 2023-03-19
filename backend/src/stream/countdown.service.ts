@@ -47,6 +47,7 @@ export class StreamCountdownService extends (EventEmitter as new () => TypedEven
 
       this.logger.debug(`Countdown "${name}" expired`)
       this.emit('streamCountdownExpired', { name })
+      delete this.#countdowns[name]
       this.pubsub.publish(Topics.COUNTDOWN_EXPIRED, name)
     })
   }
