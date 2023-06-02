@@ -23,6 +23,7 @@ export class TwitchEventService {
     const url = new URL(
       await ngrok.connect({
         addr: port,
+        authtoken: this.env.NGROK_AUTH_TOKEN,
         // onLogEvent: (event) => this.logger.debug(event),
       }),
     )
