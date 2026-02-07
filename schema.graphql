@@ -35,28 +35,12 @@ type TwitchChannelInfo {
   title: String!
 }
 
-type Track {
-  id: ID!
-  artists: [String!]!
-  album: String!
-  name: String!
-  release: String!
-  cover: String!
-  url: String!
-
-  """Duration in ms"""
-  duration: Float!
-}
-
 type Query {
   obsConnected: Boolean!
   obsCurrentInstance: String
   obsInstanceList: [PortScannerResult!]!
   obsScenesList: [String!]!
   obsStreamIsStreaming: Boolean!
-  getSpotifyAuthURL(redirectURI: String!): String!
-  getCurrentTrack: Track
-  getSpotifyUserName: String
   getTwitchAuthURL(redirectURI: String! = "http://localhost:3000/admin/oauth"): String!
   getTwitchUserName: String @deprecated(reason: "Switching query naming scheme, use `twitchGetUsername` instead")
   getTwitchEditStreamInfoUrl: String
@@ -72,7 +56,6 @@ type Mutation {
   obsConnect(host: String!, port: String!, password: String): Boolean!
   obsScenesCheck: CheckScenesReport!
   obsScenesSwitch(scene: String!, instant: Boolean): Boolean!
-  updateSpotifyAuth(code: String!, redirectURI: String!): Boolean!
   updateTwitchTokenFromCode(code: String!, redirectURI: String!): Boolean!
 
   """Return the name of the countdown"""
@@ -111,8 +94,6 @@ type Subscription {
   obsScenesCurrentChanged: String!
   obsScenesChanging: SceneChanging!
   obsStreamStreamingUpdated: Boolean!
-  currentTrackUpdated: Track
-  currentTrackProgress: Int
 
   """Return the name of expired counters"""
   streamCountdownExpired(
