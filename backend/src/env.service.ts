@@ -20,7 +20,6 @@ export class EnvironmentService {
   SCENE_START = this.env.get('SCENE_START').default('Start').asString()
   SCENE_STOP = this.env.get('SCENE_STOP').default('Stop').asString()
   SCENE_PAUSE = this.env.get('SCENE_PAUSE').default('Pause').asString()
-  NGROK_AUTH_TOKEN = this.env.get('NGROK_AUTH_TOKEN').asString()
 
   constructor() {
     this.logger.debug('Initilized')

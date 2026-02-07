@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { EventSubListener, ReverseProxyAdapter } from '@twurple/eventsub'
+import localtunnel from 'localtunnel'
 import getPort from 'get-port'
-import * as ngrok from 'ngrok'
 import { EnvironmentService } from 'src/env.service'
 import { TwitchCategory } from './object'
 import { TwitchService } from './service'
@@ -20,13 +20,8 @@ export class TwitchEventService {
 
   async start() {
     const port = await getPort()
-    const url = new URL(
-      await ngrok.connect({
-        addr: port,
-        authtoken: this.env.NGROK_AUTH_TOKEN,
-        // onLogEvent: (event) => this.logger.debug(event),
-      }),
-    )
+    const tunnel = await localtunnel({ port })
+    const url = new URL(tunnel.url)
     const adapter = new ReverseProxyAdapter({ hostName: url.hostname, port })
     this.#listener = new EventSubListener({
       apiClient: this.service.appAPI,
