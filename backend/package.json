@@ -44,8 +44,8 @@
     "obs-websocket-js": "^5.0.2",
     "redis": "^4.5.1",
     "reflect-metadata": "^0.1.13",
+    "run-applescript": "^7.1.0",
     "rxjs": "^7.2.0",
-    "spotify-web-api-node": "^5.0.2",
     "tail": "^2.2.6",
     "typed-regex": "^0.0.8"
   },
@@ -87,6 +87,12 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(run-applescript)/)"
+    ],
+    "moduleNameMapper": {
+      "^run-applescript$": "<rootDir>/../test/__mocks__/run-applescript.ts"
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

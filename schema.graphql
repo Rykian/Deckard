@@ -35,12 +35,26 @@ type TwitchChannelInfo {
   title: String!
 }
 
+type Track {
+  id: ID!
+  artists: [String!]!
+  album: String!
+  name: String!
+  release: String!
+  cover: String!
+  url: String!
+
+  """Duration in ms"""
+  duration: Float!
+}
+
 type Query {
   obsConnected: Boolean!
   obsCurrentInstance: String
   obsInstanceList: [PortScannerResult!]!
   obsScenesList: [String!]!
   obsStreamIsStreaming: Boolean!
+  getCurrentTrack: Track
   getTwitchAuthURL(redirectURI: String! = "http://localhost:3000/admin/oauth"): String!
   getTwitchUserName: String @deprecated(reason: "Switching query naming scheme, use `twitchGetUsername` instead")
   getTwitchEditStreamInfoUrl: String
@@ -94,6 +108,8 @@ type Subscription {
   obsScenesCurrentChanged: String!
   obsScenesChanging: SceneChanging!
   obsStreamStreamingUpdated: Boolean!
+  currentTrackUpdated: Track
+  currentTrackProgress: Int
 
   """Return the name of expired counters"""
   streamCountdownExpired(

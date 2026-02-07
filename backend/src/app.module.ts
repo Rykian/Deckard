@@ -7,7 +7,7 @@ import { resolve } from 'path'
 import { OBSModule } from './obs/_.module'
 import { WoWModule } from './wow/module'
 import { plugin as ApolloTracing } from 'apollo-tracing'
-// import { SpotifyModule } from './spotify/module'
+import { MusicModule } from './music/music.module'
 import { ConfigModule } from '@nestjs/config'
 import { TwitchModule } from './twitch/module'
 import { StreamModule } from './stream/module'
@@ -29,7 +29,7 @@ import { StreamModule } from './stream/module'
       plugins: [ApolloTracing() as PluginDefinition, apolloLogger],
     }),
     OBSModule,
-    // SpotifyModule,
+    MusicModule,
     TwitchModule,
     StreamModule,
     WoWModule,
