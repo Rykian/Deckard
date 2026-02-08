@@ -43,7 +43,10 @@ export class WoWService {
     level: string
   }
 
-  constructor(private twitch: TwitchService, private logs: WoWLogEventService) {
+  constructor(
+    private twitch: TwitchService,
+    private logs: WoWLogEventService,
+  ) {
     this.handleCategoryChange()
     twitch.on('CategoryUpdated', this.handleCategoryChange)
   }

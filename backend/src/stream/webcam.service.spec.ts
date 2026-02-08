@@ -88,7 +88,7 @@ describe(StreamWebcamService.name, () => {
       await service.assignIds()
       expect(service.visible).toBeTruthy()
       await service.toggle()
-      expect(apiMock.call).toBeCalledWith('SetSceneItemEnabled', {
+      expect(apiMock.call).toHaveBeenCalledWith('SetSceneItemEnabled', {
         sceneItemEnabled: false,
         sceneItemId: 1,
         sceneName: '_maincam',
@@ -110,12 +110,12 @@ describe(StreamWebcamService.name, () => {
       await service.assignIds()
       expect(service.visible).toBeFalsy()
       await service.toggle()
-      expect(apiMock.call).toBeCalledWith('SetSceneItemEnabled', {
+      expect(apiMock.call).toHaveBeenCalledWith('SetSceneItemEnabled', {
         sceneItemEnabled: true,
         sceneItemId: 1,
         sceneName: '_maincam',
       })
-      expect(apiMock.call).not.toBeCalledWith('SetSceneItemEnabled', {
+      expect(apiMock.call).not.toHaveBeenCalledWith('SetSceneItemEnabled', {
         sceneItemEnabled: true,
         sceneItemId: 2,
         sceneName: '_maincam',
@@ -141,7 +141,7 @@ describe(StreamWebcamService.name, () => {
       await service.assignIds()
       expect(service.blured).toBeFalsy()
       await service.toggleBlur()
-      expect(apiMock.call).toBeCalledWith('SetSourceFilterEnabled', {
+      expect(apiMock.call).toHaveBeenCalledWith('SetSourceFilterEnabled', {
         sourceName: 'webcam',
         filterName: 'blur_6',
         filterEnabled: true,
@@ -160,7 +160,7 @@ describe(StreamWebcamService.name, () => {
       await service.assignIds()
       expect(service.blured).toBeTruthy()
       await service.toggleBlur()
-      expect(apiMock.call).toBeCalledWith('SetSourceFilterEnabled', {
+      expect(apiMock.call).toHaveBeenCalledWith('SetSourceFilterEnabled', {
         sourceName: 'webcam',
         filterName: 'blur_1',
         filterEnabled: false,

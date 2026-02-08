@@ -20,7 +20,7 @@ export class OBSConnectionService {
   get connected() {
     return this.#connected
   }
-  #interval?: NodeJS.Timer
+  #interval?: NodeJS.Timeout
 
   constructor(
     private api: OBSAPI,

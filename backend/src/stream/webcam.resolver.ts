@@ -6,7 +6,10 @@ import { StreamWebcamService, Topics } from './webcam.service'
 
 @Resolver()
 export class StreamWebcamResolver {
-  constructor(private service: StreamWebcamService, private pubsub: PubSub) {}
+  constructor(
+    private service: StreamWebcamService,
+    private pubsub: PubSub,
+  ) {}
 
   @Mutation(() => Boolean)
   streamWebcamToggle() {
@@ -18,7 +21,7 @@ export class StreamWebcamResolver {
     setTimeout(1000).then(() =>
       this.pubsub.publish(Topics.VISIBILITY, this.service.visible),
     )
-    return this.pubsub.asyncIterator(Topics.VISIBILITY)
+    return this.pubsub.asyncIterableIterator(Topics.VISIBILITY)
   }
 
   @Mutation(() => Boolean)
@@ -31,6 +34,6 @@ export class StreamWebcamResolver {
     setTimeout(1000).then(() => {
       this.pubsub.publish(Topics.BLUR, this.service.blured)
     })
-    return this.pubsub.asyncIterator(Topics.BLUR)
+    return this.pubsub.asyncIterableIterator(Topics.BLUR)
   }
 }

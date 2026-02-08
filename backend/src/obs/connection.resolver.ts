@@ -35,7 +35,7 @@ export class OBSConnectionResolver {
     setTimeout(1000).then(() => {
       this.pubsub.publish(Topics.INSTANCE_UPDATED, this.obsCurrentInstance())
     })
-    return this.pubsub.asyncIterator(Topics.INSTANCE_UPDATED)
+    return this.pubsub.asyncIterableIterator(Topics.INSTANCE_UPDATED)
   }
 
   @Query(() => [PortScannerResult])

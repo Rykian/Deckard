@@ -6,7 +6,10 @@ import { State, StreamStateService, Topics } from './state.service'
 
 @Resolver()
 export class StreamStateResolver {
-  constructor(private service: StreamStateService, private pubsub: PubSub) {}
+  constructor(
+    private service: StreamStateService,
+    private pubsub: PubSub,
+  ) {}
 
   @Subscription(() => State, { resolve: identity, nullable: true })
   streamStateChanged() {

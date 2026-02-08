@@ -6,7 +6,10 @@ import { OBSStreamService } from './stream.service'
 
 @Resolver()
 export class OBSStreamResolver {
-  constructor(private service: OBSStreamService, private pubsub: PubSub) {}
+  constructor(
+    private service: OBSStreamService,
+    private pubsub: PubSub,
+  ) {}
 
   @Query(() => Boolean)
   obsStreamIsStreaming() {
@@ -21,6 +24,6 @@ export class OBSStreamResolver {
         this.obsStreamIsStreaming(),
       ),
     )
-    return this.pubsub.asyncIterator(this.service.IS_STREAMING)
+    return this.pubsub.asyncIterableIterator(this.service.IS_STREAMING)
   }
 }

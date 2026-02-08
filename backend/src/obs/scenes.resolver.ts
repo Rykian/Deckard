@@ -7,7 +7,10 @@ import { OBSScenesService, Topics } from './scenes.service'
 
 @Resolver()
 export class OBSScenesResolver {
-  constructor(private service: OBSScenesService, private pubsub: PubSub) {}
+  constructor(
+    private service: OBSScenesService,
+    private pubsub: PubSub,
+  ) {}
 
   @Mutation(() => CheckScenesReport)
   obsScenesCheck() {
@@ -33,7 +36,7 @@ export class OBSScenesResolver {
     setTimeout(1000).then(() =>
       this.pubsub.publish(Topics.LIST_UPDATED, this.service.availableScenes),
     )
-    return this.pubsub.asyncIterator(Topics.LIST_UPDATED)
+    return this.pubsub.asyncIterableIterator(Topics.LIST_UPDATED)
   }
 
   @Subscription(() => String, { resolve: identity })
@@ -41,11 +44,11 @@ export class OBSScenesResolver {
     setTimeout(1000).then(() =>
       this.pubsub.publish(Topics.CHANGED, this.service.programScene),
     )
-    return this.pubsub.asyncIterator(Topics.CHANGED)
+    return this.pubsub.asyncIterableIterator(Topics.CHANGED)
   }
 
   @Subscription(() => SceneChanging, { resolve: identity })
   obsScenesChanging() {
-    return this.pubsub.asyncIterator(Topics.CHANGING)
+    return this.pubsub.asyncIterableIterator(Topics.CHANGING)
   }
 }

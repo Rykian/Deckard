@@ -31,7 +31,10 @@ export class OBSStreamService extends (EventEmitter as new () => TypedEventEmitt
     this.pubsub.publish(this.IS_STREAMING, streaming)
   }
 
-  constructor(private api: OBSAPI, private pubsub: PubSub) {
+  constructor(
+    private api: OBSAPI,
+    private pubsub: PubSub,
+  ) {
     super()
 
     api.on('StreamStateChanged', (data) => {

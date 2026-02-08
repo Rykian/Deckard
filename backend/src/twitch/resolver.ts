@@ -66,8 +66,9 @@ export class TwitchResolver {
     const channelInfos = await this.service.getChannel()
     if (!channelInfos)
       throw new TwitchResolverError('Channel data not available')
+    const game = await channelInfos.getGame()
     const data = {
-      category: (await channelInfos.getGame()).name,
+      category: game?.name || 'Unknown',
       title: channelInfos.title,
     }
     return Object.assign(new TwitchChannelInfo(), data)

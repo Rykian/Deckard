@@ -64,6 +64,6 @@ export class StreamStateService {
   }
 
   sequenceIterator() {
-    return this.pubsub.asyncIterator(Topics.CHANGED)
+    return this.pubsub.asyncIterableIterator(Topics.CHANGED)
   }
 }

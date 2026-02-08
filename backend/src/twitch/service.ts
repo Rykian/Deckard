@@ -1,12 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common'
-import {
-  ApiClient,
-  HelixChannelUpdate,
-  HelixPrivilegedUser,
-} from '@twurple/api'
+import type { HelixChannelUpdate, HelixUser } from '@twurple/api'
+import { ApiClient } from '@twurple/api'
 import {
   AccessToken,
-  ClientCredentialsAuthProvider,
+  AppTokenAuthProvider,
   exchangeCode,
   RefreshingAuthProvider,
 } from '@twurple/auth'
@@ -24,7 +21,7 @@ enum RedisKeys {
 
 @Injectable()
 export class TwitchService extends (EventEmitter as new () => TypedEmitter<TwitchEvents>) {
-  #appAuth = new ClientCredentialsAuthProvider(
+  #appAuth = new AppTokenAuthProvider(
     this.env.TWITCH_CLIENT_ID,
     this.env.TWITCH_CLIENT_SECRET,
   )
@@ -33,7 +30,7 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   })
   userAuth: RefreshingAuthProvider | undefined
   userAPI: ApiClient | undefined
-  #user: HelixPrivilegedUser | undefined
+  #user: HelixUser | null | undefined
   get clientId() {
     return this.env.TWITCH_CLIENT_ID
   }
@@ -56,15 +53,18 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
     const token = await this.redis.getJSON<AccessToken>(RedisKeys.TOKEN)
     if (!token) return
 
-    this.userAuth = new RefreshingAuthProvider(
-      {
-        clientId: this.env.TWITCH_CLIENT_ID,
-        clientSecret: this.env.TWITCH_CLIENT_SECRET,
-        onRefresh: async (newToken) =>
-          await this.redis.setJSON(RedisKeys.TOKEN, newToken),
-      },
-      token,
-    )
+    this.userAuth = new RefreshingAuthProvider({
+      clientId: this.env.TWITCH_CLIENT_ID,
+      clientSecret: this.env.TWITCH_CLIENT_SECRET,
+    })
+
+    // v7 uses EventEmitter pattern with onRefresh event
+    this.userAuth.onRefresh(async (userId: string, newToken: AccessToken) => {
+      await this.redis.setJSON(RedisKeys.TOKEN, newToken)
+    })
+
+    // Add user to the provider with their token
+    await this.userAuth.addUserForToken(token)
 
     this.userAPI = new ApiClient({ authProvider: this.userAuth })
     await this.getMe(true)
@@ -120,7 +120,10 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   async getMe(force?: boolean) {
     if (this.#user && !force) return this.#user
 
-    this.#user = await this.userAPI?.users.getMe()
+    const token = await this.redis.getJSON<any>(RedisKeys.TOKEN)
+    if (token?.userId && this.userAPI) {
+      this.#user = await this.userAPI.users.getUserById(token.userId)
+    }
     return this.#user
   }
 

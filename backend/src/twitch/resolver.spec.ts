@@ -51,7 +51,10 @@ describe(TwitchResolver.name, () => {
 
     it('calls service authFromCode', () => {
       resolver.updateTwitchTokenFromCode(code, redirectURI)
-      expect(twitchServiceMock.authFromCode).toBeCalledWith(code, redirectURI)
+      expect(twitchServiceMock.authFromCode).toHaveBeenCalledWith(
+        code,
+        redirectURI,
+      )
     })
   })
 

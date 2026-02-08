@@ -36,7 +36,7 @@ export class StreamCountdownResolver {
     @Args('name', { description: 'Countdown name', nullable: true })
     _name: string,
   ) {
-    return this.pubsub.asyncIterator(Topics.COUNTDOWN_EXPIRED)
+    return this.pubsub.asyncIterableIterator(Topics.COUNTDOWN_EXPIRED)
   }
 
   @Subscription(() => String, {
@@ -54,7 +54,7 @@ export class StreamCountdownResolver {
 
       this.pubsub.publish(Topics.COUNTDOWN_UPDATED, { name, target })
     })
-    return this.pubsub.asyncIterator(Topics.COUNTDOWN_UPDATED)
+    return this.pubsub.asyncIterableIterator(Topics.COUNTDOWN_UPDATED)
   }
 
   @Query(() => String, { description: 'Expiration date as ISO string' })

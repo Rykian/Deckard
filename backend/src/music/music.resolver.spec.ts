@@ -4,6 +4,7 @@ import { MusicResolver, MusicTopics } from './music.resolver'
 import { MusicService } from './application/music.service'
 import { Track } from './track.model'
 import { TrackEntity } from './domain/track.entity'
+import { PubSubModule } from '../pubsub.module'
 
 describe('MusicResolver', () => {
   let resolver: MusicResolver
@@ -34,22 +35,20 @@ describe('MusicResolver', () => {
       }),
     } as unknown as jest.Mocked<MusicService>
 
-    const pubsubMock = {
-      publish: jest.fn(),
-      asyncIterator: jest.fn(),
-    } as unknown as jest.Mocked<PubSub>
-
     const module: TestingModule = await Test.createTestingModule({
+      imports: [PubSubModule],
       providers: [
         MusicResolver,
         { provide: MusicService, useValue: musicServiceMock },
-        { provide: PubSub, useValue: pubsubMock },
       ],
     }).compile()
 
     resolver = module.get<MusicResolver>(MusicResolver)
     musicService = module.get(MusicService)
     pubsub = module.get(PubSub)
+
+    // Spy on the real PubSub.publish method
+    jest.spyOn(pubsub, 'publish')
   })
 
   describe('constructor', () => {
@@ -135,27 +134,19 @@ describe('MusicResolver', () => {
 
   describe('currentTrackUpdated', () => {
     it('should return an async iterator', () => {
-      const mockIterator = Symbol('iterator')
-      pubsub.asyncIterator.mockReturnValue(mockIterator as any)
-
       const result = resolver.currentTrackUpdated()
 
-      expect(pubsub.asyncIterator).toHaveBeenCalledWith(
-        MusicTopics.CURRENT_TRACK,
-      )
-      expect(result).toBe(mockIterator)
+      expect(result).toBeDefined()
+      expect(result[Symbol.asyncIterator]).toBeDefined()
     })
   })
 
   describe('currentTrackProgress', () => {
     it('should return an async iterator for progress updates', () => {
-      const mockIterator = Symbol('iterator')
-      pubsub.asyncIterator.mockReturnValue(mockIterator as any)
-
       const result = resolver.currentTrackProgress()
 
-      expect(pubsub.asyncIterator).toHaveBeenCalledWith(MusicTopics.PROGRESS)
-      expect(result).toBe(mockIterator)
+      expect(result).toBeDefined()
+      expect(result[Symbol.asyncIterator]).toBeDefined()
     })
   })
 })

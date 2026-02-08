@@ -45,11 +45,11 @@ export class MusicResolver {
       const model = track ? Track.fromEntity(track) : null
       this.pubsub.publish(MusicTopics.CURRENT_TRACK, model)
     })
-    return this.pubsub.asyncIterator(MusicTopics.CURRENT_TRACK)
+    return this.pubsub.asyncIterableIterator(MusicTopics.CURRENT_TRACK)
   }
 
   @Subscription(() => Int, { nullable: true, resolve: identity })
   currentTrackProgress() {
-    return this.pubsub.asyncIterator(MusicTopics.PROGRESS)
+    return this.pubsub.asyncIterableIterator(MusicTopics.PROGRESS)
   }
 }

@@ -23,7 +23,7 @@ interface AppleMusicTrackInfo {
 @Injectable()
 export class AppleMusicAdapter implements IMusicProvider {
   private readonly logger = new Logger(AppleMusicAdapter.name)
-  private interval?: NodeJS.Timer
+  private interval?: NodeJS.Timeout
   private currentTrack: TrackEntity | null = null
   private trackChangeCallbacks: Array<(track: TrackEntity | null) => void> = []
   private progressChangeCallbacks: Array<(progressMs: number | null) => void> =

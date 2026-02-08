@@ -41,7 +41,10 @@ export class OBSScenesService extends (EventEmitter as new () => TypedEventEmitt
     return this.#availableScenes
   }
 
-  constructor(private api: OBSAPI, private pubsub: PubSub) {
+  constructor(
+    private api: OBSAPI,
+    private pubsub: PubSub,
+  ) {
     super()
     api.on('CurrentProgramSceneChanged', ({ sceneName }) => {
       this.#programScene = sceneName
