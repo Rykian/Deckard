@@ -1,5 +1,6 @@
 import React from 'react'
-import { gql, useMutation, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useMutation, useSubscription } from '@apollo/client/react'
 import {
   CurrentSceneForSwitchesSubscription,
   ScenesListForSwitchesSubscription,

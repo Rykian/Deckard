@@ -1,6 +1,7 @@
 import { split, HttpLink, InMemoryCache, ApolloClient } from '@apollo/client'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
-import { WebSocketLink } from '@apollo/client/link/ws'
+import { createClient } from 'graphql-ws'
 import { useMemo } from 'react'
 
 const useApolloClient = (url: string) =>
@@ -9,10 +10,13 @@ const useApolloClient = (url: string) =>
 
     const httpLink = new HttpLink({ uri: url + '/graphql' })
 
-    const wsLink = new WebSocketLink({
-      uri: url.replace('http', 'ws') + '/graphql',
-      options: { reconnect: true },
-    })
+    const wsUrl = url.replace(/^http/, 'ws') + '/graphql'
+    const wsLink = new GraphQLWsLink(
+      createClient({
+        url: wsUrl,
+        lazy: true,
+      }),
+    )
 
     const splitLink = split(
       ({ query }) => {

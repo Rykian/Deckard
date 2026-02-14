@@ -1,4 +1,5 @@
-import { gql, useQuery } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useQuery } from '@apollo/client/react'
 import { Button, Layout } from '@ui-kitten/components'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'

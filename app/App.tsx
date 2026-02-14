@@ -2,7 +2,8 @@ import { StatusBar } from 'expo-status-bar'
 import { ApplicationProvider, Layout } from '@ui-kitten/components'
 import * as eva from '@eva-design/eva'
 import ServerSelectionScreen from './screens/ServerSelection'
-import { SafeAreaView, useColorScheme } from 'react-native'
+import { useColorScheme } from 'react-native'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import {
   DarkTheme,
   DefaultTheme,
@@ -30,23 +31,25 @@ export default function App() {
   return (
     <StoreProvider store={store}>
       <ApplicationProvider {...eva} theme={evaTheme}>
-        <Layout style={{ flex: 1 }}>
-          <SafeAreaView style={{ flex: 1 }}>
-            <NavigationContainer theme={navigationTheme}>
-              <Stack.Navigator>
-                <Stack.Screen
-                  name="Server selection"
-                  component={ServerSelectionScreen}
-                />
-                <Stack.Screen
-                  name="Dashboard"
-                  component={ServerDashboardScreen}
-                />
-              </Stack.Navigator>
-              <StatusBar style="auto" />
-            </NavigationContainer>
-          </SafeAreaView>
-        </Layout>
+        <SafeAreaProvider>
+          <Layout style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }}>
+              <NavigationContainer theme={navigationTheme}>
+                <Stack.Navigator>
+                  <Stack.Screen
+                    name="Server selection"
+                    component={ServerSelectionScreen}
+                  />
+                  <Stack.Screen
+                    name="Dashboard"
+                    component={ServerDashboardScreen}
+                  />
+                </Stack.Navigator>
+                <StatusBar style="auto" />
+              </NavigationContainer>
+            </SafeAreaView>
+          </Layout>
+        </SafeAreaProvider>
       </ApplicationProvider>
     </StoreProvider>
   )

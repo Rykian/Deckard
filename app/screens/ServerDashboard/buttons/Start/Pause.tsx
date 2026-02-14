@@ -1,4 +1,5 @@
-import { gql, useMutation } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { Button, Layout, Text } from '@ui-kitten/components'

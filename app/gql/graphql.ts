@@ -1,152 +1,146 @@
 /* eslint-disable */
 import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
+export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
 };
 
 export type CheckScenesReport = {
   __typename?: 'CheckScenesReport';
   missingItems?: Maybe<Array<ItemReport>>;
-  missingScenes?: Maybe<Array<Scalars['String']>>;
+  missingScenes?: Maybe<Array<Scalars['String']['output']>>;
 };
 
 export type ItemReport = {
   __typename?: 'ItemReport';
-  items: Array<Scalars['String']>;
-  scene: Scalars['String'];
+  items: Array<Scalars['String']['output']>;
+  scene: Scalars['String']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  obsConnect: Scalars['Boolean'];
+  obsConnect: Scalars['Boolean']['output'];
   obsScenesCheck: CheckScenesReport;
-  obsScenesSwitch: Scalars['Boolean'];
+  obsScenesSwitch: Scalars['Boolean']['output'];
   /** Return the name of the countdown */
-  streamCountdownSet: Scalars['String'];
+  streamCountdownSet: Scalars['String']['output'];
   /** Set pause scene on stream and returns the previous scene name (before pause) */
-  streamSequencePause: Scalars['String'];
+  streamSequencePause: Scalars['String']['output'];
   /** Unpause the stream */
-  streamSequencePauseUnpause: Scalars['Boolean'];
-  streamSequenceStart: Scalars['Boolean'];
-  streamSequenceStartImmediatly: Scalars['Boolean'];
-  streamSequenceStartToggleOnCountdownExpiring: Scalars['Boolean'];
-  streamSequenceStop: Scalars['Boolean'];
-  streamSequenceStopCancel: Scalars['Boolean'];
-  streamWebcamToggle: Scalars['Boolean'];
-  streamWebcamToggleBlur: Scalars['Boolean'];
-  updateSpotifyAuth: Scalars['Boolean'];
-  updateTwitchTokenFromCode: Scalars['Boolean'];
+  streamSequencePauseUnpause: Scalars['Boolean']['output'];
+  streamSequenceStart: Scalars['Boolean']['output'];
+  streamSequenceStartImmediatly: Scalars['Boolean']['output'];
+  streamSequenceStartToggleOnCountdownExpiring: Scalars['Boolean']['output'];
+  streamSequenceStop: Scalars['Boolean']['output'];
+  streamSequenceStopCancel: Scalars['Boolean']['output'];
+  streamWebcamToggle: Scalars['Boolean']['output'];
+  streamWebcamToggleBlur: Scalars['Boolean']['output'];
+  updateTwitchTokenFromCode: Scalars['Boolean']['output'];
 };
 
 
 export type MutationObsConnectArgs = {
-  host: Scalars['String'];
-  password?: InputMaybe<Scalars['String']>;
-  port: Scalars['String'];
+  host: Scalars['String']['input'];
+  password?: InputMaybe<Scalars['String']['input']>;
+  port: Scalars['String']['input'];
 };
 
 
 export type MutationObsScenesSwitchArgs = {
-  instant?: InputMaybe<Scalars['Boolean']>;
-  scene: Scalars['String'];
+  instant?: InputMaybe<Scalars['Boolean']['input']>;
+  scene: Scalars['String']['input'];
 };
 
 
 export type MutationStreamCountdownSetArgs = {
-  name: Scalars['String'];
-  target: Scalars['String'];
+  name: Scalars['String']['input'];
+  target: Scalars['String']['input'];
 };
 
 
 export type MutationStreamSequencePauseUnpauseArgs = {
-  scene?: InputMaybe<Scalars['String']>;
+  scene?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationStreamSequenceStartArgs = {
-  targetedTime?: InputMaybe<Scalars['String']>;
+  targetedTime?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationStreamSequenceStartImmediatlyArgs = {
-  scene: Scalars['String'];
+  scene: Scalars['String']['input'];
 };
 
 
 export type MutationStreamSequenceStartToggleOnCountdownExpiringArgs = {
-  scene: Scalars['String'];
+  scene: Scalars['String']['input'];
 };
 
 
 export type MutationStreamSequenceStopCancelArgs = {
-  scene?: InputMaybe<Scalars['String']>;
-};
-
-
-export type MutationUpdateSpotifyAuthArgs = {
-  code: Scalars['String'];
-  redirectURI: Scalars['String'];
+  scene?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationUpdateTwitchTokenFromCodeArgs = {
-  code: Scalars['String'];
-  redirectURI: Scalars['String'];
+  code: Scalars['String']['input'];
+  redirectURI: Scalars['String']['input'];
 };
 
 export type PortScannerResult = {
   __typename?: 'PortScannerResult';
-  hostname?: Maybe<Scalars['String']>;
-  ip: Scalars['String'];
-  password?: Maybe<Scalars['String']>;
-  port: Scalars['String'];
-  secure?: Maybe<Scalars['Boolean']>;
+  hostname?: Maybe<Scalars['String']['output']>;
+  ip: Scalars['String']['output'];
+  password?: Maybe<Scalars['String']['output']>;
+  port: Scalars['String']['output'];
+  secure?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type Query = {
   __typename?: 'Query';
   getCurrentTrack?: Maybe<Track>;
-  getSpotifyAuthURL: Scalars['String'];
-  getSpotifyUserName?: Maybe<Scalars['String']>;
-  getTwitchAuthURL: Scalars['String'];
-  getTwitchEditStreamInfoUrl?: Maybe<Scalars['String']>;
+  getTwitchAuthURL: Scalars['String']['output'];
+  getTwitchEditStreamInfoUrl?: Maybe<Scalars['String']['output']>;
   /** @deprecated Switching query naming scheme, use `twitchGetUsername` instead */
-  getTwitchUserName?: Maybe<Scalars['String']>;
-  obsConnected: Scalars['Boolean'];
-  obsCurrentInstance?: Maybe<Scalars['String']>;
+  getTwitchUserName?: Maybe<Scalars['String']['output']>;
+  obsConnected: Scalars['Boolean']['output'];
+  obsCurrentInstance?: Maybe<Scalars['String']['output']>;
   obsInstanceList: Array<PortScannerResult>;
-  obsScenesList: Array<Scalars['String']>;
-  obsStreamIsStreaming: Scalars['Boolean'];
+  obsScenesList: Array<Scalars['String']['output']>;
+  obsStreamIsStreaming: Scalars['Boolean']['output'];
   /** Expiration date as ISO string */
-  streamCountdownGet: Scalars['String'];
+  streamCountdownGet: Scalars['String']['output'];
   twitchGetChannelInfo: TwitchChannelInfo;
-  twitchGetClientId?: Maybe<Scalars['String']>;
-  twitchGetUsername: Scalars['String'];
-};
-
-
-export type QueryGetSpotifyAuthUrlArgs = {
-  redirectURI: Scalars['String'];
+  twitchGetClientId?: Maybe<Scalars['String']['output']>;
+  twitchGetUsername: Scalars['String']['output'];
 };
 
 
 export type QueryGetTwitchAuthUrlArgs = {
-  redirectURI?: Scalars['String'];
+  redirectURI?: Scalars['String']['input'];
 };
 
 
 export type QueryStreamCountdownGetArgs = {
-  name: Scalars['String'];
+  name: Scalars['String']['input'];
+};
+
+export type SceneChanging = {
+  __typename?: 'SceneChanging';
+  from: Scalars['String']['output'];
+  to: Scalars['String']['output'];
 };
 
 export enum StreamStateEnum {
@@ -159,62 +153,61 @@ export enum StreamStateEnum {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  currentTrackProgress?: Maybe<Scalars['Int']['output']>;
   currentTrackUpdated?: Maybe<Track>;
-  obsCurrentInstanceUpdated?: Maybe<Scalars['String']>;
-  obsScenesCurrentChanged: Scalars['String'];
-  obsScenesListUpdated: Array<Scalars['String']>;
-  obsStreamStreamingUpdated: Scalars['Boolean'];
+  obsCurrentInstanceUpdated?: Maybe<Scalars['String']['output']>;
+  obsScenesChanging: SceneChanging;
+  obsScenesCurrentChanged: Scalars['String']['output'];
+  obsScenesListUpdated: Array<Scalars['String']['output']>;
+  obsStreamStreamingUpdated: Scalars['Boolean']['output'];
   /** Return the name of expired counters */
-  streamCountdownExpired: Scalars['String'];
+  streamCountdownExpired: Scalars['String']['output'];
   /** Notify when a countdown has been updated */
-  streamCountdownUpdated: Scalars['String'];
+  streamCountdownUpdated: Scalars['String']['output'];
   streamStateChanged?: Maybe<StreamStateEnum>;
-  streamWebcamBlurChanged: Scalars['Boolean'];
-  streamWebcamChanged: Scalars['Boolean'];
+  streamWebcamBlurChanged: Scalars['Boolean']['output'];
+  streamWebcamChanged: Scalars['Boolean']['output'];
 };
 
 
 export type SubscriptionStreamCountdownExpiredArgs = {
-  name?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type SubscriptionStreamCountdownUpdatedArgs = {
-  name: Scalars['String'];
+  name: Scalars['String']['input'];
 };
 
 export type Track = {
   __typename?: 'Track';
-  album: Scalars['String'];
-  artists: Array<Scalars['String']>;
-  cover: Scalars['String'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  release: Scalars['String'];
-  url: Scalars['String'];
+  album: Scalars['String']['output'];
+  artists: Array<Scalars['String']['output']>;
+  cover: Scalars['String']['output'];
+  /** Duration in ms */
+  duration: Scalars['Float']['output'];
+  id: Scalars['ID']['output'];
+  name: Scalars['String']['output'];
+  release: Scalars['String']['output'];
+  url: Scalars['String']['output'];
 };
 
 export type TwitchCategory = {
   __typename?: 'TwitchCategory';
-  id: Scalars['String'];
-  name: Scalars['String'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type TwitchChannelInfo = {
   __typename?: 'TwitchChannelInfo';
   category: TwitchCategory;
-  title: Scalars['String'];
+  title: Scalars['String']['output'];
 };
 
 export type ObsCurrentInstanceSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ObsCurrentInstanceSubscription = { __typename?: 'Subscription', obsCurrentInstanceUpdated?: string | null };
-
-export type SpotifyUserNameQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SpotifyUserNameQuery = { __typename?: 'Query', getSpotifyUserName?: string | null };
 
 export type TwitchUserNameQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -227,38 +220,23 @@ export type ListObsInstancesQueryVariables = Exact<{ [key: string]: never; }>;
 export type ListObsInstancesQuery = { __typename?: 'Query', obsInstanceList: Array<{ __typename?: 'PortScannerResult', ip: string, port: string, hostname?: string | null }> };
 
 export type SelectObsInstanceMutationVariables = Exact<{
-  host: Scalars['String'];
-  port: Scalars['String'];
+  host: Scalars['String']['input'];
+  port: Scalars['String']['input'];
 }>;
 
 
 export type SelectObsInstanceMutation = { __typename?: 'Mutation', obsConnect: boolean };
 
-export type SpotifyAuthQueryVariables = Exact<{
-  redirectURI: Scalars['String'];
-}>;
-
-
-export type SpotifyAuthQuery = { __typename?: 'Query', getSpotifyAuthURL: string };
-
-export type UpdateSpotifyMutationVariables = Exact<{
-  code: Scalars['String'];
-  redirectURI: Scalars['String'];
-}>;
-
-
-export type UpdateSpotifyMutation = { __typename?: 'Mutation', updateSpotifyAuth: boolean };
-
 export type GetTwitchAuthUrlQueryVariables = Exact<{
-  redirectURI: Scalars['String'];
+  redirectURI: Scalars['String']['input'];
 }>;
 
 
-export type GetTwitchAuthUrlQuery = { __typename?: 'Query', getTwitchAuthURL: string };
+export type GetTwitchAuthUrlQuery = { __typename?: 'Query', getTwitchAuthURL: string, twitchGetClientId?: string | null };
 
 export type UpdateTwitchTokenMutationVariables = Exact<{
-  code: Scalars['String'];
-  redirectURI: Scalars['String'];
+  code: Scalars['String']['input'];
+  redirectURI: Scalars['String']['input'];
 }>;
 
 
@@ -270,7 +248,7 @@ export type ScenesListForSwitchesSubscriptionVariables = Exact<{ [key: string]: 
 export type ScenesListForSwitchesSubscription = { __typename?: 'Subscription', obsScenesListUpdated: Array<string> };
 
 export type SwitchSceneFromSwitchesMutationVariables = Exact<{
-  scene: Scalars['String'];
+  scene: Scalars['String']['input'];
 }>;
 
 
@@ -287,14 +265,14 @@ export type PauseStreamMutationVariables = Exact<{ [key: string]: never; }>;
 export type PauseStreamMutation = { __typename?: 'Mutation', streamSequencePause: string };
 
 export type UnpauseStreamMutationVariables = Exact<{
-  scene?: InputMaybe<Scalars['String']>;
+  scene?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type UnpauseStreamMutation = { __typename?: 'Mutation', streamSequencePauseUnpause: boolean };
 
 export type SetPauseTimerMutationVariables = Exact<{
-  resumeDate: Scalars['String'];
+  resumeDate: Scalars['String']['input'];
 }>;
 
 
@@ -311,14 +289,14 @@ export type StartTimerCountdownSubscriptionVariables = Exact<{ [key: string]: ne
 export type StartTimerCountdownSubscription = { __typename?: 'Subscription', streamCountdownUpdated: string };
 
 export type ToggleStartStreamOnExpiringMutationVariables = Exact<{
-  scene: Scalars['String'];
+  scene: Scalars['String']['input'];
 }>;
 
 
 export type ToggleStartStreamOnExpiringMutation = { __typename?: 'Mutation', streamSequenceStartToggleOnCountdownExpiring: boolean };
 
 export type StartImmediatelyMutationVariables = Exact<{
-  scene: Scalars['String'];
+  scene: Scalars['String']['input'];
 }>;
 
 
@@ -330,7 +308,7 @@ export type ListStartScenesQueryVariables = Exact<{ [key: string]: never; }>;
 export type ListStartScenesQuery = { __typename?: 'Query', obsScenesList: Array<string> };
 
 export type StartStreamingMutationVariables = Exact<{
-  target?: InputMaybe<Scalars['String']>;
+  target?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -351,6 +329,11 @@ export type ToggleCameraVisibilityMutationVariables = Exact<{ [key: string]: nev
 
 export type ToggleCameraVisibilityMutation = { __typename?: 'Mutation', streamWebcamToggle: boolean };
 
+export type ToggleCameraBlurMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ToggleCameraBlurMutation = { __typename?: 'Mutation', streamWebcamToggleBlur: boolean };
+
 export type CameraVisibilityChangedSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -363,13 +346,10 @@ export type CameraBlurChangedSubscription = { __typename?: 'Subscription', strea
 
 
 export const ObsCurrentInstanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"obsCurrentInstance"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsCurrentInstanceUpdated"}}]}}]} as unknown as DocumentNode<ObsCurrentInstanceSubscription, ObsCurrentInstanceSubscriptionVariables>;
-export const SpotifyUserNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spotifyUserName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSpotifyUserName"}}]}}]} as unknown as DocumentNode<SpotifyUserNameQuery, SpotifyUserNameQueryVariables>;
 export const TwitchUserNameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"twitchUserName"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"twitchGetUsername"}}]}}]} as unknown as DocumentNode<TwitchUserNameQuery, TwitchUserNameQueryVariables>;
 export const ListObsInstancesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ListObsInstances"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsInstanceList"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ip"}},{"kind":"Field","name":{"kind":"Name","value":"port"}},{"kind":"Field","name":{"kind":"Name","value":"hostname"}}]}}]}}]} as unknown as DocumentNode<ListObsInstancesQuery, ListObsInstancesQueryVariables>;
 export const SelectObsInstanceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SelectOBSInstance"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"host"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"port"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsConnect"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"host"},"value":{"kind":"Variable","name":{"kind":"Name","value":"host"}}},{"kind":"Argument","name":{"kind":"Name","value":"port"},"value":{"kind":"Variable","name":{"kind":"Name","value":"port"}}}]}]}}]} as unknown as DocumentNode<SelectObsInstanceMutation, SelectObsInstanceMutationVariables>;
-export const SpotifyAuthDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"spotifyAuth"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getSpotifyAuthURL"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<SpotifyAuthQuery, SpotifyAuthQueryVariables>;
-export const UpdateSpotifyDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateSpotify"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSpotifyAuth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}},{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<UpdateSpotifyMutation, UpdateSpotifyMutationVariables>;
-export const GetTwitchAuthUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTwitchAuthURL"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTwitchAuthURL"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<GetTwitchAuthUrlQuery, GetTwitchAuthUrlQueryVariables>;
+export const GetTwitchAuthUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTwitchAuthURL"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getTwitchAuthURL"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]},{"kind":"Field","name":{"kind":"Name","value":"twitchGetClientId"}}]}}]} as unknown as DocumentNode<GetTwitchAuthUrlQuery, GetTwitchAuthUrlQueryVariables>;
 export const UpdateTwitchTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateTwitchToken"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"code"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateTwitchTokenFromCode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"code"},"value":{"kind":"Variable","name":{"kind":"Name","value":"code"}}},{"kind":"Argument","name":{"kind":"Name","value":"redirectURI"},"value":{"kind":"Variable","name":{"kind":"Name","value":"redirectURI"}}}]}]}}]} as unknown as DocumentNode<UpdateTwitchTokenMutation, UpdateTwitchTokenMutationVariables>;
 export const ScenesListForSwitchesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"ScenesListForSwitches"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsScenesListUpdated"}}]}}]} as unknown as DocumentNode<ScenesListForSwitchesSubscription, ScenesListForSwitchesSubscriptionVariables>;
 export const SwitchSceneFromSwitchesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SwitchSceneFromSwitches"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"scene"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"obsScenesSwitch"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"scene"},"value":{"kind":"Variable","name":{"kind":"Name","value":"scene"}}}]}]}}]} as unknown as DocumentNode<SwitchSceneFromSwitchesMutation, SwitchSceneFromSwitchesMutationVariables>;
@@ -386,5 +366,6 @@ export const StartStreamingDocument = {"kind":"Document","definitions":[{"kind":
 export const StopStreamDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"StopStream"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamSequenceStop"}}]}}]} as unknown as DocumentNode<StopStreamMutation, StopStreamMutationVariables>;
 export const StreamStateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"StreamState"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamStateChanged"}}]}}]} as unknown as DocumentNode<StreamStateSubscription, StreamStateSubscriptionVariables>;
 export const ToggleCameraVisibilityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ToggleCameraVisibility"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamWebcamToggle"}}]}}]} as unknown as DocumentNode<ToggleCameraVisibilityMutation, ToggleCameraVisibilityMutationVariables>;
+export const ToggleCameraBlurDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ToggleCameraBlur"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamWebcamToggleBlur"}}]}}]} as unknown as DocumentNode<ToggleCameraBlurMutation, ToggleCameraBlurMutationVariables>;
 export const CameraVisibilityChangedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"CameraVisibilityChanged"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamWebcamChanged"}}]}}]} as unknown as DocumentNode<CameraVisibilityChangedSubscription, CameraVisibilityChangedSubscriptionVariables>;
 export const CameraBlurChangedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"CameraBlurChanged"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"streamWebcamBlurChanged"}}]}}]} as unknown as DocumentNode<CameraBlurChangedSubscription, CameraBlurChangedSubscriptionVariables>;

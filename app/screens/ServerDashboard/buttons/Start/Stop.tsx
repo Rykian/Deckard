@@ -1,4 +1,5 @@
-import { gql, useMutation } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { Button, Layout } from '@ui-kitten/components'
 import { ServerDashboardStackParamList } from '../..'

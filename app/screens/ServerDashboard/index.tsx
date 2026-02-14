@@ -4,11 +4,10 @@ import {
   NativeStackScreenProps,
 } from '@react-navigation/native-stack'
 import { useEffect } from 'react'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client/react'
 import Home from './Home'
 import OBSSelection from './OBSSelection'
 import useApolloClient from '../../utils/useApolloClient'
-import SpotifyLogin from './SpotifyLogin'
 import TwitchLogin from './TwitchLogin'
 import PrepareStart from './buttons/Start/PrepareStart'
 import Pause from './buttons/Start/Pause'
@@ -52,7 +51,6 @@ const ServerDashboardScreen = (props: Props) => {
         />
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="OBSSelection" component={OBSSelection} />
-          <Stack.Screen name="SpotifyLogin" component={SpotifyLogin} />
           <Stack.Screen name="TwitchLogin" component={TwitchLogin} />
           <Stack.Screen name="StartButton/Start" component={PrepareStart} />
           <Stack.Screen name="StartButton/Pause" component={Pause} />

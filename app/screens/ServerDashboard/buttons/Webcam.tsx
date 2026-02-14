@@ -1,4 +1,5 @@
-import { gql, useMutation, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useMutation, useSubscription } from '@apollo/client/react'
 import { faCamera } from '@fortawesome/free-solid-svg-icons'
 import Switch from '../../../components/Switch'
 import {

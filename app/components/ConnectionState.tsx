@@ -20,8 +20,8 @@ const ConnectionState = (props: Props) => {
       style={{ marginLeft: 5 }}
       accessoryLeft={(aProps) => (
         <FontAwesomeIcon
-          style={aProps.style}
-          color={aProps.style['tintColor']}
+          style={aProps?.style ?? undefined}
+          color={(aProps?.style as any)?.tintColor}
           icon={props.icon}
         />
       )}

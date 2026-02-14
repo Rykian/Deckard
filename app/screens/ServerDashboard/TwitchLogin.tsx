@@ -1,6 +1,8 @@
-import { gql, useApolloClient, useMutation, useQuery } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useApolloClient, useMutation, useQuery } from '@apollo/client/react'
 import { Button } from '@ui-kitten/components'
 import * as AuthSession from 'expo-auth-session'
+import { useEffect } from 'react'
 import {
   GetTwitchAuthUrlQuery,
   GetTwitchAuthUrlQueryVariables,
@@ -12,6 +14,7 @@ import { TWITCH_USERNAME } from './Home'
 const TWITCH_URL = gql`
   query GetTwitchAuthURL($redirectURI: String!) {
     getTwitchAuthURL(redirectURI: $redirectURI)
+    twitchGetClientId
   }
 `
 const UPDATE_TWITCH_TOKEN = gql`
@@ -22,31 +25,50 @@ const UPDATE_TWITCH_TOKEN = gql`
 
 const TwitchLogin = () => {
   const apollo = useApolloClient()
-  const redirectURI = AuthSession.makeRedirectUri({ useProxy: true })
+  const redirectURI = AuthSession.makeRedirectUri({ scheme: 'deckard' })
 
-  const authUrl = useQuery<
-    GetTwitchAuthUrlQuery,
-    GetTwitchAuthUrlQueryVariables
-  >(TWITCH_URL, { variables: { redirectURI } }).data?.getTwitchAuthURL
+  const { getTwitchAuthURL: authUrl, twitchGetClientId: clientId } =
+    useQuery<GetTwitchAuthUrlQuery, GetTwitchAuthUrlQueryVariables>(
+      TWITCH_URL,
+      { variables: { redirectURI } },
+    ).data ?? {}
+
+  const discovery = {
+    authorizationEndpoint: authUrl ?? '',
+  }
+
+  const [request, response, promptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: clientId ?? 'YOUR_TWITCH_CLIENT_ID',
+      redirectUri: redirectURI,
+    },
+    discovery,
+  )
 
   const [update] = useMutation<
     MutationUpdateTwitchTokenFromCodeArgs,
     UpdateTwitchTokenMutationVariables
   >(UPDATE_TWITCH_TOKEN)
 
+  useEffect(() => {
+    if (response?.type !== 'success') return
+
+    const code = response.params?.['code']
+    if (!code) return
+
+    update({ variables: { code, redirectURI } })
+      .then(() => apollo.refetchQueries({ include: [TWITCH_USERNAME] }))
+      .catch(() => {})
+  }, [apollo, redirectURI, response, update])
+
   return (
     <Button
       onPress={async () => {
         if (!authUrl) return
 
-        const session = await AuthSession.startAsync({ authUrl })
-        if (session.type == 'success') {
-          await update({
-            variables: { code: session.params['code'], redirectURI },
-          })
-          await apollo.refetchQueries({ include: [TWITCH_USERNAME] })
-        }
+        await promptAsync()
       }}
+      disabled={!authUrl || !request}
     >
       Login
     </Button>

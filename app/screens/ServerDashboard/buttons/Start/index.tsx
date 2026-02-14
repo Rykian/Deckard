@@ -1,4 +1,5 @@
-import { gql, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import { faPauseCircle, faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import Switch from '../../../../components/Switch'
 import {

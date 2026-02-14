@@ -1,4 +1,5 @@
-import { gql, useMutation } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useMutation } from '@apollo/client/react'
 import { MutationObsScenesSwitchArgs } from '../gql/graphql'
 
 const SWITCH_SCENE = gql`

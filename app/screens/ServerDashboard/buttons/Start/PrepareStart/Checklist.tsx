@@ -1,4 +1,5 @@
-import { gql, useMutation, useQuery, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useMutation, useQuery, useSubscription } from '@apollo/client/react'
 import { Button, CheckBox, Layout, Text } from '@ui-kitten/components'
 import { useEffect, useMemo, useState } from 'react'
 import { StepProps } from '.'

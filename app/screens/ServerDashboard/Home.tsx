@@ -1,4 +1,5 @@
-import { gql, useQuery, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useQuery, useSubscription } from '@apollo/client/react'
 import {
   faChromecast,
   faSpotify,
@@ -11,7 +12,6 @@ import ConnectionState from '../../components/ConnectionState'
 import { ServerDashboardStackParamList } from '.'
 import {
   ObsCurrentInstanceSubscription,
-  SpotifyUserNameQuery,
   TwitchUserNameQuery,
 } from '../../gql/graphql'
 import Button from './buttons/Start'
@@ -21,12 +21,6 @@ import Webcam from './buttons/Webcam'
 const CURRENT_INSTANCE = gql`
   subscription obsCurrentInstance {
     obsCurrentInstanceUpdated
-  }
-`
-
-export const SPOTIFY_USERNAME = gql`
-  query spotifyUserName {
-    getSpotifyUserName
   }
 `
 
@@ -42,7 +36,6 @@ const Home = (props: Props) => {
   const currentInstanceSub =
     useSubscription<ObsCurrentInstanceSubscription>(CURRENT_INSTANCE)
 
-  const spotifyUserName = useQuery<SpotifyUserNameQuery>(SPOTIFY_USERNAME)
   const twitchUserName = useQuery<TwitchUserNameQuery>(TWITCH_USERNAME)
 
   return (
@@ -55,13 +48,6 @@ const Home = (props: Props) => {
             connected={!!currentInstanceSub.data?.obsCurrentInstanceUpdated}
           >
             OBS
-          </ConnectionState>
-          <ConnectionState
-            onPress={() => props.navigation.navigate('SpotifyLogin')}
-            connected={!!spotifyUserName.data}
-            icon={faSpotify}
-          >
-            {spotifyUserName.data?.getSpotifyUserName || 'Not connected'}
           </ConnectionState>
           <ConnectionState
             onPress={() => props.navigation.navigate('TwitchLogin')}
