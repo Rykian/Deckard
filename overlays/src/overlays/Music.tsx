@@ -1,4 +1,5 @@
-import { gql, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import { useMemo } from 'react'
 import {
   CurrentTrackProgressSubscription,

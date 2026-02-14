@@ -1,4 +1,5 @@
-import { gql, useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useSubscription } from '@apollo/client/react'
 import { css, Interpolation, Theme } from '@emotion/react'
 import { animated, to } from '@react-spring/web'
 import { parseISO } from 'date-fns'

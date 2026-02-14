@@ -1,17 +1,13 @@
-import {
-  ApolloClient,
-  ApolloProvider,
-  HttpLink,
-  InMemoryCache,
-  split,
-} from '@apollo/client'
+import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client'
+import { ApolloProvider } from '@apollo/client/react'
 import { css, Global } from '@emotion/react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import $UbuntuFont from './assets/fonts/Ubuntu'
 import $UbuntuMonoFont from './assets/fonts/Ubuntu_Mono'
 import MusicOverlay from './overlays/Music'
-import { WebSocketLink } from '@apollo/client/link/ws'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { getMainDefinition } from '@apollo/client/utilities'
+import { createClient } from 'graphql-ws'
 import React from 'react'
 
 const ChatOverlay = React.lazy(() => import('./overlays/Chat'))
@@ -43,10 +39,12 @@ const url = 'http://localhost:3000'
 
 const httpLink = new HttpLink({ uri: url + '/graphql' })
 
-const wsLink = new WebSocketLink({
-  uri: url.replace('http', 'ws') + '/graphql',
-  options: { reconnect: true },
-})
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: url.replace('http', 'ws') + '/graphql',
+    retryAttempts: Infinity,
+  }),
+)
 
 const splitLink = split(
   ({ query }) => {

@@ -1,4 +1,4 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react'
+import { ComponentMeta, ComponentStory } from '@storybook/react-vite'
 import { JSXElementConstructor, useState } from 'react'
 import Music, { Track } from '.'
 import colCover from './col.jpg'
