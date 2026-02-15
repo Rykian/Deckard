@@ -10,6 +10,7 @@ export class EnvironmentService {
     .required()
     .asString()
   TWITCH_SECRET = this.env.get('TWITCH_SECRET').required().asString()
+  TUNNEL_SUBDOMAIN = this.env.get('TUNNEL_SUBDOMAIN').required().asString()
 
   SPOTIFY_CLIENT_ID = this.env.get('SPOTIFY_CLIENT_ID').required().asString()
   SPOTIFY_CLIENT_SECRET = this.env

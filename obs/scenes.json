@@ -30,8 +30,8 @@
     "monitoring_type": 0,
     "private_settings": {}
   },
-  "current_scene": "scene-default",
-  "current_program_scene": "scene-default",
+  "current_scene": "_maincam",
+  "current_program_scene": "_maincam",
   "scene_order": [
     {
       "name": "Start"
@@ -931,8 +931,8 @@
       "id": "av_capture_input",
       "versioned_id": "av_capture_input_v2",
       "settings": {
-        "device": "DB3CF785-2693-4894-88F7-B73600000001",
-        "device_name": "Thibault’s iPhone Camera"
+        "device": "3F45E80A-0176-46F7-B185-BB9E2C0E82E3",
+        "device_name": "FaceTime HD Camera"
       },
       "mixers": 255,
       "sync": 0,

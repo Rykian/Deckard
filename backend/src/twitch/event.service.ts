@@ -3,9 +3,8 @@ import {
   EventSubHttpListener,
   ReverseProxyAdapter,
 } from '@twurple/eventsub-http'
-import localtunnel from 'localtunnel'
-import getPort from 'get-port'
 import { EnvironmentService } from 'src/env.service'
+import { TunnelDomainService, getHostnameFromUrl } from 'src/tunnel'
 import { TwitchCategory } from './object'
 import { TwitchService } from './service'
 
@@ -20,15 +19,18 @@ export class TwitchEventService {
   constructor(
     private service: TwitchService,
     private env: EnvironmentService,
+    private tunnelService: TunnelDomainService,
   ) {
     this.start()
   }
 
   async start() {
-    const port = await getPort()
-    const tunnel = await localtunnel({ port })
-    const url = new URL(tunnel.url)
-    const adapter = new ReverseProxyAdapter({ hostName: url.hostname, port })
+    const tunnel = await this.tunnelService.establishTunnel()
+    this.logger.debug(`Tunnel URL: ${tunnel.url}`)
+    const adapter = new ReverseProxyAdapter({
+      hostName: getHostnameFromUrl(tunnel.url),
+      port: tunnel.port,
+    })
     this.#listener = new EventSubHttpListener({
       apiClient: this.service.appAPI as any,
       adapter,
