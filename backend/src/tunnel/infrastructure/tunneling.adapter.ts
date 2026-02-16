@@ -1,11 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
-import localtunnel from 'localtunnel'
-import type * as GetPortType from 'get-port'
+import fs from 'node:fs'
+import { Tunnel, bin, install } from 'cloudflared'
+import { EnvironmentService } from '../../env.service'
 
 export interface ITunnelConfig {
   url: string
-  port: number
-  subdomain: string
 }
 
 export function getHostnameFromUrl(url: string): string {
@@ -16,27 +15,69 @@ export function getHostnameFromUrl(url: string): string {
 @Injectable()
 export class TunnelingAdapter {
   private logger = new Logger(TunnelingAdapter.name)
-  private tunnel: localtunnel.Tunnel | null = null
-  private getPort: typeof GetPortType.default | null = null
+  private tunnel: Tunnel | null = null
 
-  async getAvailablePort(): Promise<number> {
-    // Lazy load get-port
-    if (!this.getPort) {
-      this.getPort = (await import('get-port')).default
-    }
-    return this.getPort()
+  constructor(private env: EnvironmentService) {}
+
+  async createTunnel(): Promise<string> {
+    return this.startCloudflared()
   }
 
-  async createTunnel(port: number, subdomain: string): Promise<ITunnelConfig> {
-    this.tunnel = await localtunnel({
-      port,
-      subdomain,
-    })
+  private startCloudflared(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const tunnelToken = this.env.CLOUDFLARE_TUNNEL_TOKEN
+      const customDomain = this.env.CLOUDFLARE_CUSTOM_DOMAIN
 
-    if (!this.tunnel.url.includes(subdomain))
-      this.logger.warn(
-        `Tunnel URL ${this.tunnel.url} does not contain expected subdomain ${subdomain}`,
-      )
-    return { url: this.tunnel.url, port, subdomain }
+      const handleError = (error: Error) => {
+        cleanup()
+        reject(error)
+      }
+
+      const cleanup = () => {
+        this.tunnel?.removeListener('error', handleError)
+      }
+
+      void (async () => {
+        try {
+          if (!fs.existsSync(bin)) {
+            this.logger.log('Installing cloudflared binary...')
+            await install(bin)
+          }
+
+          this.logger.log(
+            `Starting Cloudflare Tunnel with custom domain: ${customDomain}`,
+          )
+
+          this.tunnel = Tunnel.withToken(tunnelToken, {
+            '--protocol': 'http2',
+          })
+
+          // For token-based tunnels, the URL is pre-configured in Cloudflare
+          // Wait a moment for tunnel to connect, then resolve with the custom domain
+          this.tunnel.once('error', handleError)
+          this.tunnel.on('stderr', (data) => {
+            const message = data.toString()
+            this.logger.debug(`cloudflared: ${message}`)
+          })
+          this.tunnel.on('url', (url) =>
+            this.logger.debug(`Cloudflared URL event: ${url}`),
+          )
+          this.tunnel.on('stderr', (data) =>
+            this.logger.error(`cloudflared stderr: ${data.toString()}`),
+          )
+          this.tunnel.on('stdout', (data) =>
+            this.logger.debug(`cloudflared stdout: ${data.toString()}`),
+          )
+
+          setTimeout(() => {
+            cleanup()
+            resolve(`https://${customDomain}`)
+          }, 2000)
+        } catch (error) {
+          cleanup()
+          reject(error instanceof Error ? error : new Error(String(error)))
+        }
+      })()
+    })
   }
 }

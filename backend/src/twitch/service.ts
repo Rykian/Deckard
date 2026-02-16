@@ -49,10 +49,20 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   }
 
   async setupUserAPI() {
-    if (this.userAuth) return
-    const token = await this.redis.getJSON<AccessToken>(RedisKeys.TOKEN)
-    if (!token) return
+    if (this.userAuth) {
+      this.logger.debug('userAuth already set up, skipping')
+      return
+    }
 
+    const token = await this.redis.getJSON<AccessToken>(RedisKeys.TOKEN)
+    if (!token) {
+      this.logger.warn(
+        'No Twitch token found in Redis. User needs to authenticate.',
+      )
+      return
+    }
+
+    this.logger.log('Setting up Twitch user authentication')
     this.userAuth = new RefreshingAuthProvider({
       clientId: this.env.TWITCH_CLIENT_ID,
       clientSecret: this.env.TWITCH_CLIENT_SECRET,
@@ -60,24 +70,44 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
 
     // v7 uses EventEmitter pattern with onRefresh event
     this.userAuth.onRefresh(async (userId: string, newToken: AccessToken) => {
+      this.logger.log(`Token refreshed for user ${userId}`)
       await this.redis.setJSON(RedisKeys.TOKEN, newToken)
     })
 
     // Add user to the provider with their token
     await this.userAuth.addUserForToken(token)
+    this.logger.debug('User token added to auth provider')
 
     this.userAPI = new ApiClient({ authProvider: this.userAuth })
     await this.getMe(true)
-    await this.fillInfosFromAPI()
+
+    if (this.me) {
+      await this.fillInfosFromAPI()
+    } else {
+      this.logger.error(
+        'Failed to authenticate Twitch user after setting up auth provider',
+      )
+    }
   }
 
   async fillInfosFromAPI() {
-    if (!this.userAPI) throw new TwitchServiceError('userAPI not available')
-    if (!this.me) throw new TwitchServiceError('Current user not available')
+    if (!this.userAPI) {
+      this.logger.error('Cannot fill channel info: userAPI not available')
+      throw new TwitchServiceError('userAPI not available')
+    }
+    if (!this.me) {
+      this.logger.error(
+        'Cannot fill channel info: Current user not available. Make sure Twitch authentication completed successfully.',
+      )
+      throw new TwitchServiceError('Current user not available')
+    }
 
+    this.logger.debug(`Fetching channel info for user: ${this.me.displayName}`)
     const response = await this.userAPI.channels.getChannelInfoById(this.me)
-    if (!response)
+    if (!response) {
+      this.logger.error('Channel information response is empty')
       throw new TwitchServiceError('Channel informations are empty')
+    }
 
     const category = {
       id: response.gameId,
@@ -120,10 +150,21 @@ export class TwitchService extends (EventEmitter as new () => TypedEmitter<Twitc
   async getMe(force?: boolean) {
     if (this.#user && !force) return this.#user
 
-    const token = await this.redis.getJSON<any>(RedisKeys.TOKEN)
-    if (token?.userId && this.userAPI) {
-      this.#user = await this.userAPI.users.getUserById(token.userId)
+    if (!this.userAPI) {
+      this.logger.warn('userAPI not available, cannot fetch user')
+      return null
     }
+
+    try {
+      this.#user = await this.userAPI.users.getUserByName(this.env.TWITCH_NAME)
+      this.logger.log(
+        `Authenticated as Twitch user: ${this.#user?.displayName} (${this.#user?.id})`,
+      )
+    } catch (error) {
+      this.logger.error('Failed to get authenticated Twitch user', error)
+      this.#user = null
+    }
+
     return this.#user
   }
 

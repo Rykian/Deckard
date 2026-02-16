@@ -68,7 +68,7 @@ describe(TwitchResolver.name, () => {
     })
 
     it('returns null if user is not defined', async () => {
-      twitchServiceMock.getMe.mockResolvedValue(undefined)
+      twitchServiceMock.getMe.mockResolvedValue(null)
       expect(await resolver.getTwitchUserName()).toBeUndefined()
     })
   })
@@ -85,7 +85,7 @@ describe(TwitchResolver.name, () => {
     })
 
     it('returns nothing if the user is not defined', async () => {
-      twitchServiceMock.getMe.mockResolvedValue(undefined)
+      twitchServiceMock.getMe.mockResolvedValue(null)
 
       expect(await resolver.getTwitchEditStreamInfoUrl()).toBeUndefined()
     })
@@ -125,7 +125,7 @@ describe(TwitchResolver.name, () => {
     })
 
     it('returns null if user is not defined', async () => {
-      twitchServiceMock.getMe.mockResolvedValue(undefined)
+      twitchServiceMock.getMe.mockResolvedValue(null)
       expect(await resolver.twitchGetUsername()).toBeUndefined()
     })
   })

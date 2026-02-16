@@ -1,68 +1,93 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { EventEmitter } from 'events'
+import fs from 'node:fs'
+import { Tunnel, bin, install } from 'cloudflared'
 import { TunnelingAdapter } from './tunneling.adapter'
+import { EnvironmentService } from '../../env.service'
 
-jest.mock('localtunnel')
+jest.mock('cloudflared', () => ({
+  Tunnel: { withToken: jest.fn() },
+  bin: '/tmp/cloudflared',
+  install: jest.fn(),
+}))
 
 describe('TunnelingAdapter', () => {
   let adapter: TunnelingAdapter
   let module: TestingModule
+  let env: EnvironmentService
 
   beforeEach(async () => {
     jest.clearAllMocks()
 
     module = await Test.createTestingModule({
-      providers: [TunnelingAdapter],
+      providers: [
+        TunnelingAdapter,
+        {
+          provide: EnvironmentService,
+          useValue: {
+            PORT: 3000,
+            CLOUDFLARE_TUNNEL_TOKEN: 'test-token-123',
+            CLOUDFLARE_CUSTOM_DOMAIN: 'test.example.com',
+          },
+        },
+      ],
     }).compile()
 
     adapter = module.get<TunnelingAdapter>(TunnelingAdapter)
+    env = module.get<EnvironmentService>(EnvironmentService)
   })
 
-  describe('getAvailablePort', () => {
-    it('should return an available port', async () => {
-      const mockPort = 3000
-      const mockGetPort = jest.fn().mockResolvedValue(mockPort)
-
-      // Inject mock getPort
-      ;(adapter as any).getPort = mockGetPort
-
-      const port = await adapter.getAvailablePort()
-
-      expect(port).toBe(mockPort)
-      expect(mockGetPort).toHaveBeenCalled()
-    })
-
-    it('should handle port retrieval errors', async () => {
-      const error = new Error('Failed to get port')
-      const mockGetPort = jest.fn().mockRejectedValue(error)
-
-      // Inject mock getPort
-      ;(adapter as any).getPort = mockGetPort
-
-      await expect(adapter.getAvailablePort()).rejects.toThrow(error)
-    })
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('createTunnel', () => {
-    it('should create a tunnel with given port and subdomain', async () => {
-      const mockUrl = 'https://example.loca.lt'
-      const { default: localtunnel } = await import('localtunnel')
-      ;(localtunnel as jest.Mock).mockResolvedValue({ url: mockUrl })
+    it('should create a tunnel with token and return custom domain URL', async () => {
+      const mockTunnel = new EventEmitter()
+      ;(Tunnel.withToken as jest.Mock).mockReturnValue(mockTunnel)
+      jest.spyOn(fs, 'existsSync').mockReturnValue(true)
 
-      const result = await adapter.createTunnel(3000, 'example')
+      const resultPromise = adapter.createTunnel()
 
-      expect(result).toEqual({ url: mockUrl, port: 3000, subdomain: 'example' })
-      expect(localtunnel).toHaveBeenCalledWith({
-        port: 3000,
-        subdomain: 'example',
+      // Wait for async setup to complete
+      await new Promise((resolve) => setTimeout(resolve, 10))
+
+      const result = await resultPromise
+
+      expect(result).toBe('https://test.example.com')
+      expect(Tunnel.withToken).toHaveBeenCalledWith('test-token-123', {
+        '--protocol': 'http2',
       })
+      expect(install).not.toHaveBeenCalled()
     })
 
-    it('should handle tunnel creation errors', async () => {
-      const error = new Error('Subdomain already in use')
-      const { default: localtunnel } = await import('localtunnel')
-      ;(localtunnel as jest.Mock).mockRejectedValue(error)
+    it('should install cloudflared when binary is missing', async () => {
+      const mockTunnel = new EventEmitter()
+      ;(Tunnel.withToken as jest.Mock).mockReturnValue(mockTunnel)
+      jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+      ;(install as jest.Mock).mockResolvedValue(bin)
 
-      await expect(adapter.createTunnel(3000, 'example')).rejects.toThrow(error)
+      const resultPromise = adapter.createTunnel()
+      await new Promise((resolve) => setTimeout(resolve, 10))
+
+      await resultPromise
+
+      expect(install).toHaveBeenCalledWith(bin)
+    })
+
+    it('should handle tunnel errors', async () => {
+      const mockTunnel = new EventEmitter()
+      ;(Tunnel.withToken as jest.Mock).mockReturnValue(mockTunnel)
+      jest.spyOn(fs, 'existsSync').mockReturnValue(true)
+
+      const resultPromise = adapter.createTunnel()
+
+      await new Promise((resolve) => setTimeout(resolve, 10))
+
+      const error = new Error('Tunnel connection failed')
+      mockTunnel.emit('error', error)
+
+      await expect(resultPromise).rejects.toThrow('Tunnel connection failed')
     })
   })
 })

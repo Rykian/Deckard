@@ -8,6 +8,7 @@ import { MusicModule } from './music/music.module'
 import { ConfigModule } from '@nestjs/config'
 import { TwitchModule } from './twitch/module'
 import { StreamModule } from './stream/module'
+import { GraphQLLoggingPlugin } from './common/graphql-logging.plugin'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { StreamModule } from './stream/module'
       driver: ApolloDriver,
       autoSchemaFile: resolve('..', 'schema.graphql'),
       installSubscriptionHandlers: true,
+      plugins: [new GraphQLLoggingPlugin()],
     }),
     OBSModule,
     MusicModule,

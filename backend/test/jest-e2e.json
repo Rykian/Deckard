@@ -10,7 +10,7 @@
     "^src/(.*)$": "<rootDir>/../src/$1"
   },
   "transformIgnorePatterns": [
-    "node_modules/(?!(get-port|run-applescript|chokidar|readdirp)/)"
+    "node_modules/(?!(run-applescript|chokidar|readdirp)/)"
   ],
   "testPathIgnorePatterns": ["/node_modules/"]
 }

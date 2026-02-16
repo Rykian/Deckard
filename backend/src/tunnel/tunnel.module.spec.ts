@@ -1,4 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { EventEmitter } from 'events'
+import fs from 'node:fs'
+import { Tunnel } from 'cloudflared'
 import { TunnelModule } from './tunnel.module'
 import { TunnelDomainService } from './domain/tunnel.domain-service'
 import {
@@ -7,7 +10,11 @@ import {
 } from './infrastructure/tunneling.adapter'
 import { EnvironmentService } from '../env.service'
 
-jest.mock('localtunnel')
+jest.mock('cloudflared', () => ({
+  Tunnel: { withToken: jest.fn() },
+  bin: '/tmp/cloudflared',
+  install: jest.fn(),
+}))
 
 describe('TunnelModule Integration', () => {
   let module: TestingModule
@@ -21,12 +28,18 @@ describe('TunnelModule Integration', () => {
     })
 
     builder.overrideProvider(EnvironmentService).useValue({
-      TUNNEL_SUBDOMAIN: 'test-app',
+      PORT: 3000,
+      CLOUDFLARE_TUNNEL_TOKEN: 'test-token-123',
+      CLOUDFLARE_CUSTOM_DOMAIN: 'test.example.com',
     })
 
     module = await builder.compile()
 
     tunnelService = module.get<TunnelDomainService>(TunnelDomainService)
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   afterEach(async () => {
@@ -43,39 +56,38 @@ describe('TunnelModule Integration', () => {
   })
 
   it('should establish tunnel end-to-end', async () => {
-    const mockPort = 3000
-    const mockUrl = 'https://test-app.loca.lt'
-    const mockGetPort = jest.fn().mockResolvedValue(mockPort)
+    const mockUrl = 'https://test.example.com'
+    const mockTunnel = new EventEmitter()
+    ;(Tunnel.withToken as jest.Mock).mockReturnValue(mockTunnel)
+    jest.spyOn(fs, 'existsSync').mockReturnValue(true)
 
-    // Get adapter and inject mock getPort
-    const adapter = module.get<TunnelingAdapter>(TunnelingAdapter)
-    ;(adapter as any).getPort = mockGetPort
+    const tunnelPromise = tunnelService.establishTunnel()
 
-    const { default: localtunnel } = await import('localtunnel')
-    ;(localtunnel as jest.Mock).mockResolvedValue({ url: mockUrl })
+    // Wait for async setup
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
-    const tunnel = await tunnelService.establishTunnel()
+    const tunnel = await tunnelPromise
 
-    expect(tunnel.url).toBe(mockUrl)
-    expect(tunnel.port).toBe(mockPort)
-    expect(tunnel.subdomain).toBe('test-app')
-    expect(getHostnameFromUrl(tunnel.url)).toBe('test-app.loca.lt')
+    expect(tunnel).toBe(mockUrl)
+    expect(getHostnameFromUrl(tunnel)).toBe('test.example.com')
   })
 
-  it('should create tunnel with explicit port', async () => {
-    const mockUrl = 'https://myapp.loca.lt'
+  it('should create tunnel and return URL', async () => {
+    const mockUrl = 'https://test.example.com'
+    const mockTunnel = new EventEmitter()
+    ;(Tunnel.withToken as jest.Mock).mockReturnValue(mockTunnel)
+    jest.spyOn(fs, 'existsSync').mockReturnValue(true)
 
-    const { default: localtunnel } = await import('localtunnel')
-    ;(localtunnel as jest.Mock).mockResolvedValue({ url: mockUrl })
+    const tunnelPromise = tunnelService.createTunnel()
 
-    const tunnel = await tunnelService.createTunnel(5000, 'myapp')
+    // Wait for async setup
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
-    expect(tunnel.url).toBe(mockUrl)
-    expect(tunnel.port).toBe(5000)
-    expect(tunnel.subdomain).toBe('myapp')
-    expect(localtunnel).toHaveBeenCalledWith({
-      port: 5000,
-      subdomain: 'myapp',
+    const tunnel = await tunnelPromise
+
+    expect(tunnel).toBe(mockUrl)
+    expect(Tunnel.withToken).toHaveBeenCalledWith('test-token-123', {
+      '--protocol': 'http2',
     })
   })
 })

@@ -61,6 +61,7 @@ type Query {
   twitchGetClientId: String
   twitchGetChannelInfo: TwitchChannelInfo!
   twitchGetUsername: String!
+  tunnelGetUrl: String!
 
   """Expiration date as ISO string"""
   streamCountdownGet(name: String!): String!

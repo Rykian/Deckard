@@ -10,7 +10,21 @@ export class EnvironmentService {
     .required()
     .asString()
   TWITCH_SECRET = this.env.get('TWITCH_SECRET').required().asString()
-  TUNNEL_SUBDOMAIN = this.env.get('TUNNEL_SUBDOMAIN').required().asString()
+  TWITCH_APP_REDIRECT_URI = this.env
+    .get('TWITCH_APP_REDIRECT_URI')
+    .required()
+    .asString()
+  TWITCH_NAME = this.env.get('TWITCH_NAME').required().asString()
+  PORT = this.env.get('PORT').default('3000').asPortNumber()
+
+  CLOUDFLARE_TUNNEL_TOKEN = this.env
+    .get('CLOUDFLARE_TUNNEL_TOKEN')
+    .required()
+    .asString()
+  CLOUDFLARE_CUSTOM_DOMAIN = this.env
+    .get('CLOUDFLARE_CUSTOM_DOMAIN')
+    .required()
+    .asString()
 
   SPOTIFY_CLIENT_ID = this.env.get('SPOTIFY_CLIENT_ID').required().asString()
   SPOTIFY_CLIENT_SECRET = this.env

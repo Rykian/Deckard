@@ -18,8 +18,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Dashboard'>
 export type ServerDashboardStackParamList = {
   Home: undefined
   OBSSelection: undefined
-  SpotifyLogin: undefined
-  TwitchLogin: undefined
+  TwitchLogin: { address?: string }
   'StartButton/Start': undefined
   'StartButton/Pause': undefined
   'StartButton/Stop': undefined
@@ -51,7 +50,11 @@ const ServerDashboardScreen = (props: Props) => {
         />
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="OBSSelection" component={OBSSelection} />
-          <Stack.Screen name="TwitchLogin" component={TwitchLogin} />
+          <Stack.Screen
+            name="TwitchLogin"
+            component={TwitchLogin}
+            initialParams={{ address }}
+          />
           <Stack.Screen name="StartButton/Start" component={PrepareStart} />
           <Stack.Screen name="StartButton/Pause" component={Pause} />
           <Stack.Screen name="StartButton/Stop" component={Stop} />
