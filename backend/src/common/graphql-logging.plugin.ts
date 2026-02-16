@@ -7,11 +7,13 @@ export class GraphQLLoggingPlugin implements ApolloServerPlugin {
   async requestDidStart() {
     const logger = this.logger
     const startTime = Date.now()
+    let operationType: string
+    let operationName: string
 
     return {
       async didResolveOperation(requestContext: any) {
-        const operationName = requestContext.operationName || 'UnnamedOperation'
-        const operationType = requestContext.operation?.operation || 'unknown'
+        operationType = requestContext.operation?.operation || 'unknown'
+        operationName = requestContext.operationName || 'UnnamedOperation'
         const query = requestContext.request.query || ''
         const variables = requestContext.request.variables || {}
 
@@ -22,7 +24,11 @@ export class GraphQLLoggingPlugin implements ApolloServerPlugin {
 
       async willSendResponse(requestContext: any) {
         const duration = Date.now() - startTime
-        const operationName = requestContext.operationName || 'UnnamedOperation'
+
+        // Skip logging for subscriptions - they don't have a single response
+        if (operationType === 'subscription') {
+          return
+        }
 
         if (requestContext.errors && requestContext.errors.length > 0) {
           logger.error(
@@ -34,10 +40,22 @@ export class GraphQLLoggingPlugin implements ApolloServerPlugin {
       },
 
       async didEncounterErrors(requestContext: any) {
-        const operationName = requestContext.operationName || 'UnnamedOperation'
-        requestContext.errors.forEach((error: any) => {
-          logger.error(`${operationName}: ${error.message}`, error.stack)
+        const name = requestContext.operationName || 'UnnamedOperation'
+        requestContext.errors?.forEach((error: any) => {
+          logger.error(`${name}: ${error.message}`, error.stack)
         })
+      },
+
+      async didSubscribe(requestContext: any) {
+        const operationName = requestContext.operationName || 'UnnamedOperation'
+        logger.log(`📡 SUBSCRIPTION ${operationName} connected (WebSocket)`)
+        return undefined
+      },
+
+      async didResolveSubscriptionSource(requestContext: any) {
+        const operationName = requestContext.operationName || 'UnnamedOperation'
+        logger.debug(`📡 ${operationName} source subscribed`)
+        return undefined
       },
     }
   }

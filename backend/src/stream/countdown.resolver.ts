@@ -2,7 +2,6 @@ import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { parseISO } from 'date-fns'
 import { PubSub } from 'graphql-subscriptions'
 import { identity } from 'rxjs'
-import { setTimeout } from 'timers/promises'
 import { StreamCountdownService, Topics } from './countdown.service'
 
 @Resolver()
@@ -42,18 +41,12 @@ export class StreamCountdownResolver {
   @Subscription(() => String, {
     description: 'Notify when a countdown has been updated',
     resolve: (payload) => {
-      console.log({ payload })
       return payload['target']
     },
     filter: (payload, args) => payload['name'] == args['name'],
   })
   streamCountdownUpdated(@Args('name') name: string) {
-    setTimeout(1000).then(() => {
-      const target = this.streamCountdownGet(name)
-      if (!target) return
-
-      this.pubsub.publish(Topics.COUNTDOWN_UPDATED, { name, target })
-    })
+    // Service will publish updates when counters change
     return this.pubsub.asyncIterableIterator(Topics.COUNTDOWN_UPDATED)
   }
 

@@ -35,6 +35,7 @@ const Scenes = () => {
   const current =
     useSubscription<CurrentSceneForSwitchesSubscription>(CURRENT).data
       ?.obsScenesCurrentChanged
+
   const [mutation] = useMutation<
     SwitchSceneFromSwitchesMutation,
     SwitchSceneFromSwitchesMutationVariables

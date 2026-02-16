@@ -1,7 +1,6 @@
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { identity } from 'rxjs'
-import { setTimeout } from 'timers/promises'
 import { CheckScenesReport, SceneChanging } from './scenes.object'
 import { OBSScenesService, Topics } from './scenes.service'
 
@@ -33,17 +32,15 @@ export class OBSScenesResolver {
 
   @Subscription(() => [String], { resolve: identity })
   obsScenesListUpdated() {
-    setTimeout(1000).then(() =>
-      this.pubsub.publish(Topics.LIST_UPDATED, this.service.availableScenes),
-    )
+    // Publish current state when subscription starts
+    this.pubsub.publish(Topics.LIST_UPDATED, this.service.availableScenes)
     return this.pubsub.asyncIterableIterator(Topics.LIST_UPDATED)
   }
 
   @Subscription(() => String, { resolve: identity })
   obsScenesCurrentChanged() {
-    setTimeout(1000).then(() =>
-      this.pubsub.publish(Topics.CHANGED, this.service.programScene),
-    )
+    // Publish current state when subscription starts
+    this.pubsub.publish(Topics.CHANGED, this.service.programScene)
     return this.pubsub.asyncIterableIterator(Topics.CHANGED)
   }
 

@@ -24,6 +24,9 @@ import { GraphQLLoggingPlugin } from './common/graphql-logging.plugin'
       driver: ApolloDriver,
       autoSchemaFile: resolve('..', 'schema.graphql'),
       installSubscriptionHandlers: true,
+      subscriptions: {
+        'graphql-ws': true,
+      },
       plugins: [new GraphQLLoggingPlugin()],
     }),
     OBSModule,

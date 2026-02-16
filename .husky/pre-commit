@@ -8,6 +8,6 @@ set +o allexport
 
 if [ -e "$OBS_SCENE_FILE" ]; then
   cp "$OBS_SCENE_FILE" $(dirname -- "$0")/../obs/scenes.json
-  yarn prettier --write $(dirname -- "$0")/../obs/scenes.json
+  mise exec -- yarn prettier --write $(dirname -- "$0")/../obs/scenes.json
   git add $(dirname -- "$0")/../obs/scenes.json
 fi

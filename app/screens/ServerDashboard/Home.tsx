@@ -50,7 +50,7 @@ const Home = (props: Props) => {
             OBS
           </ConnectionState>
           <ConnectionState
-            onPress={() => props.navigation.navigate('TwitchLogin')}
+            onPress={() => props.navigation.navigate('TwitchLogin', {})}
             connected={!!twitchUserName.data?.twitchGetUsername}
             icon={faTwitch}
           >

@@ -1,7 +1,6 @@
 import { Mutation, Resolver, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { identity } from 'rxjs'
-import { setTimeout } from 'timers/promises'
 import { StreamWebcamService, Topics } from './webcam.service'
 
 @Resolver()
@@ -18,9 +17,8 @@ export class StreamWebcamResolver {
 
   @Subscription(() => Boolean, { resolve: identity })
   streamWebcamChanged() {
-    setTimeout(1000).then(() =>
-      this.pubsub.publish(Topics.VISIBILITY, this.service.visible),
-    )
+    // Publish current state when subscription starts
+    this.pubsub.publish(Topics.VISIBILITY, this.service.visible)
     return this.pubsub.asyncIterableIterator(Topics.VISIBILITY)
   }
 
@@ -31,9 +29,8 @@ export class StreamWebcamResolver {
 
   @Subscription(() => Boolean, { resolve: identity })
   streamWebcamBlurChanged() {
-    setTimeout(1000).then(() => {
-      this.pubsub.publish(Topics.BLUR, this.service.blured)
-    })
+    // Publish current state when subscription starts
+    this.pubsub.publish(Topics.BLUR, this.service.blured)
     return this.pubsub.asyncIterableIterator(Topics.BLUR)
   }
 }

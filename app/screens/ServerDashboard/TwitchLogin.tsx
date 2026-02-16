@@ -64,8 +64,6 @@ const TwitchLogin = (props: Props) => {
       onPress={async () => {
         if (!authUrl) return
 
-        console.log({ authUrl, proxyRedirectUri })
-
         const session = await WebBrowser.openAuthSessionAsync(
           authUrl,
           proxyRedirectUri,

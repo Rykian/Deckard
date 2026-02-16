@@ -32,9 +32,8 @@ export class OBSConnectionResolver {
     resolve: identity,
   })
   obsCurrentInstanceUpdated() {
-    setTimeout(1000).then(() => {
-      this.pubsub.publish(Topics.INSTANCE_UPDATED, this.obsCurrentInstance())
-    })
+    // Publish current state when subscription starts
+    this.pubsub.publish(Topics.INSTANCE_UPDATED, this.obsCurrentInstance())
     return this.pubsub.asyncIterableIterator(Topics.INSTANCE_UPDATED)
   }
 
